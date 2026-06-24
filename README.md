@@ -1,32 +1,52 @@
-# React + TypeScript + Vite
+# ChessReviewer
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A browser-only chess Game Review tool (chess.com-style). Paste a PGN or import
+a game from a chess.com username, and Stockfish (running in your browser)
+analyzes every move: classification (Brilliant / Great / Best / … / Blunder),
+accuracy %, evaluation graph, best-move arrows, and opening detection. No
+backend, no accounts, no token cost.
 
-Currently, two official plugins are available:
+## Develop
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+    npm install
+    npm run dev
 
-## React Compiler
+## Test
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+    npm test
 
-## Expanding the Oxlint configuration
+## Build & deploy
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+    npm run build      # outputs dist/
+    npm run preview    # serve the production build locally
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+Deploy `dist/` to any static host (Vercel/Netlify). The Stockfish engine files
+live in `public/engine/` and are copied into the build automatically.
+
+## How it works
+
+```
+Import → parse PGN → analyze each position (Stockfish/WASM) → classify moves
+       → compute accuracy → detect opening → render review
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Every distinct position is evaluated once by Stockfish (MultiPV 2). A pure
+assembly step then turns those evaluations into per-move classifications and
+accuracies. The engine runs in a Web Worker, so the UI stays responsive.
+
+## Notes
+
+- Move classification uses win%-drop thresholds tuned in
+  `src/analysis/thresholds.ts`. It reproduces chess.com's look-and-feel closely
+  but not their exact proprietary "Brilliant"/"Miss" logic.
+- The bundled opening set in `src/data/openings.sample.ts` is small; drop in the
+  full [Lichess ECO set](https://github.com/lichess-org/chess-openings)
+  (mapped to the same `{ eco, name, uciMoves }` shape) for complete coverage.
+- Analysis depth is set in `src/App.tsx` (`DEPTH`).
+- The engine is the **single-threaded** Stockfish build, so it runs on any
+  static host without cross-origin-isolation (COOP/COEP) headers.
+
+## License
+
+The bundled Stockfish.js engine is **GPLv3** (© Chess.com, LLC). Distributing
+this app distributes Stockfish.js, so the combined work is subject to GPLv3.
