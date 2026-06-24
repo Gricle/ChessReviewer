@@ -1,7 +1,7 @@
 import type { PositionAnalysis } from '../chess/types';
 import { parseInfoLine } from './uci';
 
-const ENGINE_URL = '/engine/stockfish-18-lite-single.js';
+const ENGINE_URL = `${import.meta.env.BASE_URL}engine/stockfish-18-lite-single.js`;
 
 export class Engine {
   private worker: Worker;
