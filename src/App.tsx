@@ -1,122 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useMemo, useState } from 'react';
+import { parsePgn } from './chess/pgnParser';
+import { ReviewBoard } from './components/ReviewBoard';
+import type { ParsedGame } from './chess/types';
 
-function App() {
-  const [count, setCount] = useState(0)
+const SAMPLE = `[White "Alice"]\n[Black "Bob"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *`;
+
+export default function App() {
+  const [pgn, setPgn] = useState(SAMPLE);
+  const [game, setGame] = useState<ParsedGame | null>(null);
+  const [ply, setPly] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
+  function load() {
+    try {
+      setGame(parsePgn(pgn));
+      setPly(0);
+      setError(null);
+    } catch {
+      setError('Invalid PGN');
+    }
+  }
+
+  const fen = useMemo(() => {
+    if (!game) return undefined;
+    if (ply === 0) return game.plies[0]?.fenBefore;
+    return game.plies[ply - 1]?.fenAfter;
+  }, [game, ply]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <div style={{ display: 'flex', gap: 24, padding: 24 }}>
+      <div>
+        <textarea value={pgn} onChange={(e) => setPgn(e.target.value)} rows={8} cols={40} />
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <button onClick={load}>Load PGN</button>
+          {error && <span style={{ color: 'red' }}> {error}</span>}
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      </div>
+      {game && fen && (
+        <div>
+          <ReviewBoard fen={fen} />
+          <div>
+            <button onClick={() => setPly((p) => Math.max(0, p - 1))}>◀</button>
+            <button onClick={() => setPly((p) => Math.min(game.plies.length, p + 1))}>▶</button>
+            <span> ply {ply}/{game.plies.length}</span>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      )}
+    </div>
+  );
 }
-
-export default App
