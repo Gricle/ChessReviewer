@@ -1,23 +1,45 @@
 import { useMemo, useState } from 'react';
 import { parsePgn } from './chess/pgnParser';
+import { analyzeGame } from './analysis/analyzeGame';
+import { assembleReview, type Review } from './analysis/assemble';
+import { OPENINGS } from './data/openings.sample';
 import { ReviewBoard } from './components/ReviewBoard';
+import { MoveList } from './components/MoveList';
+import { EvalGraph } from './components/EvalGraph';
+import { SummaryPanel } from './components/SummaryPanel';
 import type { ParsedGame } from './chess/types';
 
-const SAMPLE = `[White "Alice"]\n[Black "Bob"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *`;
+const SAMPLE = `[White "Alice"]\n[Black "Bob"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 *`;
+const DEPTH = 14;
 
 export default function App() {
   const [pgn, setPgn] = useState(SAMPLE);
   const [game, setGame] = useState<ParsedGame | null>(null);
+  const [review, setReview] = useState<Review | null>(null);
   const [ply, setPly] = useState(0);
+  const [progress, setProgress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  function load() {
+  async function run() {
+    setError(null);
+    setReview(null);
+    let parsed: ParsedGame;
     try {
-      setGame(parsePgn(pgn));
-      setPly(0);
-      setError(null);
+      parsed = parsePgn(pgn);
     } catch {
       setError('Invalid PGN');
+      return;
+    }
+    setGame(parsed);
+    setPly(0);
+    setProgress('Analyzing…');
+    try {
+      const analyses = await analyzeGame(parsed, DEPTH, (d, t) => setProgress(`Analyzing ${d}/${t}`));
+      setReview(assembleReview(parsed, analyses, OPENINGS));
+      setProgress(null);
+    } catch {
+      setError('Analysis failed (engine could not load).');
+      setProgress(null);
     }
   }
 
@@ -27,23 +49,47 @@ export default function App() {
     return game.plies[ply - 1]?.fenAfter;
   }, [game, ply]);
 
+  const arrow = useMemo((): [string, string] | null => {
+    if (!review || ply === 0) return null;
+    const uci = review.plies[ply - 1]?.bestMoveUci;
+    return uci ? [uci.slice(0, 2), uci.slice(2, 4)] : null;
+  }, [review, ply]);
+
+  const whiteEvals = useMemo(() => {
+    if (!review) return [];
+    // Convert each ply's mover-perspective eval to white perspective for the graph.
+    return review.plies.map((p) =>
+      p.color === 'white' ? p.evalAfterCp : -p.evalAfterCp,
+    );
+  }, [review]);
+
   return (
-    <div style={{ display: 'flex', gap: 24, padding: 24 }}>
-      <div>
-        <textarea value={pgn} onChange={(e) => setPgn(e.target.value)} rows={8} cols={40} />
+    <div style={{ fontFamily: 'sans-serif', padding: 24 }}>
+      <h2>Chess Reviewer</h2>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
+        <textarea value={pgn} onChange={(e) => setPgn(e.target.value)} rows={6} cols={48} />
         <div>
-          <button onClick={load}>Load PGN</button>
-          {error && <span style={{ color: 'red' }}> {error}</span>}
+          <button onClick={run}>Review game</button>
+          {progress && <div>{progress}</div>}
+          {error && <div style={{ color: 'red' }}>{error}</div>}
         </div>
       </div>
+
       {game && fen && (
-        <div>
-          <ReviewBoard fen={fen} />
+        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
           <div>
-            <button onClick={() => setPly((p) => Math.max(0, p - 1))}>◀</button>
-            <button onClick={() => setPly((p) => Math.min(game.plies.length, p + 1))}>▶</button>
-            <span> ply {ply}/{game.plies.length}</span>
+            <ReviewBoard fen={fen} arrow={arrow} />
+            <div>
+              <button onClick={() => setPly((p) => Math.max(0, p - 1))}>◀</button>
+              <button onClick={() => setPly((p) => Math.min(game.plies.length, p + 1))}>▶</button>
+              <span> ply {ply}/{game.plies.length}</span>
+            </div>
+            {review && (
+              <EvalGraph evalsCp={whiteEvals} current={Math.max(0, ply - 1)} onSelect={(i) => setPly(i + 1)} />
+            )}
           </div>
+          {review && <MoveList plies={review.plies} current={ply} onSelect={setPly} />}
+          {review && <SummaryPanel summary={review.summary} white={game.white} black={game.black} />}
         </div>
       )}
     </div>
