@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { parsePgn } from './chess/pgnParser';
 import { uciToSan } from './chess/san';
+import { playSound, sanToSound } from './sound';
 import { analyzeGame } from './analysis/analyzeGame';
 import { assembleReview, type Review } from './analysis/assemble';
 import { OPENINGS } from './data/openings.sample';
@@ -21,6 +22,9 @@ export default function App() {
   const [ply, setPly] = useState(0);
   const [progress, setProgress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showImport, setShowImport] = useState(true);
+  const [soundOn, setSoundOn] = useState(true);
+  const prevPly = useRef(0);
 
   async function run(pgnText: string) {
     setError(null);
@@ -39,6 +43,7 @@ export default function App() {
       const analyses = await analyzeGame(parsed, DEPTH, (d, t) => setProgress(`Analyzing position ${d} / ${t}`));
       setReview(assembleReview(parsed, analyses, OPENINGS));
       setProgress(null);
+      setShowImport(false);
     } catch {
       setError('The engine could not load in this browser. Try reloading the page.');
       setProgress(null);
@@ -97,6 +102,15 @@ export default function App() {
     return whiteEvals[ply - 1] ?? 0;
   }, [review, ply, whiteEvals]);
 
+  // Play a sound effect whenever we land on a new move.
+  useEffect(() => {
+    if (review && soundOn && ply > 0 && ply !== prevPly.current) {
+      const p = review.plies[ply - 1];
+      if (p) playSound(sanToSound(p.san));
+    }
+    prevPly.current = ply;
+  }, [ply, review, soundOn]);
+
   const total = game?.plies.length ?? 0;
 
   return (
@@ -106,7 +120,19 @@ export default function App() {
         <div className="tagline">Game Review — Stockfish runs right in your browser</div>
       </header>
 
-      <ImportPanel onPgn={run} />
+      {showImport ? (
+        <ImportPanel onPgn={run} />
+      ) : (
+        <div className="gamebar">
+          <button onClick={() => setShowImport(true)}>↺ New game</button>
+          {game && review && (
+            <span className="gamebar-title">
+              {game.white} vs {game.black}
+              {review.summary.opening && <span className="muted"> · {review.summary.opening.name}</span>}
+            </span>
+          )}
+        </div>
+      )}
 
       {progress && <div className="status"><span className="dot" /> {progress}</div>}
       {error && <div className="err" style={{ marginBottom: 14 }}>{error}</div>}
@@ -143,6 +169,13 @@ export default function App() {
                   <button onClick={() => setPly((p) => Math.max(0, p - 1))} title="Previous" aria-label="Previous move">◀</button>
                   <button onClick={() => setPly((p) => Math.min(total, p + 1))} title="Next" aria-label="Next move">▶</button>
                   <button onClick={() => setPly(total)} title="End" aria-label="End">⏭</button>
+                  <button
+                    onClick={() => setSoundOn((s) => !s)}
+                    title={soundOn ? 'Mute sounds' : 'Unmute sounds'}
+                    aria-label={soundOn ? 'Mute sounds' : 'Unmute sounds'}
+                  >
+                    {soundOn ? '🔊' : '🔇'}
+                  </button>
                   <span className="ply">{ply} / {total}</span>
                 </div>
               </div>

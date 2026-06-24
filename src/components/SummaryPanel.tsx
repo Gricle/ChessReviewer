@@ -23,23 +23,25 @@ export function SummaryPanel({ summary, white, black, children }: Props) {
         </div>
       </div>
 
-      {children}
+      <div className="panel-scroll">
+        {children}
 
-      <div className="breakdown">
-        <div className="bd-head"><span /><span>Move</span><span>W</span><span>B</span></div>
-        {CLASS_ORDER.map((label) => {
-          const c = summary.counts[label];
-          if (c.white === 0 && c.black === 0) return null;
-          const meta = CLASS_META[label];
-          return (
-            <div className="bd-row" key={label}>
-              <span className={`badge ${meta.cls}`}>{meta.sym}</span>
-              <span className="label">{meta.label}</span>
-              <span className="w">{c.white}</span>
-              <span className="b">{c.black}</span>
-            </div>
-          );
-        })}
+        <div className="breakdown">
+          <div className="bd-head"><span /><span>Move</span><span>W</span><span>B</span></div>
+          {CLASS_ORDER.map((label) => {
+            const c = summary.counts[label];
+            if (c.white === 0 && c.black === 0) return null;
+            const meta = CLASS_META[label];
+            return (
+              <div className="bd-row" key={label}>
+                <span className={`badge ${meta.cls}`}>{meta.sym}</span>
+                <span className="label">{meta.label}</span>
+                <span className="w">{c.white}</span>
+                <span className="b">{c.black}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

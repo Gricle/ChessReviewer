@@ -101,17 +101,25 @@ input::placeholder { color: var(--text-mute); }
 /* ===== Layout ===== */
 
 .app {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 20px 60px;
+  padding: 16px 20px 20px;
 }
 
 .topbar {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
+
+/* slim bar shown in place of the import panel once a game is loaded */
+.gamebar {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 12px;
+}
+.gamebar-title { font-weight: 700; font-size: 14px; }
+.gamebar-title .muted { color: var(--text-mute); font-weight: 500; }
 .brand {
   font-size: 24px;
   font-weight: 800;
@@ -182,23 +190,30 @@ input::placeholder { color: var(--text-mute); }
 /* ===== Review grid ===== */
 
 .review-grid {
+  /* board edge length: fill leftover height or width, whichever is smaller */
+  --bs: min(calc(100vh - 188px), calc(100vw - 460px), 760px);
   display: grid;
   grid-template-columns: auto 340px;
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
+  height: calc(var(--bs) + 56px); /* board + the two player-name rows */
 }
-@media (max-width: 860px) {
-  .review-grid { grid-template-columns: 1fr; }
+@media (max-width: 880px) {
+  .review-grid {
+    --bs: min(calc(100vw - 70px), calc(100vh - 360px));
+    grid-template-columns: 1fr;
+    height: auto;
+  }
 }
 
-.board-col { display: flex; flex-direction: column; gap: 12px; }
+.board-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; height: 100%; }
 
 .board-area { display: flex; gap: 10px; }
 
 /* vertical eval bar */
 .evalbar {
   width: 20px;
-  height: 480px;
+  height: var(--bs);
   border-radius: 5px;
   overflow: hidden;
   background: #5a5650;
@@ -217,12 +232,12 @@ input::placeholder { color: var(--text-mute); }
 }
 
 .board {
-  width: 480px; height: 480px;
+  width: var(--bs); height: var(--bs);
   border-radius: 6px;
   overflow: hidden;
   box-shadow: var(--shadow);
 }
-/* chess.com-style wood board (checkerboard via gradients) */
+/* chess.com-style wood board (checkerboard via gradients, sized from --bs) */
 .board cg-board {
   background-color: var(--sq-light) !important;
   background-image:
@@ -230,8 +245,12 @@ input::placeholder { color: var(--text-mute); }
     linear-gradient(-45deg, var(--sq-dark) 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, var(--sq-dark) 75%),
     linear-gradient(-45deg, transparent 75%, var(--sq-dark) 75%) !important;
-  background-size: 120px 120px !important;
-  background-position: 0 0, 0 60px, 60px -60px, -60px 0px !important;
+  background-size: calc(var(--bs) / 4) calc(var(--bs) / 4) !important;
+  background-position:
+    0 0,
+    0 calc(var(--bs) / 8),
+    calc(var(--bs) / 8) calc(var(--bs) / -8),
+    calc(var(--bs) / -8) 0 !important;
 }
 .board cg-board square.last-move {
   background: var(--sq-last);
@@ -305,7 +324,16 @@ input::placeholder { color: var(--text-mute); }
 
 /* ===== Right panel ===== */
 
-.panel { display: flex; flex-direction: column; gap: 16px; }
+.panel {
+  display: flex; flex-direction: column; gap: 12px;
+  height: 100%; min-height: 0;
+}
+.coach { flex: none; }
+.graph-card { flex: none; }
+.panel-card {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+}
 
 .panel-head {
   padding: 16px 18px;
@@ -316,8 +344,9 @@ input::placeholder { color: var(--text-mute); }
 
 /* accuracy header */
 .acc-row {
+  flex: none;
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 10px; padding: 16px 18px;
+  gap: 10px; padding: 14px 16px;
 }
 .acc {
   background: var(--surface-2);
@@ -331,8 +360,14 @@ input::placeholder { color: var(--text-mute); }
 .acc.white .val { color: #f1f1f1; }
 .acc.black .val { color: var(--green); }
 
+/* scrollable region: move list + breakdown (accuracy stays pinned above) */
+.panel-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
 /* move list */
-.movelist { max-height: 300px; overflow-y: auto; padding: 6px 0; }
+.movelist {
+  padding: 4px 0;
+  border-top: 1px solid var(--line);
+}
 .move-row {
   display: grid;
   grid-template-columns: 38px 1fr 1fr;
@@ -377,7 +412,7 @@ input::placeholder { color: var(--text-mute); }
 .c-blunder { background: var(--c-blunder); color: #fff; }
 
 /* classification breakdown */
-.breakdown { padding: 8px 12px 14px; }
+.breakdown { flex: none; padding: 8px 12px 12px; }
 .bd-row {
   display: grid;
   grid-template-columns: 22px 1fr auto auto;
