@@ -3,7 +3,6 @@ import { Chessground } from 'chessground';
 import type { Api } from 'chessground/api';
 import type { Key } from 'chessground/types';
 import 'chessground/assets/chessground.base.css';
-import 'chessground/assets/chessground.brown.css';
 import 'chessground/assets/chessground.cburnett.css';
 
 interface Props {
@@ -33,5 +32,5 @@ export function ReviewBoard({ fen, arrow }: Props) {
     });
   }, [fen, arrow]);
 
-  return <div ref={el} style={{ width: 480, height: 480 }} />;
+  return <div ref={el} style={{ width: '100%', height: '100%' }} />;
 }

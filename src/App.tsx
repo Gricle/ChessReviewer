@@ -5,6 +5,7 @@ import { assembleReview, type Review } from './analysis/assemble';
 import { OPENINGS } from './data/openings.sample';
 import { ImportPanel } from './components/ImportPanel';
 import { ReviewBoard } from './components/ReviewBoard';
+import { EvalBar } from './components/EvalBar';
 import { MoveList } from './components/MoveList';
 import { EvalGraph } from './components/EvalGraph';
 import { SummaryPanel } from './components/SummaryPanel';
@@ -33,7 +34,7 @@ export default function App() {
     setPly(0);
     setProgress('Analyzing…');
     try {
-      const analyses = await analyzeGame(parsed, DEPTH, (d, t) => setProgress(`Analyzing ${d}/${t}`));
+      const analyses = await analyzeGame(parsed, DEPTH, (d, t) => setProgress(`Analyzing position ${d} / ${t}`));
       setReview(assembleReview(parsed, analyses, OPENINGS));
       setProgress(null);
     } catch {
@@ -54,36 +55,74 @@ export default function App() {
     return uci ? [uci.slice(0, 2), uci.slice(2, 4)] : null;
   }, [review, ply]);
 
+  // Each ply's eval after the move, from white's perspective (for the graph).
   const whiteEvals = useMemo(() => {
     if (!review) return [];
-    // Convert each ply's mover-perspective eval to white perspective for the graph.
-    return review.plies.map((p) =>
-      p.color === 'white' ? p.evalAfterCp : -p.evalAfterCp,
-    );
+    return review.plies.map((p) => (p.color === 'white' ? p.evalAfterCp : -p.evalAfterCp));
   }, [review]);
 
+  // White-perspective eval of the currently shown position (for the eval bar).
+  const currentWhiteCp = useMemo(() => {
+    if (!review) return 0;
+    if (ply === 0) {
+      const p0 = review.plies[0];
+      return p0 ? (p0.color === 'white' ? p0.evalBeforeCp : -p0.evalBeforeCp) : 0;
+    }
+    return whiteEvals[ply - 1] ?? 0;
+  }, [review, ply, whiteEvals]);
+
+  const total = game?.plies.length ?? 0;
+
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: 24 }}>
-      <h2>Chess Reviewer</h2>
+    <div className="app">
+      <header className="topbar">
+        <div className="brand"><span className="pc">♟</span> Chess Reviewer</div>
+        <div className="tagline">Game Review — powered by Stockfish, right in your browser</div>
+      </header>
+
       <ImportPanel onPgn={run} />
-      {progress && <div>{progress}</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+
+      {progress && (
+        <div className="status"><span className="dot" /> {progress}</div>
+      )}
+      {error && <div className="err" style={{ marginBottom: 14 }}>{error}</div>}
 
       {game && fen && (
-        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', marginTop: 16 }}>
-          <div>
-            <ReviewBoard fen={fen} arrow={arrow} />
-            <div>
-              <button onClick={() => setPly((p) => Math.max(0, p - 1))}>◀</button>
-              <button onClick={() => setPly((p) => Math.min(game.plies.length, p + 1))}>▶</button>
-              <span> ply {ply}/{game.plies.length}</span>
+        <div className="review-grid">
+          <section className="board-col">
+            <div className="board-area">
+              <EvalBar cp={currentWhiteCp} />
+              <div className="board">
+                <ReviewBoard fen={fen} arrow={arrow} />
+              </div>
             </div>
+
+            <div className="controls">
+              <button onClick={() => setPly(0)} title="Start">⏮</button>
+              <button onClick={() => setPly((p) => Math.max(0, p - 1))} title="Previous">◀</button>
+              <button onClick={() => setPly((p) => Math.min(total, p + 1))} title="Next">▶</button>
+              <button onClick={() => setPly(total)} title="End">⏭</button>
+              <span className="ply">{ply} / {total}</span>
+            </div>
+
             {review && (
-              <EvalGraph evalsCp={whiteEvals} current={Math.max(0, ply - 1)} onSelect={(i) => setPly(i + 1)} />
+              <div className="graph-wrap">
+                <EvalGraph
+                  evalsCp={whiteEvals}
+                  current={Math.max(0, ply - 1)}
+                  onSelect={(i) => setPly(i + 1)}
+                />
+              </div>
             )}
-          </div>
-          {review && <MoveList plies={review.plies} current={ply} onSelect={setPly} />}
-          {review && <SummaryPanel summary={review.summary} white={game.white} black={game.black} />}
+          </section>
+
+          {review && (
+            <aside className="panel">
+              <SummaryPanel summary={review.summary} white={game.white} black={game.black}>
+                <MoveList plies={review.plies} current={ply} onSelect={setPly} />
+              </SummaryPanel>
+            </aside>
+          )}
         </div>
       )}
     </div>

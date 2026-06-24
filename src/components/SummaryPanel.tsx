@@ -1,39 +1,53 @@
-import type { ReviewSummary, Classification } from '../chess/types';
-
-const ORDER: Classification[] = [
-  'brilliant', 'great', 'best', 'excellent', 'good', 'book', 'inaccuracy', 'mistake', 'blunder',
-];
+import type { ReactNode } from 'react';
+import type { ReviewSummary } from '../chess/types';
+import { CLASS_META, CLASS_ORDER } from './classMeta';
 
 interface Props {
   summary: ReviewSummary;
   white: string;
   black: string;
+  children?: ReactNode; // move list slot, rendered between accuracy and breakdown
 }
 
-export function SummaryPanel({ summary, white, black }: Props) {
+export function SummaryPanel({ summary, white, black, children }: Props) {
   return (
-    <div style={{ width: 260 }}>
-      <h3>Game Review</h3>
-      {summary.opening && <p>Opening: {summary.opening.eco} {summary.opening.name}</p>}
-      <table>
-        <thead>
-          <tr><th></th><th>{white}</th><th>{black}</th></tr>
-          <tr>
-            <td>Accuracy</td>
-            <td>{summary.whiteAccuracy.toFixed(1)}%</td>
-            <td>{summary.blackAccuracy.toFixed(1)}%</td>
-          </tr>
-        </thead>
-        <tbody>
-          {ORDER.map((label) => (
-            <tr key={label}>
-              <td style={{ textTransform: 'capitalize' }}>{label}</td>
-              <td align="center">{summary.counts[label].white}</td>
-              <td align="center">{summary.counts[label].black}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="card panel-card">
+      <div className="panel-head">
+        <h3>Game Review</h3>
+        {summary.opening && (
+          <div className="opening">{summary.opening.eco} · {summary.opening.name}</div>
+        )}
+      </div>
+
+      <div className="acc-row">
+        <div className="acc white">
+          <div className="who" title={white}>{white}</div>
+          <div className="val">{summary.whiteAccuracy.toFixed(1)}</div>
+        </div>
+        <div className="acc black">
+          <div className="who" title={black}>{black}</div>
+          <div className="val">{summary.blackAccuracy.toFixed(1)}</div>
+        </div>
+      </div>
+
+      {children}
+
+      <div className="breakdown">
+        <div className="bd-head"><span /><span>Move</span><span>W</span><span>B</span></div>
+        {CLASS_ORDER.map((label) => {
+          const c = summary.counts[label];
+          if (c.white === 0 && c.black === 0) return null;
+          const meta = CLASS_META[label];
+          return (
+            <div className="bd-row" key={label}>
+              <span className={`badge ${meta.cls}`}>{meta.sym}</span>
+              <span className="label">{meta.label}</span>
+              <span className="w">{c.white}</span>
+              <span className="b">{c.black}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
