@@ -3,29 +3,28 @@ import { parsePgn } from './chess/pgnParser';
 import { analyzeGame } from './analysis/analyzeGame';
 import { assembleReview, type Review } from './analysis/assemble';
 import { OPENINGS } from './data/openings.sample';
+import { ImportPanel } from './components/ImportPanel';
 import { ReviewBoard } from './components/ReviewBoard';
 import { MoveList } from './components/MoveList';
 import { EvalGraph } from './components/EvalGraph';
 import { SummaryPanel } from './components/SummaryPanel';
 import type { ParsedGame } from './chess/types';
 
-const SAMPLE = `[White "Alice"]\n[Black "Bob"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 *`;
 const DEPTH = 14;
 
 export default function App() {
-  const [pgn, setPgn] = useState(SAMPLE);
   const [game, setGame] = useState<ParsedGame | null>(null);
   const [review, setReview] = useState<Review | null>(null);
   const [ply, setPly] = useState(0);
   const [progress, setProgress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function run() {
+  async function run(pgnText: string) {
     setError(null);
     setReview(null);
     let parsed: ParsedGame;
     try {
-      parsed = parsePgn(pgn);
+      parsed = parsePgn(pgnText);
     } catch {
       setError('Invalid PGN');
       return;
@@ -66,17 +65,12 @@ export default function App() {
   return (
     <div style={{ fontFamily: 'sans-serif', padding: 24 }}>
       <h2>Chess Reviewer</h2>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
-        <textarea value={pgn} onChange={(e) => setPgn(e.target.value)} rows={6} cols={48} />
-        <div>
-          <button onClick={run}>Review game</button>
-          {progress && <div>{progress}</div>}
-          {error && <div style={{ color: 'red' }}>{error}</div>}
-        </div>
-      </div>
+      <ImportPanel onPgn={run} />
+      {progress && <div>{progress}</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
 
       {game && fen && (
-        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', marginTop: 16 }}>
           <div>
             <ReviewBoard fen={fen} arrow={arrow} />
             <div>
