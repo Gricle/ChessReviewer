@@ -12,13 +12,6 @@ interface Props {
 export function SummaryPanel({ summary, white, black, children }: Props) {
   return (
     <div className="card panel-card">
-      <div className="panel-head">
-        <h3>Game Review</h3>
-        {summary.opening && (
-          <div className="opening">{summary.opening.eco} · {summary.opening.name}</div>
-        )}
-      </div>
-
       <div className="acc-row">
         <div className="acc white">
           <div className="who" title={white}>{white}</div>
