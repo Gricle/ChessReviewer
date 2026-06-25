@@ -17,11 +17,16 @@ export class Engine {
   }
 
   private handshake(): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error('Engine handshake timed out — Stockfish may have failed to load')),
+        12_000,
+      );
       const onMsg = (e: MessageEvent) => {
         const line = String(e.data);
         if (line === 'uciok') this.send('isready');
         if (line === 'readyok') {
+          clearTimeout(timer);
           this.worker.removeEventListener('message', onMsg);
           resolve();
         }

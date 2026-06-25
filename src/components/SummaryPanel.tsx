@@ -6,16 +6,21 @@ interface Props {
   summary: ReviewSummary;
   white: string;
   black: string;
-  children?: ReactNode; // move list slot, rendered between accuracy and breakdown
+  result?: string | null;
+  children?: ReactNode;
 }
 
-export function SummaryPanel({ summary, white, black, children }: Props) {
+export function SummaryPanel({ summary, white, black, result, children }: Props) {
   return (
     <div className="card panel-card">
       <div className="acc-row">
         <div className="acc white">
           <div className="who" title={white}>{white}</div>
           <div className="val">{summary.whiteAccuracy.toFixed(1)}</div>
+        </div>
+        <div className={`acc result${result ? '' : ' hidden'}`}>
+          <div className="who">Result</div>
+          <div className="val">{result ?? '?'}</div>
         </div>
         <div className="acc black">
           <div className="who" title={black}>{black}</div>
