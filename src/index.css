@@ -119,6 +119,8 @@ input::placeholder { color: var(--text-mute); }
   margin-bottom: 12px;
 }
 .gamebar-title { font-weight: 700; font-size: 14px; }
+.gamebar-title .vs { color: var(--text-mute); font-weight: 400; margin: 0 4px; }
+.gamebar-title .result { color: var(--green); font-weight: 800; margin-left: 8px; font-size: 15px; }
 .gamebar-title .muted { color: var(--text-mute); font-weight: 500; }
 .brand {
   font-size: 24px;
@@ -139,7 +141,7 @@ input::placeholder { color: var(--text-mute); }
 
 .import {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0;
   margin-bottom: 18px;
   overflow: hidden;
@@ -157,6 +159,7 @@ input::placeholder { color: var(--text-mute); }
 .import .row { display: flex; gap: 8px; margin-top: 10px; }
 .import .row input { flex: 1; min-width: 0; }
 .import .games { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+.li-logo { color: var(--c-book); }
 .game-item {
   text-align: left;
   background: var(--surface-2);
@@ -169,6 +172,7 @@ input::placeholder { color: var(--text-mute); }
 
 /* status pill while analyzing */
 .status {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -179,6 +183,21 @@ input::placeholder { color: var(--text-mute); }
   font-size: 13px;
   color: var(--text-dim);
   margin-bottom: 14px;
+  overflow: hidden;
+}
+.status-bar {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: rgba(129,182,76,0.12);
+  transition: width 0.3s ease;
+}
+.status-text {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 8px;
+}
+.status .pct {
+  font-weight: 700;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
 }
 .status .dot {
   width: 8px; height: 8px; border-radius: 50%;
@@ -200,6 +219,14 @@ input::placeholder { color: var(--text-mute); }
 }
 /* Tablet & landscape phone: stack the board over the side panel and let
    the whole page scroll instead of scrolling regions inside a fixed frame. */
+@media (max-width: 1024px) {
+  .import { grid-template-columns: 1fr 1fr; }
+  .import .li-col { border-left: 0; border-top: 1px solid var(--line); grid-column: 1 / -1; display: grid; grid-template-columns: 1fr; }
+  .import .li-col h4 { grid-column: 1 / -1; }
+  .import .li-col .row { grid-column: 1 / -1; }
+  .import .li-col .games { grid-column: 1 / -1; }
+}
+
 @media (max-width: 880px) {
   .review-grid {
     --bs: min(calc(100vw - 70px), calc(100dvh - 210px));
@@ -220,9 +247,10 @@ input::placeholder { color: var(--text-mute); }
   .acc-row { flex: none; }
   .panel-scroll { overflow: visible; min-height: 0; }
 
-  /* Import: paste box on top, chess.com lookup below it. */
+  /* Import: paste box on top, chess.com + lichess below it. */
   .import { grid-template-columns: 1fr; }
   .import .col + .col { border-left: none; border-top: 1px solid var(--line); }
+  .import .li-col { grid-column: auto; display: block; }
 }
 
 /* Phones: tighter chrome, and pin the move controls within thumb reach. */
@@ -250,6 +278,7 @@ input::placeholder { color: var(--text-mute); }
     box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4);
   }
   .playback button { min-height: 44px; font-size: 17px; }
+  .playback .icon-btn { min-height: 44px; width: 44px; }
   .playback .ply { font-size: 14px; }
 }
 
@@ -345,18 +374,100 @@ input::placeholder { color: var(--text-mute); }
 }
 .eval-pill.pos { color: #cfe6b0; }
 .eval-pill.neg { color: #f0a59a; }
-.comment {
-  display: flex; align-items: flex-start; gap: 10px;
-  margin-top: 12px; padding-top: 12px;
+
+/* chess.com-style move detail block */
+.coach-move {
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid var(--line);
 }
-.comment p { margin: 0; font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+.move-class-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.class-label {
+  font-weight: 700; font-size: 15px;
+}
+.move-detail {
+  margin-bottom: 8px;
+}
+.dual-line {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 0;
+}
+.dual-line + .dual-line {
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+  padding-top: 8px;
+}
+.line-label {
+  font-size: 12px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 64px;
+}
+.played-san {
+  font-weight: 700; font-size: 18px;
+  color: #f0a59a;
+}
+.best-san {
+  font-weight: 700; font-size: 18px;
+  color: var(--green);
+}
+.single-line {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+.single-line.found {
+  color: var(--green);
+  font-weight: 600;
+}
+.single-line strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.desc {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--text-mute);
+  line-height: 1.5;
+  flex: 1;
+}
+.desc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+}
+.speak-btn {
+  flex: none;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-mute);
+  border-radius: 4px;
+  line-height: 0;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+.speak-btn:hover:not(:disabled) { color: var(--green); background: rgba(255,255,255,0.06); }
+.speak-btn:disabled { opacity: 0.3; cursor: default; }
+.speak-btn svg { display: block; }
+.coach-empty p {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
 
 /* graph + playback card */
 .graph-card { padding: 12px; }
 .evalgraph { border-radius: 6px; overflow: hidden; }
+.evalgraph:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 .playback {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 4px;
   margin-top: 10px;
 }
 .playback button {
@@ -364,9 +475,23 @@ input::placeholder { color: var(--text-mute); }
   background: var(--surface-2);
 }
 .playback .ply {
-  margin-left: 6px; padding: 0 6px;
+  margin-left: 4px; padding: 0 4px;
   color: var(--text-mute); font-size: 13px;
   font-variant-numeric: tabular-nums; white-space: nowrap;
+  min-width: 48px; text-align: center;
+}
+.playback button.muted,
+.playback .icon-btn.muted { opacity: 0.45; }
+.playback .icon-btn {
+  flex: none; width: 36px; padding: 6px 0;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 0;
+}
+.playback .icon-btn svg { display: block; }
+.playback .speed-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--green); letter-spacing: 0.3px;
+  margin-left: -4px;
 }
 
 /* ===== Right panel ===== */
@@ -392,9 +517,11 @@ input::placeholder { color: var(--text-mute); }
 /* accuracy header */
 .acc-row {
   flex: none;
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 10px; padding: 14px 16px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; padding: 14px 16px;
 }
+.acc.result .val { color: var(--text-dim); font-size: 20px; }
+.acc.result.hidden { display: none; }
 .acc {
   background: var(--surface-2);
   border: 1px solid var(--line);
@@ -427,15 +554,21 @@ input::placeholder { color: var(--text-mute); }
   font-variant-numeric: tabular-nums;
 }
 .move-cell {
-  display: flex; align-items: center; gap: 7px;
-  padding: 5px 10px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px;
   cursor: pointer;
   border-radius: 6px;
   margin: 1px 4px;
 }
 .move-cell:hover { background: var(--surface-2); }
 .move-cell.active { background: var(--surface-3); }
-.move-cell .san { font-weight: 600; }
+.move-cell .san { font-weight: 600; font-size: 13px; }
+.move-cell .badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  border-radius: 3px;
+  font-size: 9px; font-weight: 800; line-height: 1;
+}
 .move-cell.empty { cursor: default; }
 .move-cell.empty:hover { background: transparent; }
 

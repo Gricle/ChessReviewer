@@ -10,13 +10,19 @@ import 'chessground/assets/chessground.cburnett.css';
 
 interface Props {
   fen: string;
-  lastMove?: [string, string] | null;       // highlight the squares of the move played
-  badge?: { square: string; cls: Classification } | null; // chess.com-style move-quality badge
-  arrow?: [string, string] | null;           // best-move arrow
+  lastMove?: [string, string] | null;
+  badge?: { square: string; cls: Classification } | null;
+  arrow?: [string, string] | null;
 }
 
-// SVG for the on-board move-quality badge, anchored at the square's top-right
-// corner (chessground maps viewBox 0..100 to one square from the square center).
+const BAD_CLASS = new Set<Classification>(['blunder', 'mistake', 'inaccuracy']);
+
+const BAD_HEX: Record<string, string> = {
+  blunder: 'rgba(250, 65, 45, 0.45)',
+  mistake: 'rgba(229, 143, 42, 0.40)',
+  inaccuracy: 'rgba(244, 191, 62, 0.35)',
+};
+
 function badgeSvg(cls: Classification): string {
   const { sym, hex } = CLASS_META[cls];
   const fontSize = sym.length > 1 ? 30 : 38;
@@ -41,7 +47,14 @@ export function ReviewBoard({ fen, lastMove, badge, arrow }: Props) {
     const shapes: DrawShape[] = [];
     if (arrow) shapes.push({ orig: arrow[0] as Key, dest: arrow[1] as Key, brush: 'green' });
     if (badge) {
-      shapes.push({ orig: badge.square as Key, customSvg: { html: badgeSvg(badge.cls) } });
+      let overlay = '';
+      if (BAD_CLASS.has(badge.cls) && BAD_HEX[badge.cls]) {
+        overlay = `<rect x="-50" y="-50" width="100" height="100" fill="${BAD_HEX[badge.cls]}" rx="6" />`;
+      }
+      shapes.push({
+        orig: badge.square as Key,
+        customSvg: { html: overlay + badgeSvg(badge.cls) },
+      });
     }
     api.current?.set({
       fen,
