@@ -155,7 +155,7 @@ input::placeholder { color: var(--text-mute); }
 }
 .import textarea { width: 100%; min-height: 96px; }
 .import .row { display: flex; gap: 8px; margin-top: 10px; }
-.import .row input { flex: 1; }
+.import .row input { flex: 1; min-width: 0; }
 .import .games { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
 .game-item {
   text-align: left;
@@ -198,12 +198,59 @@ input::placeholder { color: var(--text-mute); }
   align-items: stretch;
   height: calc(var(--bs) + 56px); /* board + the two player-name rows */
 }
+/* Tablet & landscape phone: stack the board over the side panel and let
+   the whole page scroll instead of scrolling regions inside a fixed frame. */
 @media (max-width: 880px) {
   .review-grid {
-    --bs: min(calc(100vw - 70px), calc(100vh - 360px));
+    --bs: min(calc(100vw - 70px), calc(100dvh - 210px));
     grid-template-columns: 1fr;
     height: auto;
+    gap: 16px;
   }
+
+  /* Every region grows to its natural height; the page does the scrolling. */
+  .board-col,
+  .panel { height: auto; }
+  .panel,
+  .panel-card,
+  .panel-scroll,
+  .coach,
+  .graph-card,
+  .breakdown,
+  .acc-row { flex: none; }
+  .panel-scroll { overflow: visible; min-height: 0; }
+
+  /* Import: paste box on top, chess.com lookup below it. */
+  .import { grid-template-columns: 1fr; }
+  .import .col + .col { border-left: none; border-top: 1px solid var(--line); }
+}
+
+/* Phones: tighter chrome, and pin the move controls within thumb reach. */
+@media (max-width: 600px) {
+  .app { padding: 12px 12px calc(74px + env(safe-area-inset-bottom)); }
+
+  .topbar { flex-wrap: wrap; gap: 2px 12px; margin-bottom: 10px; }
+  .brand { font-size: 21px; }
+  .tagline { flex-basis: 100%; }
+
+  .gamebar { flex-wrap: wrap; gap: 8px 12px; }
+
+  /* Board sizes to the viewport width; the sticky bar frees up the height. */
+  .review-grid { --bs: min(calc(100vw - 54px), calc(100dvh - 170px)); }
+
+  /* Step through the game without scrolling back up to the controls. */
+  .graph-card .playback {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    margin: 0;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    background: var(--surface);
+    border-top: 1px solid var(--line-strong);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4);
+  }
+  .playback button { min-height: 44px; font-size: 17px; }
+  .playback .ply { font-size: 14px; }
 }
 
 .board-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; height: 100%; }
