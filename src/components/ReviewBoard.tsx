@@ -16,10 +16,11 @@ interface Props {
 
 const BAD_CLASS = new Set<Classification>(['blunder', 'mistake', 'inaccuracy']);
 
-const OVERLAY_FILL: Record<string, string> = {
-  blunder: 'rgba(250, 65, 45, 0.40)',
-  mistake: 'rgba(229, 143, 42, 0.35)',
-  inaccuracy: 'rgba(244, 191, 62, 0.30)',
+// CSS class applied to the square element (behind the piece) for bad moves.
+const OVERLAY_CLASS: Record<string, string> = {
+  blunder: 'ov-blunder',
+  mistake: 'ov-mistake',
+  inaccuracy: 'ov-inaccuracy',
 };
 
 const BADGE_COLOR: Record<string, string> = {
@@ -33,35 +34,33 @@ const BADGE_SYM: Record<string, string> = {
   book: '📖', inaccuracy: '?!', mistake: '?', blunder: '??',
 };
 
-/** Build SVG content for a square: overlay rect + badge icon.
+/** Build SVG content for the move-quality badge icon.
  *
- *  Chessground places this customSvg.html inside:
+ *  The square color is NOT drawn here — it's applied via highlight.custom
+ *  as a <square> class so it sits behind the piece. customSvg renders on
+ *  top of pieces, so it's used only for the badge.
+ *
+ *  Chessground injects this html inside:
  *    <svg width="1" height="1" viewBox="0 0 100 100">
- *  which is positioned at the square center in user coordinates.
+ *  inside the .cg-custom-svgs layer, whose own viewBox is "-3.5 -3.5 8 8"
+ *  (offset by half a square vs the .cg-shapes layer's "-4 -4 8 8"). That
+ *  offset makes this 1x1 inner svg land *centered* on the target square,
+ *  so within the inner viewBox 0..100: (0,0) = top-left corner,
+ *  (50,50) = center, (100,100) = bottom-right corner.
  *
- *  The inner <svg> has overflow:hidden by default, so coordinates
- *  must stay within the 0..100 viewBox. To cover the full square area
- *  (-50..50 from center), we set overflow:visible on the group so
- *  the rect at x="-50" y="-50" width="100" height="100" renders
- *  without being clipped to the bottom-right quadrant.
- *
- *  Badge is placed at translate(50,-50) = top-right of the square.
+ *  The badge sits at the top-right corner (100,0); it extends slightly
+ *  outside the square, so the group is overflow:visible.
  */
-function fullSquareSvg(cls: Classification): string {
-  let html = '<g style="overflow:visible">';
-  if (BAD_CLASS.has(cls) && OVERLAY_FILL[cls]) {
-    html += `<rect x="-50" y="-50" width="100" height="100" fill="${OVERLAY_FILL[cls]}" />`;
-  }
+function badgeSvg(cls: Classification): string {
   const hex = BADGE_COLOR[cls] ?? '#888';
   const sym = BADGE_SYM[cls] ?? '?';
   const fontSize = sym.length > 1 ? 30 : 36;
   const r = sym.length > 1 ? 20 : 24;
-  html += `<g transform="translate(50,-50)">
+  return `<g style="overflow:visible"><g transform="translate(100,0)">
     <circle r="${r}" fill="${hex}" stroke="#ffffff" stroke-width="3" />
     <text dy="0.33em" text-anchor="middle" font-family="Arial,sans-serif"
       font-weight="700" font-size="${fontSize}" fill="#ffffff">${sym}</text>
   </g></g>`;
-  return html;
 }
 
 export function ReviewBoard({ fen, lastMove, badge, arrow }: Props) {
@@ -77,15 +76,20 @@ export function ReviewBoard({ fen, lastMove, badge, arrow }: Props) {
   useEffect(() => {
     const shapes: DrawShape[] = [];
     if (arrow) shapes.push({ orig: arrow[0] as Key, dest: arrow[1] as Key, brush: 'green' });
+    const custom = new Map<Key, string>();
     if (badge) {
       shapes.push({
         orig: badge.square as Key,
-        customSvg: { html: fullSquareSvg(badge.cls) },
+        customSvg: { html: badgeSvg(badge.cls) },
       });
+      if (BAD_CLASS.has(badge.cls) && OVERLAY_CLASS[badge.cls]) {
+        custom.set(badge.square as Key, OVERLAY_CLASS[badge.cls]);
+      }
     }
     api.current?.set({
       fen,
       lastMove: lastMove ? (lastMove as Key[]) : undefined,
+      highlight: { custom },
       drawable: { autoShapes: shapes },
     });
   }, [fen, lastMove, badge, arrow]);

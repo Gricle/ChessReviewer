@@ -331,6 +331,11 @@ input::placeholder { color: var(--text-mute); }
 .board cg-board square.last-move {
   background: var(--sq-last);
 }
+/* bad-move square overlays — rendered as <square> elements, so they sit
+   BEHIND the piece (unlike customSvg, which draws on top and tints it) */
+.board cg-board square.ov-blunder { background: rgba(250, 65, 45, 0.40); }
+.board cg-board square.ov-mistake { background: rgba(229, 143, 42, 0.35); }
+.board cg-board square.ov-inaccuracy { background: rgba(244, 191, 62, 0.30); }
 .cg-wrap coords coord { color: rgba(0, 0, 0, 0.42); font-weight: 700; font-size: 9px; }
 .cg-wrap coords.ranks coord { color: rgba(0, 0, 0, 0.42); }
 
