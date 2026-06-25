@@ -50,11 +50,13 @@ export function ReviewBoard({ fen, lastMove, badge, arrow }: Props) {
     if (arrow) shapes.push({ orig: arrow[0] as Key, dest: arrow[1] as Key, brush: 'green' });
     if (badge) {
       if (BAD_CLASS.has(badge.cls) && OVERLAY_FILL[badge.cls]) {
-        // Semi-transparent square overlay on the destination square
-        // viewBox is 0 0 100 100, so rect fills the whole square
+        // Semi-transparent square overlay covering the full square.
+        // Chessground positions the SVG at the square's center, so we
+        // offset by -50 in both axes (half the 100×100 viewBox) to fill
+        // from center-0.5 to center+0.5 in board units.
         shapes.push({
           orig: badge.square as Key,
-          customSvg: { html: `<rect x="0" y="0" width="100" height="100" fill="${OVERLAY_FILL[badge.cls]}" />` },
+          customSvg: { html: `<rect x="-50" y="-50" width="100" height="100" fill="${OVERLAY_FILL[badge.cls]}" stroke="none" />` },
         });
       }
       shapes.push({
