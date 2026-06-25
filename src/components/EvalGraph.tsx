@@ -13,6 +13,10 @@ const H = 96;
 const CLAMP = 800;
 const DOT_R = 3.5;
 
+function pathSegment(a: { x: number; y: number }, b: { x: number; y: number }) {
+  return `M${a.x},${H / 2} L${b.x},${H / 2} L${b.x},${b.y} L${a.x},${a.y} Z`;
+}
+
 export function EvalGraph({ evalsCp, classifications, current, onSelect }: Props) {
   if (evalsCp.length === 0) return null;
 
@@ -21,17 +25,15 @@ export function EvalGraph({ evalsCp, classifications, current, onSelect }: Props
     const c = Math.max(-CLAMP, Math.min(CLAMP, cp));
     return H / 2 - (c / CLAMP) * (H / 2);
   };
-  const pts = evalsCp.map((cp) => ({ x: x(evalsCp.indexOf(cp)), y: y(cp), raw: cp }));
+  const pts = evalsCp.map((cp, i) => ({ x: x(i), y: y(cp), raw: cp }));
   const lineStr = pts.map((p) => `${p.x},${p.y}`).join(' ');
 
   // Chess.com-style: fill green above midline when white is winning,
   // red below midline when black is winning.
   const fillDefs = pts.map((p, i) => ({
     key: i,
-    d: i === 0
-      ? ''
-      : `M${pts[i - 1].x},${H / 2} L${p.x},${H / 2} L${p.x},${p.y} L${pts[i - 1].x},${pts[i - 1].y} Z`,
-    pos: (pts[i - 1].raw + p.raw) / 2 >= 0,
+    d: i === 0 ? '' : pathSegment(pts[i - 1], p),
+    pos: i === 0 ? false : (pts[i - 1].raw + p.raw) / 2 >= 0,
   }));
 
   const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
