@@ -33,27 +33,34 @@ const BADGE_SYM: Record<string, string> = {
   book: '📖', inaccuracy: '?!', mistake: '?', blunder: '??',
 };
 
-/** Build the full SVG content for a square: optional overlay rect + badge icon.
- *  Chessground wraps this in <svg width="1" height="1" viewBox="0 0 100 100">
- *  and translates the <g> to the square center in user coordinates.
+/** Build SVG content for a square: overlay rect + badge icon.
  *
- *  To fill the entire square we use a <rect> that goes from -50,-50 to +50,+50
- *  in viewBox units (= -0.5,-0.5 to +0.5,+0.5 in user units from square center).
- *  The badge is placed at the top-right corner via translate(50,-50).
+ *  Chessground places this customSvg.html inside:
+ *    <svg width="1" height="1" viewBox="0 0 100 100">
+ *  which is positioned at the square center in user coordinates.
+ *
+ *  The inner <svg> has overflow:hidden by default, so coordinates
+ *  must stay within the 0..100 viewBox. To cover the full square area
+ *  (-50..50 from center), we set overflow:visible on the group so
+ *  the rect at x="-50" y="-50" width="100" height="100" renders
+ *  without being clipped to the bottom-right quadrant.
+ *
+ *  Badge is placed at translate(50,-50) = top-right of the square.
  */
 function fullSquareSvg(cls: Classification): string {
-  let html = '';
+  let html = '<g style="overflow:visible">';
   if (BAD_CLASS.has(cls) && OVERLAY_FILL[cls]) {
-    html += `<rect x="-50" y="-50" width="100" height="100" fill="${OVERLAY_FILL[cls]}" stroke="none" />`;
+    html += `<rect x="-50" y="-50" width="100" height="100" fill="${OVERLAY_FILL[cls]}" />`;
   }
   const hex = BADGE_COLOR[cls] ?? '#888';
   const sym = BADGE_SYM[cls] ?? '?';
-  const fontSize = sym.length > 1 ? 30 : 38;
+  const fontSize = sym.length > 1 ? 30 : 36;
+  const r = sym.length > 1 ? 20 : 24;
   html += `<g transform="translate(50,-50)">
-    <circle r="27" fill="${hex}" stroke="#ffffff" stroke-width="4" />
-    <text dy="0.34em" text-anchor="middle" font-family="Arial,sans-serif"
+    <circle r="${r}" fill="${hex}" stroke="#ffffff" stroke-width="3" />
+    <text dy="0.33em" text-anchor="middle" font-family="Arial,sans-serif"
       font-weight="700" font-size="${fontSize}" fill="#ffffff">${sym}</text>
-  </g>`;
+  </g></g>`;
   return html;
 }
 
