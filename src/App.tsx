@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { parsePgn } from './chess/pgnParser';
 import { uciToSan } from './chess/san';
-import { playSound, sanToSound } from './sound';
+import { playSound, sanToSound, classToStinger, setVolume, getVolume } from './sound';
 import { analyzeGame } from './analysis/analyzeGame';
 import { assembleReview, type Review } from './analysis/assemble';
 import { OPENINGS } from './data/openings.sample';
@@ -12,6 +12,7 @@ import { CoachCard, type CurrentMove } from './components/CoachCard';
 import { MoveList } from './components/MoveList';
 import { EvalGraph } from './components/EvalGraph';
 import { SummaryPanel } from './components/SummaryPanel';
+import { RevealOverlay } from './components/RevealOverlay';
 import { playerRatings } from './chess/ratings';
 import type { ParsedGame } from './chess/types';
 import { supabase } from './supabase/client';
@@ -35,8 +36,10 @@ export default function App() {
   const [progressPct, setProgressPct] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(true);
-  const [soundOn, setSoundOn] = useState(true);
-  const [voiceOn, setVoiceOn] = useState(true);
+  const [showReveal, setShowReveal] = useState(false);
+  const [soundOn, setSoundOn] = useState(() => localStorage.getItem('chessreviewer.soundOn') !== '0');
+  const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem('chessreviewer.voiceOn') !== '0');
+  const [volume, setVolumeState] = useState(getVolume);
   const [autoplaySpeed, setAutoplaySpeed] = useState<Speed>('off');
   const auth = useAuth();
   const [lastImport, setLastImport] = useState<{ pgn: string; source: GameSource } | null>(null);
@@ -76,6 +79,7 @@ export default function App() {
       });
       if (seq !== runSeq.current) return;
       setReview(assembleReview(parsed, analyses, OPENINGS));
+      setShowReveal(true);
       setProgress(null);
       setShowImport(false);
     } catch {
@@ -126,6 +130,9 @@ export default function App() {
         : Promise.reject(new Error('queued by another user')),
     ).catch(() => { /* fire-and-forget */ });
   }, [auth.user?.id]);
+
+  useEffect(() => { localStorage.setItem('chessreviewer.soundOn', soundOn ? '1' : '0'); }, [soundOn]);
+  useEffect(() => { localStorage.setItem('chessreviewer.voiceOn', voiceOn ? '1' : '0'); }, [voiceOn]);
 
   const handleAutoplay = useCallback(() => {
     setAutoplaySpeed((s) => {
@@ -190,10 +197,19 @@ export default function App() {
   useEffect(() => {
     if (review && soundOn && ply > 0 && ply !== prevPly.current) {
       const p = review.plies[ply - 1];
-      if (p) playSound(sanToSound(p.san));
+      if (p) {
+        playSound(sanToSound(p.san));
+        const st = classToStinger(p.classification);
+        if (st) playSound(st);
+      }
     }
     prevPly.current = ply;
   }, [ply, review, soundOn]);
+
+  const handleVolume = (v: number) => {
+    setVolume(v);        // module: master gain + persistence
+    setVolumeState(v);   // UI
+  };
 
   return (
     <div className="app">
@@ -288,6 +304,17 @@ export default function App() {
                       : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>
                     }
                   </button>
+                  <input
+                    type="range"
+                    className="vol-slider"
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    value={volume}
+                    onChange={(e) => handleVolume(Number(e.target.value))}
+                    title="Volume"
+                    aria-label="Sound volume"
+                  />
                   <button
                     onClick={() => setVoiceOn((v) => !v)}
                     className={`icon-btn${voiceOn ? '' : ' muted'}`}
@@ -305,6 +332,17 @@ export default function App() {
             </aside>
           )}
         </div>
+      )}
+
+      {showReveal && game && review && (
+        <RevealOverlay
+          summary={review.summary}
+          white={game.white}
+          black={game.black}
+          ratings={ratings}
+          soundOn={soundOn}
+          onClose={() => setShowReveal(false)}
+        />
       )}
     </div>
   );

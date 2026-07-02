@@ -17,7 +17,10 @@ let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 
 export const VOLUME_KEY = 'chessreviewer.volume';
-let volume = typeof localStorage !== 'undefined' ? loadVolume(localStorage) : 1;
+let volume = 1;
+try {
+  if (typeof localStorage !== 'undefined') volume = loadVolume(localStorage);
+} catch { /* storage blocked — default volume */ }
 
 export function clampVolume(v: number): number {
   return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 1;
@@ -35,7 +38,8 @@ export function saveVolume(storage: Storage, v: number): void {
 
 export function setVolume(v: number): void {
   volume = clampVolume(v);
-  if (master) master.gain.value = volume;
+  if (master && ctx) master.gain.setTargetAtTime(volume, ctx.currentTime, 0.02);
+  else if (master) master.gain.value = volume;
   if (typeof localStorage !== 'undefined') saveVolume(localStorage, volume);
 }
 

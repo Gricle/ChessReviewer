@@ -722,3 +722,7 @@ input::placeholder { color: var(--text-mute); }
   .reveal-sec { opacity: 1; transform: none; visibility: visible; }
   .rp-rating { opacity: 1; }
 }
+
+/* ── volume slider ── */
+.vol-slider { width: 64px; accent-color: var(--green); cursor: pointer; }
+@media (max-width: 600px) { .vol-slider { width: 48px; } }
