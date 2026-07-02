@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { fetchRecentGames as fetchComGames, type GameSummary as ComSummary } from '../importers/chesscom';
 import { fetchRecentGames as fetchLiGames, type GameSummary as LiSummary } from '../importers/lichess';
+import type { GameSource } from '../supabase/mapReview';
 
 type GameSummary = ComSummary | LiSummary;
 
 interface Props {
-  onPgn: (pgn: string) => void;
+  onPgn: (pgn: string, source: GameSource) => void;
 }
 
 export function ImportPanel({ onPgn }: Props) {
@@ -53,7 +54,7 @@ export function ImportPanel({ onPgn }: Props) {
           placeholder={'[Event ...]\n\n1. e4 e5 2. Nf3 ...'}
         />
         <div className="row">
-          <button className="primary" onClick={() => onPgn(pgn)} disabled={!pgn.trim()}>
+          <button className="primary" onClick={() => onPgn(pgn, 'paste')} disabled={!pgn.trim()}>
             Review this PGN
           </button>
         </div>
@@ -75,7 +76,7 @@ export function ImportPanel({ onPgn }: Props) {
         {comGames.length > 0 && (
           <div className="games">
             {comGames.map((g) => (
-              <button key={'c' + g.id} className="game-item" onClick={() => onPgn(g.pgn)} title={g.url}>
+              <button key={'c' + g.id} className="game-item" onClick={() => onPgn(g.pgn, 'chesscom')} title={g.url}>
                 <span className="gid">#{g.id}</span> &nbsp;{g.white} vs {g.black} &nbsp;
                 <span className="gid">{g.date}</span>
               </button>
@@ -100,7 +101,7 @@ export function ImportPanel({ onPgn }: Props) {
         {liGames.length > 0 && (
           <div className="games">
             {liGames.map((g) => (
-              <button key={'l' + g.id} className="game-item" onClick={() => onPgn(g.pgn)} title={g.url}>
+              <button key={'l' + g.id} className="game-item" onClick={() => onPgn(g.pgn, 'lichess')} title={g.url}>
                 <span className="gid">#{g.id}</span> &nbsp;{g.white} vs {g.black} &nbsp;
                 <span className="gid">{g.date}</span>
               </button>

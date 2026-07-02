@@ -14,6 +14,12 @@ import { EvalGraph } from './components/EvalGraph';
 import { SummaryPanel } from './components/SummaryPanel';
 import { playerRatings } from './chess/ratings';
 import type { ParsedGame } from './chess/types';
+import { supabase } from './supabase/client';
+import { useAuth } from './supabase/useAuth';
+import { AuthBar } from './components/AuthBar';
+import { mapReview, type GameSource } from './supabase/mapReview';
+import { uploadReview } from './supabase/uploadReview';
+import { enqueue, flushQueue, hashString } from './supabase/syncQueue';
 
 const DEPTH = 14;
 type Speed = 'off' | 'slow' | 'medium' | 'fast';
@@ -32,6 +38,8 @@ export default function App() {
   const [soundOn, setSoundOn] = useState(true);
   const [voiceOn, setVoiceOn] = useState(true);
   const [autoplaySpeed, setAutoplaySpeed] = useState<Speed>('off');
+  const auth = useAuth();
+  const [lastImport, setLastImport] = useState<{ pgn: string; source: GameSource } | null>(null);
   const prevPly = useRef(0);
   const autoplayTimer = useRef<number | null>(null);
 
@@ -42,7 +50,8 @@ export default function App() {
     [game],
   );
 
-  async function run(pgnText: string) {
+  async function run(pgnText: string, source: GameSource = 'paste') {
+    setLastImport({ pgn: pgnText, source });
     setError(null);
     setReview(null);
     let parsed: ParsedGame;
@@ -85,6 +94,24 @@ export default function App() {
     }, ms);
     return () => { if (autoplayTimer.current !== null) clearInterval(autoplayTimer.current); };
   }, [autoplaySpeed, review, total]);
+
+  // ── cloud sync: enqueue each finished review, then flush ──
+  useEffect(() => {
+    if (!review || !game || !lastImport || !supabase || !auth.user) return;
+    const client = supabase;
+    const userId = auth.user.id;
+    const payload = mapReview(game, review, lastImport.source, DEPTH, lastImport.pgn);
+    enqueue(localStorage, payload, `${userId}:${hashString(lastImport.pgn)}`);
+    void flushQueue(localStorage, (p) => uploadReview(client, userId, p));
+  }, [review]);
+
+  // Retry anything pending whenever a user (re)appears.
+  useEffect(() => {
+    if (!supabase || !auth.user) return;
+    const client = supabase;
+    const userId = auth.user.id;
+    void flushQueue(localStorage, (p) => uploadReview(client, userId, p));
+  }, [auth.user?.id]);
 
   const handleAutoplay = useCallback(() => {
     setAutoplaySpeed((s) => {
@@ -159,6 +186,7 @@ export default function App() {
       <header className="topbar">
         <div className="brand"><span className="pc">♞</span> Chess Reviewer</div>
         <div className="tagline">Paste a PGN or import from chess.com / lichess.org — Stockfish analyzes every move in-browser</div>
+        <AuthBar auth={auth} />
       </header>
 
       {showImport ? (
