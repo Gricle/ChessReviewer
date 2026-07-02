@@ -43,7 +43,9 @@ export interface ReviewUpload {
 function pgnDateToIso(value: string | undefined): string | null {
   if (!value) return null;
   const iso = value.replaceAll('.', '-');
-  return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+  // Reject well-shaped garbage like "2024-13-40" that Postgres would bounce.
+  return Number.isNaN(Date.parse(iso)) ? null : iso;
 }
 
 export function mapReview(
@@ -65,7 +67,7 @@ export function mapReview(
       white_rating: ratings.white,
       black_rating: ratings.black,
       result,
-      played_at: pgnDateToIso(game.headers.UTCDate ?? game.headers.Date),
+      played_at: pgnDateToIso(game.headers.UTCDate) ?? pgnDateToIso(game.headers.Date),
       source,
       opening_eco: opening?.eco ?? null,
       opening_name: opening?.name ?? null,

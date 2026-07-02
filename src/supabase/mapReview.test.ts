@@ -75,4 +75,16 @@ describe('mapReview', () => {
     // chess.js emits Result "*" for unfinished games — must not be stored as a result
     expect(mapped.game.result).toBeNull();
   });
+
+  it('rejects well-shaped but invalid dates and falls back from bad UTCDate to good Date', () => {
+    const base = '1. e4 e5 2. Nf3 Nc6 3. Bb5 *';
+    const mk = (headers: string) => {
+      const game = parsePgn(`${headers}\n\n${base}`);
+      const review = assembleReview(game, flatAnalyses(game), OPENINGS);
+      return mapReview(game, review, 'paste', 14);
+    };
+    expect(mk('[Date "2024.13.40"]').game.played_at).toBeNull();
+    expect(mk('[UTCDate "????.??.??"]\n[Date "2024.03.15"]').game.played_at).toBe('2024-03-15');
+    expect(mk('[UTCDate "2024.03.14"]\n[Date "2024.03.15"]').game.played_at).toBe('2024-03-14');
+  });
 });
