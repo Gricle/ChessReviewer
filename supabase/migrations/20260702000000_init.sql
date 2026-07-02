@@ -13,7 +13,8 @@ create table public.profiles (
 alter table public.profiles enable row level security;
 
 create policy "profiles: own rows" on public.profiles
-  for all using (auth.uid() = id) with check (auth.uid() = id);
+  for all to authenticated
+  using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
 
 -- Auto-create a profile row on signup.
 create function public.handle_new_user()
@@ -23,7 +24,8 @@ security definer set search_path = public
 as $$
 begin
   insert into public.profiles (id, display_name)
-  values (new.id, coalesce(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)));
+  values (new.id, coalesce(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)))
+  on conflict (id) do nothing;
   return new;
 end;
 $$;
@@ -56,7 +58,8 @@ create index games_user_created_idx on public.games (user_id, created_at desc);
 alter table public.games enable row level security;
 
 create policy "games: own rows" on public.games
-  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
 -- ── reviews ───────────────────────────────────────────────────────────────
 create table public.reviews (
@@ -75,9 +78,12 @@ create table public.reviews (
 alter table public.reviews enable row level security;
 
 create policy "reviews: own rows" on public.reviews
-  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
 -- ── move_facts (one row per move; fuels Phase 6 weakness reports) ────────
+-- NOTE: motif tags (spec data-model) intentionally deferred to Phase 5; they
+-- can be backfilled from reviews.analysis by re-running the detectors.
 create table public.move_facts (
   game_id uuid not null references public.games(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -94,4 +100,5 @@ create index move_facts_user_idx on public.move_facts (user_id, classification);
 alter table public.move_facts enable row level security;
 
 create policy "move_facts: own rows" on public.move_facts
-  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
