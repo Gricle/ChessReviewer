@@ -7,6 +7,7 @@ import { moveAccuracy, gameAccuracy } from './accuracy';
 import { cpToWinPercent } from './winPercent';
 import { materialBalance } from '../chess/material';
 import { detectOpening, type Opening } from './openingDetector';
+import { estimatePerformanceRating } from './performanceRating';
 
 const ALL_LABELS: Classification[] = [
   'book', 'brilliant', 'great', 'best', 'excellent', 'good', 'inaccuracy', 'mistake', 'blunder',
@@ -73,6 +74,15 @@ export function assembleReview(
   const whiteAcc = gameAccuracy(plies.filter((p) => p.color === 'white').map((p) => p.accuracy));
   const blackAcc = gameAccuracy(plies.filter((p) => p.color === 'black').map((p) => p.accuracy));
 
+  const estRatingFor = (color: 'white' | 'black', accuracy: number) =>
+    estimatePerformanceRating({
+      accuracy,
+      moveCount: plies.filter((p) => p.color === color).length,
+      inaccuracies: counts.inaccuracy[color],
+      mistakes: counts.mistake[color],
+      blunders: counts.blunder[color],
+    });
+
   return {
     plies,
     summary: {
@@ -80,6 +90,10 @@ export function assembleReview(
       whiteAccuracy: whiteAcc,
       blackAccuracy: blackAcc,
       counts,
+      estRating: {
+        white: estRatingFor('white', whiteAcc),
+        black: estRatingFor('black', blackAcc),
+      },
     },
   };
 }

@@ -43,4 +43,5 @@ export interface ReviewSummary {
   whiteAccuracy: number;
   blackAccuracy: number;
   counts: Record<Classification, { white: number; black: number }>;
+  estRating: { white: number; black: number };  // estimated performance rating
 }

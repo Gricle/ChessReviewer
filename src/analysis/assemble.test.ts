@@ -36,4 +36,10 @@ describe('assembleReview', () => {
     expect(summary.whiteAccuracy).toBeGreaterThan(99);
     expect(summary.blackAccuracy).toBeGreaterThan(99);
   });
+
+  it('estimates a high performance rating for both sides when every move is best/book', () => {
+    const { summary } = assembleReview(game, flatAnalyses(game), OPENINGS);
+    expect(summary.estRating.white).toBeGreaterThanOrEqual(2500);
+    expect(summary.estRating.black).toBeGreaterThanOrEqual(2500);
+  });
 });
