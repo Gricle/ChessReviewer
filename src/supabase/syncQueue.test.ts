@@ -62,6 +62,20 @@ describe('syncQueue', () => {
     expect(loadQueue(storage).map((q) => q.id)).toEqual(['bad']);
   });
 
+  it('keeps items enqueued during an in-flight flush', async () => {
+    enqueue(storage, payload, 'fails');
+    const flushing = flushQueue(storage, async (_p, id) => {
+      if (id === 'fails') {
+        // Simulate a new review arriving while this upload is failing.
+        enqueue(storage, payload, 'mid-flight');
+        throw new Error('network down');
+      }
+    });
+    const remaining = await flushing;
+    expect(remaining).toBe(2);
+    expect(loadQueue(storage).map((q) => q.id).sort()).toEqual(['fails', 'mid-flight']);
+  });
+
   it('hashString is deterministic and separates different strings', () => {
     expect(hashString('abc')).toBe(hashString('abc'));
     expect(hashString('abc')).not.toBe(hashString('abd'));

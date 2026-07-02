@@ -42,6 +42,7 @@ export default function App() {
   const [lastImport, setLastImport] = useState<{ pgn: string; source: GameSource } | null>(null);
   const prevPly = useRef(0);
   const autoplayTimer = useRef<number | null>(null);
+  const runSeq = useRef(0);
 
   const total = game?.plies.length ?? 0;
   const result = game?.headers.Result ?? null;
@@ -51,6 +52,7 @@ export default function App() {
   );
 
   async function run(pgnText: string, source: GameSource = 'paste') {
+    const seq = ++runSeq.current;
     setLastImport({ pgn: pgnText, source });
     setError(null);
     setReview(null);
@@ -67,13 +69,17 @@ export default function App() {
     setProgressPct(0);
     try {
       const analyses = await analyzeGame(parsed, DEPTH, (d, t) => {
-        setProgress(`Analyzing position ${d} / ${t}`);
-        setProgressPct(t > 0 ? Math.round((d / t) * 100) : 0);
+        if (seq === runSeq.current) {
+          setProgress(`Analyzing position ${d} / ${t}`);
+          setProgressPct(t > 0 ? Math.round((d / t) * 100) : 0);
+        }
       });
+      if (seq !== runSeq.current) return;
       setReview(assembleReview(parsed, analyses, OPENINGS));
       setProgress(null);
       setShowImport(false);
     } catch {
+      if (seq !== runSeq.current) return;
       setError('The engine could not load in this browser. Try reloading the page.');
       setProgress(null);
     }
@@ -102,7 +108,11 @@ export default function App() {
     const userId = auth.user.id;
     const payload = mapReview(game, review, lastImport.source, DEPTH, lastImport.pgn);
     enqueue(localStorage, payload, `${userId}:${hashString(lastImport.pgn)}`);
-    void flushQueue(localStorage, (p) => uploadReview(client, userId, p));
+    void flushQueue(localStorage, (p, id) =>
+      id.startsWith(`${userId}:`)
+        ? uploadReview(client, userId, p)
+        : Promise.reject(new Error('queued by another user')),
+    ).catch(() => { /* fire-and-forget */ });
   }, [review]);
 
   // Retry anything pending whenever a user (re)appears.
@@ -110,7 +120,11 @@ export default function App() {
     if (!supabase || !auth.user) return;
     const client = supabase;
     const userId = auth.user.id;
-    void flushQueue(localStorage, (p) => uploadReview(client, userId, p));
+    void flushQueue(localStorage, (p, id) =>
+      id.startsWith(`${userId}:`)
+        ? uploadReview(client, userId, p)
+        : Promise.reject(new Error('queued by another user')),
+    ).catch(() => { /* fire-and-forget */ });
   }, [auth.user?.id]);
 
   const handleAutoplay = useCallback(() => {

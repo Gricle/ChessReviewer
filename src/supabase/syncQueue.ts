@@ -57,20 +57,29 @@ export function hashString(s: string): string {
   return h.toString(36);
 }
 
-// Attempts every queued upload once; keeps failures. Returns how many remain.
+// Attempts every queued upload once; keeps failures and anything enqueued
+// while the flush was in flight. Returns how many remain.
 export async function flushQueue(
   storage: Storage,
   upload: (payload: ReviewUpload, id: string) => Promise<void>,
 ): Promise<number> {
   const queue = loadQueue(storage);
-  const failed: QueuedUpload[] = [];
+  const succeeded = new Set<string>();
   for (const item of queue) {
     try {
       await upload(item.payload, item.id);
+      succeeded.add(item.id);
     } catch {
-      failed.push(item);
+      /* keep for next retry */
     }
   }
-  saveQueue(storage, failed);
-  return failed.length;
+  // Re-read: no await between here and save, so this block is atomic on the
+  // main thread — concurrent flushes can't clobber each other's outcomes.
+  const remaining = loadQueue(storage).filter((q) => !succeeded.has(q.id));
+  try {
+    saveQueue(storage, remaining);
+  } catch {
+    /* storage full — every item already got its attempt */
+  }
+  return remaining.length;
 }
