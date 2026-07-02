@@ -318,6 +318,7 @@ input::placeholder { color: var(--text-mute); }
 }
 
 .board {
+  position: relative;
   width: var(--bs); height: var(--bs);
   border-radius: 6px;
   overflow: hidden;
@@ -750,5 +751,76 @@ button:active:not(:disabled) { transform: translateY(0); }
 .card { transition: box-shadow var(--dur-std) ease; }
 @media (prefers-reduced-motion: reduce) {
   button, .card { transition: none; }
+}
+
+/* ── board effects ── */
+/* piece glide is chessground's own animation (default 200ms) — no override needed */
+
+/* check pulse: this project doesn't import chessground's themed board CSS
+   (chessground.brown.css), so square.check has no built-in color — and the
+   check square is driven via our own highlight.custom class (ov-check, see
+   ReviewBoard.tsx) rather than chessground's `check` config, since that
+   config only accepts a side Color (it resolves the king square itself from
+   board state) and not a specific square. Base color + breathing ring: */
+.board cg-board square.ov-check {
+  background: radial-gradient(ellipse at center, rgba(250, 65, 45, 0.9) 0%, rgba(250, 65, 45, 0.55) 25%, rgba(250, 65, 45, 0) 89%);
+  animation: fx-check-pulse 1.1s ease-in-out infinite;
+}
+@keyframes fx-check-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(250, 65, 45, 0); }
+  50% { box-shadow: inset 0 0 18px 4px rgba(250, 65, 45, 0.55); }
+}
+
+/* capture shake: tiny 2-axis jolt on the board container */
+.board.fx-capture { animation: fx-shake 180ms ease-out; }
+@keyframes fx-shake {
+  20% { transform: translate(2px, -1px); }
+  45% { transform: translate(-2px, 1px); }
+  70% { transform: translate(1px, 0); }
+}
+
+/* mate flash: one-shot red vignette sweep over the whole board */
+.board.fx-mate::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 60px 12px rgba(250, 65, 45, 0.5);
+  animation: fx-mate-flash var(--dur-drama) ease-out forwards;
+}
+@keyframes fx-mate-flash { from { opacity: 1; } to { opacity: 0; } }
+
+/* brilliant moment (signature): square bloom + board lean-in */
+.board cg-board square.ov-brilliant {
+  background: radial-gradient(circle, rgba(38, 194, 163, 0.55) 0%, rgba(38, 194, 163, 0.18) 65%, transparent 100%);
+  animation: fx-brilliant-bloom 1.4s ease-out;
+}
+@keyframes fx-brilliant-bloom {
+  0% { box-shadow: 0 0 0 0 rgba(38, 194, 163, 0.9); }
+  60% { box-shadow: 0 0 34px 10px rgba(38, 194, 163, 0.45); }
+  100% { box-shadow: 0 0 22px 6px rgba(38, 194, 163, 0.25); }
+}
+.board.fx-brilliant::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background: radial-gradient(circle at center, transparent 55%, rgba(0, 0, 0, 0.35) 100%);
+  animation: fx-mate-flash 1.4s ease-out forwards; /* reuse fade-out */
+}
+
+/* badge pop */
+.cg-custom-svgs g { transform-origin: center; animation: fx-badge-pop var(--dur-std) cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes fx-badge-pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* best-move arrow fade-in (NOTE: a stroke-dasharray "draw-in" was tried first,
+   but the dasharray is a static rule outside the keyframes, so it persists
+   after the animation ends and leaves the arrow permanently dashed at rest —
+   a plain opacity fade looks clean instead). */
+.cg-shapes line, .cg-shapes polygon { animation: fx-arrow-in var(--dur-std) ease-out; }
+@keyframes fx-arrow-in { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .board cg-board square.ov-check, .board.fx-capture, .board.fx-mate::after,
+  .board cg-board square.ov-brilliant, .board.fx-brilliant::after,
+  .cg-custom-svgs g, .cg-shapes line, .cg-shapes polygon { animation: none; }
+  .board.fx-mate::after, .board.fx-brilliant::after { opacity: 0; }
 }
 .auth-switch:hover { transform: none; }

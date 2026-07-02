@@ -14,6 +14,7 @@ import { EvalGraph } from './components/EvalGraph';
 import { SummaryPanel } from './components/SummaryPanel';
 import { RevealOverlay } from './components/RevealOverlay';
 import { playerRatings } from './chess/ratings';
+import { kingSquare } from './chess/kingSquare';
 import type { ParsedGame } from './chess/types';
 import { supabase } from './supabase/client';
 import { useAuth } from './supabase/useAuth';
@@ -175,6 +176,32 @@ export default function App() {
     return uci ? [uci.slice(0, 2), uci.slice(2, 4)] : null;
   }, [playedPly]);
 
+  const checkSq = useMemo(() => {
+    if (!playedPly || !(playedPly.san.includes('+') || playedPly.san.includes('#'))) return null;
+    // After the move, the side to move is the one in check.
+    const sideToMove = playedPly.fenAfter.split(' ')[1] === 'w' ? 'white' : 'black';
+    return kingSquare(playedPly.fenAfter, sideToMove);
+  }, [playedPly]);
+
+  const boardFx = useMemo(() => {
+    if (!playedPly) return '';
+    const fx: string[] = [];
+    if (playedPly.san.includes('#')) fx.push('fx-mate');
+    else if (playedPly.san.includes('x')) fx.push('fx-capture');
+    if (playedPly.classification === 'brilliant') fx.push('fx-brilliant');
+    return fx.join(' ');
+  }, [playedPly]);
+
+  const boardRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = boardRef.current;
+    if (!el || !boardFx) return;
+    el.classList.remove('fx-mate', 'fx-capture', 'fx-brilliant');
+    void el.offsetWidth; // reflow to restart animation
+    for (const c of boardFx.split(' ')) el.classList.add(c);
+    return () => { el.classList.remove('fx-mate', 'fx-capture', 'fx-brilliant'); };
+  }, [ply, boardFx]);
+
   const currentMove = useMemo((): CurrentMove | null => {
     if (!playedPly) return null;
     return {
@@ -265,8 +292,8 @@ export default function App() {
             </div>
             <div className="board-area">
               <EvalBar cp={currentWhiteCp} />
-              <div className="board">
-                <ReviewBoard fen={fen} lastMove={lastMove} badge={badge} arrow={arrow} />
+              <div className="board" ref={boardRef}>
+                <ReviewBoard fen={fen} lastMove={lastMove} badge={badge} arrow={arrow} checkSquare={checkSq} />
               </div>
             </div>
             <div className="player white-name">

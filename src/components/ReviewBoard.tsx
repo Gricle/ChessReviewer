@@ -12,6 +12,7 @@ interface Props {
   lastMove?: [string, string] | null;
   badge?: { square: string; cls: Classification } | null;
   arrow?: [string, string] | null;
+  checkSquare?: string | null;  // king square currently in check (pulse)
 }
 
 const BAD_CLASS = new Set<Classification>(['blunder', 'mistake', 'inaccuracy']);
@@ -63,7 +64,7 @@ function badgeSvg(cls: Classification): string {
   </g></g>`;
 }
 
-export function ReviewBoard({ fen, lastMove, badge, arrow }: Props) {
+export function ReviewBoard({ fen, lastMove, badge, arrow, checkSquare }: Props) {
   const el = useRef<HTMLDivElement>(null);
   const api = useRef<Api | null>(null);
 
@@ -85,14 +86,20 @@ export function ReviewBoard({ fen, lastMove, badge, arrow }: Props) {
       if (BAD_CLASS.has(badge.cls) && OVERLAY_CLASS[badge.cls]) {
         custom.set(badge.square as Key, OVERLAY_CLASS[badge.cls]);
       }
+      if (badge.cls === 'brilliant') custom.set(badge.square as Key, 'ov-brilliant');
     }
+    // chessground's own `check` config only accepts a side Color (it resolves
+    // the king square internally from board state); we already have the exact
+    // square from kingSquare(), so drive the pulse via the same custom-highlight
+    // class mechanism used for the bad-move/brilliant overlays above.
+    if (checkSquare) custom.set(checkSquare as Key, 'ov-check');
     api.current?.set({
       fen,
       lastMove: lastMove ? (lastMove as Key[]) : undefined,
       highlight: { custom },
       drawable: { autoShapes: shapes },
     });
-  }, [fen, lastMove, badge, arrow]);
+  }, [fen, lastMove, badge, arrow, checkSquare]);
 
   return <div ref={el} style={{ width: '100%', height: '100%' }} />;
 }
