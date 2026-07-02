@@ -19,8 +19,11 @@ import type { ParsedGame } from './chess/types';
 import { supabase } from './supabase/client';
 import { useAuth } from './supabase/useAuth';
 import { AuthBar } from './components/AuthBar';
+import { LibraryView } from './components/LibraryView';
 import { mapReview, type GameSource } from './supabase/mapReview';
 import { uploadReview } from './supabase/uploadReview';
+import { fetchSavedGame } from './supabase/library';
+import { rowToReview } from './supabase/rowToReview';
 import { enqueue, flushQueue, hashString } from './supabase/syncQueue';
 
 // localStorage can throw SecurityError in storage-blocked contexts; settings
@@ -51,6 +54,7 @@ export default function App() {
   const [voiceOn, setVoiceOn] = useState(() => safeStorageGet('chessreviewer.voiceOn') !== '0');
   const [volume, setVolumeState] = useState(getVolume);
   const [autoplaySpeed, setAutoplaySpeed] = useState<Speed>('off');
+  const [view, setView] = useState<'game' | 'library'>('game');
   const auth = useAuth();
   const [lastImport, setLastImport] = useState<{ pgn: string; source: GameSource } | null>(null);
   const prevPly = useRef(0);
@@ -116,6 +120,21 @@ export default function App() {
     }
   }
 
+  async function openSaved(gameId: string) {
+    if (!supabase) return;
+    const row = await fetchSavedGame(supabase, gameId);
+    const rebuilt = row ? rowToReview(row.pgn, row.analysis) : null;
+    if (!rebuilt) { setError('That saved review could not be loaded.'); setView('game'); return; }
+    setError(null);
+    setAutoplaySpeed('off');
+    setGame(rebuilt.game);
+    setReview(rebuilt.review);
+    setPly(0);
+    setShowImport(false);
+    setLastImport(null);   // prevents the sync effect from re-uploading (guard requires lastImport)
+    setView('game');
+  }
+
   // ── autoplay ──
   useEffect(() => {
     if (autoplaySpeed === 'off' || !review) {
@@ -160,6 +179,9 @@ export default function App() {
 
   useEffect(() => { safeStorageSet('chessreviewer.soundOn', soundOn ? '1' : '0'); }, [soundOn]);
   useEffect(() => { safeStorageSet('chessreviewer.voiceOn', voiceOn ? '1' : '0'); }, [voiceOn]);
+
+  // Signing out while viewing the library shouldn't leave the user stranded on it.
+  useEffect(() => { if (!auth.user) setView('game'); }, [auth.user]);
 
   const handleAutoplay = useCallback(() => {
     setAutoplaySpeed((s) => {
@@ -269,130 +291,137 @@ export default function App() {
       <header className="topbar">
         <div className="brand"><span className="pc">♞</span> Chess Reviewer</div>
         <div className="tagline">Paste a PGN or import from chess.com / lichess.org — Stockfish analyzes every move in-browser</div>
+        {auth.user && <button className="lib-btn" onClick={() => setView('library')}>Library</button>}
         <AuthBar auth={auth} />
       </header>
 
-      {showImport ? (
-        <ImportPanel onPgn={run} />
+      {view === 'library' && auth.user ? (
+        <LibraryView user={auth.user} onOpen={openSaved} onClose={() => setView('game')} />
       ) : (
-        <div className="gamebar">
-          <button onClick={() => setShowImport(true)}>↺ New game</button>
-          {game && review && (
-            <span className="gamebar-title">
-              {game.white}{ratings.white !== null && <span className="elo"> ({ratings.white})</span>}
-              <span className="vs">vs</span>
-              {game.black}{ratings.black !== null && <span className="elo"> ({ratings.black})</span>}
-              {result && <span className="result">{result}</span>}
-              {review.summary.opening && <span className="muted"> · {review.summary.opening.name}</span>}
-            </span>
-          )}
-        </div>
-      )}
-
-      {progress && (
-        <div className="status">
-          <div className="status-bar" style={{ width: `${progressPct}%` }} />
-          <span className="status-text">
-            <span className="dot" /> {progress}
-            {progressPct > 0 && <span className="pct">{progressPct}%</span>}
-          </span>
-        </div>
-      )}
-      {error && <div className="err" style={{ marginBottom: 14 }}>{error}</div>}
-
-      {game && fen && (
-        <div className="review-grid">
-          <section className="board-col" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className="player black-name">
-              {game.black}{ratings.black !== null && <span className="player-elo"> ({ratings.black})</span>}
+        <>
+          {showImport ? (
+            <ImportPanel onPgn={run} />
+          ) : (
+            <div className="gamebar">
+              <button onClick={() => setShowImport(true)}>↺ New game</button>
+              {game && review && (
+                <span className="gamebar-title">
+                  {game.white}{ratings.white !== null && <span className="elo"> ({ratings.white})</span>}
+                  <span className="vs">vs</span>
+                  {game.black}{ratings.black !== null && <span className="elo"> ({ratings.black})</span>}
+                  {result && <span className="result">{result}</span>}
+                  {review.summary.opening && <span className="muted"> · {review.summary.opening.name}</span>}
+                </span>
+              )}
             </div>
-            <div className="board-area">
-              <EvalBar cp={currentWhiteCp} />
-              <div className="board" ref={boardRef}>
-                <ReviewBoard fen={fen} lastMove={lastMove} badge={badge} arrow={arrow} checkSquare={checkSq} />
-              </div>
-            </div>
-            <div className="player white-name">
-              {game.white}{ratings.white !== null && <span className="player-elo"> ({ratings.white})</span>}
-            </div>
-          </section>
-
-          {!review && progress && (
-            <aside className="panel">
-              <div className="card skel" style={{ height: 120 }} />
-              <div className="card skel" style={{ height: 260 }} />
-              <div className="card skel" style={{ height: 140 }} />
-            </aside>
           )}
 
-          {review && (
-            <aside className="panel panel-enter" key={game?.plies[0]?.fenBefore ?? 'panel'}>
-              <CoachCard opening={review.summary.opening} evalCp={currentWhiteCp} move={currentMove} voiceOn={voiceOn} />
+          {progress && (
+            <div className="status">
+              <div className="status-bar" style={{ width: `${progressPct}%` }} />
+              <span className="status-text">
+                <span className="dot" /> {progress}
+                {progressPct > 0 && <span className="pct">{progressPct}%</span>}
+              </span>
+            </div>
+          )}
+          {error && <div className="err" style={{ marginBottom: 14 }}>{error}</div>}
 
-              <SummaryPanel summary={review.summary} white={game.white} black={game.black} ratings={ratings} result={result}>
-                <MoveList plies={review.plies} current={ply} onSelect={setPly} />
-              </SummaryPanel>
-
-              <div className="card graph-card">
-                <EvalGraph
-                  evalsCp={whiteEvals}
-                  classifications={classifications}
-                  current={Math.max(0, ply - 1)}
-                  onSelect={(i) => setPly(i + 1)}
-                />
-                <div className="playback">
-                  <button onClick={() => setPly(0)} title="Start" aria-label="Start">⏮</button>
-                  <button onClick={() => setPly((p) => Math.max(0, p - 1))} title="Previous" aria-label="Previous move">◀</button>
-                  <button
-                    onClick={handleAutoplay}
-                    className={`auto-btn ${autoplaySpeed}`}
-                    title={autoplaySpeed === 'off' ? 'Autoplay' : `Playing ${autoplaySpeed}`}
-                    aria-label="Autoplay"
-                  >
-                    {autoplaySpeed === 'off' ? '▶▶' : '⏹'}
-                  </button>
-                  {autoplaySpeed !== 'off' && <span className="speed-label">{SPEED_LABEL[autoplaySpeed]}</span>}
-                  <button onClick={() => setPly((p) => Math.min(total, p + 1))} title="Next" aria-label="Next move">▶</button>
-                  <button onClick={() => setPly(total)} title="End" aria-label="End">⏭</button>
-                  <button
-                    onClick={() => setSoundOn((s) => !s)}
-                    className={`icon-btn${soundOn ? '' : ' muted'}`}
-                    title={soundOn ? 'Mute sounds' : 'Unmute sounds'}
-                    aria-label={soundOn ? 'Mute sounds' : 'Unmute sounds'}
-                  >
-                    {soundOn
-                      ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 010 14.14" /><path d="M15.54 8.46a5 5 0 010 7.07" /></svg>
-                      : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>
-                    }
-                  </button>
-                  <input
-                    type="range"
-                    className="vol-slider"
-                    min={0}
-                    max={1}
-                    step={0.05}
-                    value={volume}
-                    onChange={(e) => handleVolume(Number(e.target.value))}
-                    title="Volume"
-                    aria-label="Sound volume"
-                  />
-                  <button
-                    onClick={() => setVoiceOn((v) => !v)}
-                    className={`icon-btn${voiceOn ? '' : ' muted'}`}
-                    title={voiceOn ? 'Mute voice' : 'Unmute voice'}
-                    aria-label={voiceOn ? 'Disable coach voice' : 'Enable coach voice'}
-                  >
-                    {voiceOn
-                      ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" /><path d="M19 10v2a7 7 0 01-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
-                      : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" /><path d="M19 10v2a7 7 0 01-14 0v-2" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
-                    }
-                  </button>
-                  <span className="ply">{ply} / {total}</span>
+          {game && fen && (
+            <div className="review-grid">
+              <section className="board-col" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+                <div className="player black-name">
+                  {game.black}{ratings.black !== null && <span className="player-elo"> ({ratings.black})</span>}
                 </div>
-              </div>
-            </aside>
+                <div className="board-area">
+                  <EvalBar cp={currentWhiteCp} />
+                  <div className="board" ref={boardRef}>
+                    <ReviewBoard fen={fen} lastMove={lastMove} badge={badge} arrow={arrow} checkSquare={checkSq} />
+                  </div>
+                </div>
+                <div className="player white-name">
+                  {game.white}{ratings.white !== null && <span className="player-elo"> ({ratings.white})</span>}
+                </div>
+              </section>
+
+              {!review && progress && (
+                <aside className="panel">
+                  <div className="card skel" style={{ height: 120 }} />
+                  <div className="card skel" style={{ height: 260 }} />
+                  <div className="card skel" style={{ height: 140 }} />
+                </aside>
+              )}
+
+              {review && (
+                <aside className="panel panel-enter" key={game?.plies[0]?.fenBefore ?? 'panel'}>
+                  <CoachCard opening={review.summary.opening} evalCp={currentWhiteCp} move={currentMove} voiceOn={voiceOn} />
+
+                  <SummaryPanel summary={review.summary} white={game.white} black={game.black} ratings={ratings} result={result}>
+                    <MoveList plies={review.plies} current={ply} onSelect={setPly} />
+                  </SummaryPanel>
+
+                  <div className="card graph-card">
+                    <EvalGraph
+                      evalsCp={whiteEvals}
+                      classifications={classifications}
+                      current={Math.max(0, ply - 1)}
+                      onSelect={(i) => setPly(i + 1)}
+                    />
+                    <div className="playback">
+                      <button onClick={() => setPly(0)} title="Start" aria-label="Start">⏮</button>
+                      <button onClick={() => setPly((p) => Math.max(0, p - 1))} title="Previous" aria-label="Previous move">◀</button>
+                      <button
+                        onClick={handleAutoplay}
+                        className={`auto-btn ${autoplaySpeed}`}
+                        title={autoplaySpeed === 'off' ? 'Autoplay' : `Playing ${autoplaySpeed}`}
+                        aria-label="Autoplay"
+                      >
+                        {autoplaySpeed === 'off' ? '▶▶' : '⏹'}
+                      </button>
+                      {autoplaySpeed !== 'off' && <span className="speed-label">{SPEED_LABEL[autoplaySpeed]}</span>}
+                      <button onClick={() => setPly((p) => Math.min(total, p + 1))} title="Next" aria-label="Next move">▶</button>
+                      <button onClick={() => setPly(total)} title="End" aria-label="End">⏭</button>
+                      <button
+                        onClick={() => setSoundOn((s) => !s)}
+                        className={`icon-btn${soundOn ? '' : ' muted'}`}
+                        title={soundOn ? 'Mute sounds' : 'Unmute sounds'}
+                        aria-label={soundOn ? 'Mute sounds' : 'Unmute sounds'}
+                      >
+                        {soundOn
+                          ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 010 14.14" /><path d="M15.54 8.46a5 5 0 010 7.07" /></svg>
+                          : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>
+                        }
+                      </button>
+                      <input
+                        type="range"
+                        className="vol-slider"
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        value={volume}
+                        onChange={(e) => handleVolume(Number(e.target.value))}
+                        title="Volume"
+                        aria-label="Sound volume"
+                      />
+                      <button
+                        onClick={() => setVoiceOn((v) => !v)}
+                        className={`icon-btn${voiceOn ? '' : ' muted'}`}
+                        title={voiceOn ? 'Mute voice' : 'Unmute voice'}
+                        aria-label={voiceOn ? 'Disable coach voice' : 'Enable coach voice'}
+                      >
+                        {voiceOn
+                          ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" /><path d="M19 10v2a7 7 0 01-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
+                          : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" /><path d="M19 10v2a7 7 0 01-14 0v-2" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
+                        }
+                      </button>
+                      <span className="ply">{ply} / {total}</span>
+                    </div>
+                  </div>
+                </aside>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
 
       {showReveal && game && review && (
