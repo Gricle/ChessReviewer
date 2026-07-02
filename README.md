@@ -23,6 +23,21 @@ backend, no accounts, no token cost.
 Deploy `dist/` to any static host (Vercel/Netlify). The Stockfish engine files
 live in `public/engine/` and are copied into the build automatically.
 
+## Cloud sync (optional)
+
+Reviews auto-save to your account when Supabase is configured; without it the
+app is fully functional in guest mode.
+
+1. Create a free project at https://supabase.com.
+2. In the SQL editor, run `supabase/migrations/20260702000000_init.sql`
+   (or `supabase db push` with the CLI).
+3. Auth → Providers: enable Email; optionally enable Google (add your OAuth
+   client, and add the app origin to the redirect allow-list).
+4. Copy `.env.example` to `.env.local` and fill in the Project URL and anon
+   key from Project Settings → API.
+
+Row-level security restricts every table to the signed-in user's own rows.
+
 ## How it works
 
 ```
