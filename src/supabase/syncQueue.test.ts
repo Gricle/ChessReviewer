@@ -46,7 +46,7 @@ describe('syncQueue', () => {
     enqueue(storage, payload, 'id-1');
     enqueue(storage, payload, 'id-2');
     const uploaded: string[] = [];
-    const remaining = await flushQueue(storage, async (p, id) => { uploaded.push(id); });
+    const remaining = await flushQueue(storage, async (_p, id) => { uploaded.push(id); });
     expect(remaining).toBe(0);
     expect(uploaded).toEqual(['id-1', 'id-2']);
     expect(loadQueue(storage)).toEqual([]);
