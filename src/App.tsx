@@ -56,8 +56,24 @@ export default function App() {
   const prevPly = useRef(0);
   const autoplayTimer = useRef<number | null>(null);
   const runSeq = useRef(0);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   const total = game?.plies.length ?? 0;
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  }, []);
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx)) return; // not a horizontal swipe
+    if (dx < 0) setPly((p) => Math.min(total, p + 1));  // swipe left → next
+    else setPly((p) => Math.max(0, p - 1));             // swipe right → previous
+  }, [total]);
   const result = game?.headers.Result ?? null;
   const ratings = useMemo(
     () => playerRatings(game?.headers ?? {}),
@@ -286,7 +302,7 @@ export default function App() {
 
       {game && fen && (
         <div className="review-grid">
-          <section className="board-col">
+          <section className="board-col" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
             <div className="player black-name">
               {game.black}{ratings.black !== null && <span className="player-elo"> ({ratings.black})</span>}
             </div>
