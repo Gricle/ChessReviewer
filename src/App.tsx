@@ -301,8 +301,16 @@ export default function App() {
             </div>
           </section>
 
-          {review && (
+          {!review && progress && (
             <aside className="panel">
+              <div className="card skel" style={{ height: 120 }} />
+              <div className="card skel" style={{ height: 260 }} />
+              <div className="card skel" style={{ height: 140 }} />
+            </aside>
+          )}
+
+          {review && (
+            <aside className="panel panel-enter" key={game?.plies[0]?.fenBefore ?? 'panel'}>
               <CoachCard opening={review.summary.opening} evalCp={currentWhiteCp} move={currentMove} voiceOn={voiceOn} />
 
               <SummaryPanel summary={review.summary} white={game.white} black={game.black} ratings={ratings} result={result}>
