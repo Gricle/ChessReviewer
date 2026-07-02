@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import type { Auth } from '../supabase/useAuth';
 
 interface Props {
@@ -11,7 +11,15 @@ export function AuthBar({ auth }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
   if (!auth.enabled) return null;
 
@@ -28,6 +36,7 @@ export function AuthBar({ auth }: Props) {
     e.preventDefault();
     setBusy(true);
     setError(null);
+    setNotice(null);
     const err = mode === 'signin'
       ? await auth.signIn(email, password)
       : await auth.signUp(email, password);
@@ -35,7 +44,8 @@ export function AuthBar({ auth }: Props) {
     if (err) {
       setError(err);
     } else if (mode === 'signup') {
-      setError('Check your email to confirm your account.');
+      setNotice('Check your email to confirm your account.');
+      setError(null);
     } else {
       setOpen(false);
     }
@@ -43,13 +53,13 @@ export function AuthBar({ auth }: Props) {
 
   return (
     <div className="authbar">
-      <button className="primary" onClick={() => { setOpen(true); setError(null); }}>
+      <button className="primary" onClick={() => { setOpen(true); setError(null); setNotice(null); }}>
         Sign in
       </button>
 
       {open && (
         <div className="auth-overlay" onClick={() => setOpen(false)}>
-          <div className="card auth-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="card auth-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <h4>{mode === 'signin' ? 'Sign in' : 'Create account'}</h4>
             <form onSubmit={submit}>
               <input
@@ -77,11 +87,12 @@ export function AuthBar({ auth }: Props) {
             </button>
             <button
               className="auth-switch"
-              onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(null); }}
+              onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(null); setNotice(null); }}
             >
               {mode === 'signin' ? 'No account? Create one' : 'Have an account? Sign in'}
             </button>
             {error && <div className="err">{error}</div>}
+            {notice && <div className="auth-notice">{notice}</div>}
           </div>
         </div>
       )}

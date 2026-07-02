@@ -652,3 +652,4 @@ input::placeholder { color: var(--text-mute); }
 .auth-google { border: 1px solid var(--line-strong); }
 .auth-switch { background: none; border: none; color: var(--text-mute); font-size: 12px; cursor: pointer; }
 .auth-switch:hover { color: var(--text); }
+.auth-notice { color: var(--green); font-size: 13px; }

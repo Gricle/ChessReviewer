@@ -1,6 +1,6 @@
 // Session state + auth actions. When supabase is null (no env config) the
 // hook reports { enabled: false } and the UI renders nothing auth-related.
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './client';
 
@@ -25,7 +25,7 @@ export function useAuth(): Auth {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  return {
+  return useMemo<Auth>(() => ({
     enabled: supabase !== null,
     user,
     signIn: async (email, password) => {
@@ -49,5 +49,5 @@ export function useAuth(): Auth {
     signOut: async () => {
       if (supabase) await supabase.auth.signOut();
     },
-  };
+  }), [user]);
 }
