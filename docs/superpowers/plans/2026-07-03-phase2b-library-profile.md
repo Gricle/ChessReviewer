@@ -371,3 +371,14 @@ git commit -m "feat: game library view with instant saved-review reopen + profil
 ### Task 4: Verification (controller)
 
 Browser (guest): app identical, no Library button. With Supabase configured + signed in: Library button → list renders (or empty state), profile saves, clicking a game reopens the review instantly with no engine run and NO reveal overlay, and no new row appears in the DB afterward (no re-upload). Mobile layout: rows collapse to 2 columns.
+
+---
+
+## Status & follow-ups (2026-07-03, post-merge at 4549073)
+
+Shipped: pgn_hash dedup, rowToReview, library view, profile card, openSaved race guard.
+Tracked follow-ups (not silently dropped):
+- Library search/filter (spec Phase 2 item) — deliberately deferred; add when the list grows past a screen.
+- Legacy queue payloads without pgn_hash would stick on 23505 conflict — moot pre-provisioning; heal via .maybeSingle() + pgn eq fallback if ever needed.
+- LibraryView: separate error states for list vs profile save; stay in-library on single bad row.
+- fetchProfile: .maybeSingle() to distinguish "no profile" from transient errors.
