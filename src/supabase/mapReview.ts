@@ -5,12 +5,14 @@ import type { Review } from '../analysis/assemble';
 import { playerRatings } from '../chess/ratings';
 import { cpToWinPercent } from '../analysis/winPercent';
 import { gamePhase } from '../analysis/gamePhase';
+import { hashString } from './syncQueue';
 
 export type GameSource = 'paste' | 'chesscom' | 'lichess';
 
 export interface ReviewUpload {
   game: {
     pgn: string;
+    pgn_hash: string;
     white_name: string;
     black_name: string;
     white_rating: number | null;
@@ -58,10 +60,12 @@ export function mapReview(
   const ratings = playerRatings(game.headers);
   const result = game.headers.Result && game.headers.Result !== '*' ? game.headers.Result : null;
   const opening = review.summary.opening;
+  const pgnText = pgn ?? reconstructPgn(game);
 
   return {
     game: {
-      pgn: pgn ?? reconstructPgn(game),
+      pgn: pgnText,
+      pgn_hash: hashString(pgnText),
       white_name: game.white,
       black_name: game.black,
       white_rating: ratings.white,

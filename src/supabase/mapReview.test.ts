@@ -3,6 +3,7 @@ import { mapReview } from './mapReview';
 import { parsePgn } from '../chess/pgnParser';
 import { assembleReview } from '../analysis/assemble';
 import { OPENINGS } from '../data/openings.sample';
+import { hashString } from './syncQueue';
 import type { ParsedGame, PositionAnalysis } from '../chess/types';
 
 const PGN = `[White "Hikaru"]
@@ -41,6 +42,11 @@ describe('mapReview', () => {
     expect(game.played_at).toBe('2024-03-15');
     expect(game.source).toBe('paste');
     expect(game.opening_name).toBe('Ruy Lopez');
+  });
+
+  it('stamps a djb2 pgn_hash matching the stored pgn', () => {
+    const { game } = fixture();
+    expect(game.pgn_hash).toBe(hashString(game.pgn));
   });
 
   it('maps review numbers and embeds full analysis', () => {

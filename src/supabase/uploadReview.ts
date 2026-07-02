@@ -19,12 +19,17 @@ export async function uploadReview(
 
   if (inserted.error) {
     if (inserted.error.code !== UNIQUE_VIOLATION) throw new Error(inserted.error.message);
-    // Same user re-analyzed the same PGN — find the existing row.
+    // Same user re-analyzed the same PGN — find the existing row by hash
+    // instead of shipping the whole PGN in the query. djb2 collisions on
+    // different games for the same user are ~10^-6; the fallout of one is
+    // overwriting the collided game's review, which is an acceptable
+    // trade-off for avoiding huge PGNs in every dedup lookup.
     const found = await client
       .from('games')
       .select('id')
       .eq('user_id', userId)
-      .eq('pgn', u.game.pgn)
+      .eq('pgn_hash', u.game.pgn_hash)
+      .limit(1)
       .single();
     if (found.error) throw new Error(found.error.message);
     gameId = found.data.id;
