@@ -62,4 +62,21 @@ describe('RevealOverlay', () => {
     expect(screen.getByText('Magnus')).toBeTruthy();
     expect(screen.getAllByText(/~\d+/)).toHaveLength(2);
   });
+
+  it('does not close when clicking where the hidden button sits during the animation', () => {
+    const onClose = renderOverlay();
+    // Button exists but its section is not 'in' yet; visibility:hidden makes it inert in browsers.
+    // jsdom doesn't do hit-testing, so assert the section is not marked visible instead.
+    const cta = document.querySelector('.reveal-sec.cta')!;
+    expect(cta.className).not.toContain('in');
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('Escape skips the animation, second Escape closes', () => {
+    const onClose = renderOverlay();
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(screen.getByRole('button', { name: /start review/i })).toBeTruthy();
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
 });

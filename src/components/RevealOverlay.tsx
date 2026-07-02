@@ -41,12 +41,24 @@ export function RevealOverlay({ summary, white, black, ratings, soundOn, onClose
     return () => window.clearInterval(id);
   }, [stage, soundOn]);
 
+  // Escape skips the animation, or closes once already at the done stage.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (stage !== 'done') setStage('done');
+        else onClose();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [stage, onClose]);
+
+  const done = stage === 'done';
   const counting = stageReached(stage, 'accuracy');
-  const whiteAcc = useCountUp(summary.whiteAccuracy, counting);
-  const blackAcc = useCountUp(summary.blackAccuracy, counting);
+  const whiteAcc = useCountUp(summary.whiteAccuracy, counting, done ? 0 : 1200);
+  const blackAcc = useCountUp(summary.blackAccuracy, counting, done ? 0 : 1200);
   const showRatings = stageReached(stage, 'ratings');
   const showBadges = stageReached(stage, 'badges');
-  const done = stage === 'done';
 
   const badgeRows = CLASS_ORDER.filter(
     (l) => summary.counts[l].white > 0 || summary.counts[l].black > 0,

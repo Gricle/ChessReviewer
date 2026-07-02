@@ -42,4 +42,19 @@ describe('useCountUp', () => {
     act(() => { frames.shift()!(now); });
     expect(result.current).toBe(100);
   });
+
+  it('snaps immediately to the target when durationMs is 0, even if the first frame fires at start', () => {
+    let now = 0;
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      frames.push(cb);
+      return frames.length;
+    });
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+
+    const { result } = renderHook(() => useCountUp(42, true, 0));
+    // first frame fires at exactly the same timestamp as `start`
+    act(() => { frames.shift()!(now); });
+    expect(result.current).toBe(42);
+  });
 });
