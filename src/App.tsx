@@ -22,6 +22,15 @@ import { mapReview, type GameSource } from './supabase/mapReview';
 import { uploadReview } from './supabase/uploadReview';
 import { enqueue, flushQueue, hashString } from './supabase/syncQueue';
 
+// localStorage can throw SecurityError in storage-blocked contexts; settings
+// are a nicety — never let them take down the app.
+function safeStorageGet(key: string): string | null {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+function safeStorageSet(key: string, value: string): void {
+  try { localStorage.setItem(key, value); } catch { /* ignore */ }
+}
+
 const DEPTH = 14;
 type Speed = 'off' | 'slow' | 'medium' | 'fast';
 const SPEED_CYCLE: Speed[] = ['off', 'slow', 'medium', 'fast'];
@@ -37,8 +46,8 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(true);
   const [showReveal, setShowReveal] = useState(false);
-  const [soundOn, setSoundOn] = useState(() => localStorage.getItem('chessreviewer.soundOn') !== '0');
-  const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem('chessreviewer.voiceOn') !== '0');
+  const [soundOn, setSoundOn] = useState(() => safeStorageGet('chessreviewer.soundOn') !== '0');
+  const [voiceOn, setVoiceOn] = useState(() => safeStorageGet('chessreviewer.voiceOn') !== '0');
   const [volume, setVolumeState] = useState(getVolume);
   const [autoplaySpeed, setAutoplaySpeed] = useState<Speed>('off');
   const auth = useAuth();
@@ -59,6 +68,7 @@ export default function App() {
     setLastImport({ pgn: pgnText, source });
     setError(null);
     setReview(null);
+    setAutoplaySpeed('off');
     let parsed: ParsedGame;
     try {
       parsed = parsePgn(pgnText);
@@ -131,8 +141,8 @@ export default function App() {
     ).catch(() => { /* fire-and-forget */ });
   }, [auth.user?.id]);
 
-  useEffect(() => { localStorage.setItem('chessreviewer.soundOn', soundOn ? '1' : '0'); }, [soundOn]);
-  useEffect(() => { localStorage.setItem('chessreviewer.voiceOn', voiceOn ? '1' : '0'); }, [voiceOn]);
+  useEffect(() => { safeStorageSet('chessreviewer.soundOn', soundOn ? '1' : '0'); }, [soundOn]);
+  useEffect(() => { safeStorageSet('chessreviewer.voiceOn', voiceOn ? '1' : '0'); }, [voiceOn]);
 
   const handleAutoplay = useCallback(() => {
     setAutoplaySpeed((s) => {
