@@ -1088,3 +1088,23 @@ Document for the controller/user — run once `.env.local` exists:
 5. Sign out → analyze → no new rows (guest).
 6. DevTools offline → sign in → analyze → row appears in localStorage queue; go online, analyze another game → queue flushes (localStorage entry empties, both games in DB).
 7. Second browser/incognito with a second account → each account sees only its own rows (RLS).
+
+---
+
+## Status & deferred follow-ups (written 2026-07-02, post-merge)
+
+Phase 2a merged to main at commit 8b2be2d. All 7 tasks implemented, reviewed, and verified (73/73 tests, guest-mode browser check green).
+
+**User setup still pending (required before cloud sync works anywhere):**
+1. Create the Supabase project; run `supabase/migrations/20260702000000_init.sql` in the SQL editor (full steps: README "Cloud sync (optional)").
+2. Copy `.env.example` → `.env.local` with the project URL + anon key (enables sync on localhost).
+3. For the deployed github.io site: add `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as GitHub Actions variables and pass them into the Pages workflow build step (2-line workflow edit).
+
+**Code fast-follows (fold into Phase 2b):**
+- uploadReview's 23505 dedup fallback `.eq('pgn', ...)` puts the full PGN in a GET URL → risk of 414 on long chess.com PGNs. Fix: add a `pgn_hash` column (client-side djb2 via syncQueue.hashString) + index, select by that. Failure today is safe (item stays queued) but retries forever.
+- No poison-item eviction/attempt cap in syncQueue (deterministically failing payload retries on every flush).
+- Sign-in-AFTER-analysis doesn't save the on-screen review (spec-compliant guest behavior, but flag for 2b UX — maybe a "Save this review" button when logging in with a review open).
+- reviews table: add user_id index when Phase 6 lands.
+- gamePhase tests: pin the 6/7-piece threshold edge and ply 19/20 boundary.
+
+**Roadmap order agreed with user:** next is Phase 3 (cinematic reveal + audio) then Phase 4 (full UI redesign), THEN Phase 2b (game library + profile page), then Phases 5-6. See the design spec for scope of each.
