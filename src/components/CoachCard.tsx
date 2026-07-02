@@ -8,6 +8,7 @@ export interface CurrentMove {
   cls: Classification;
   bestSan: string;
   isBest: boolean;
+  explanation: string;
 }
 
 interface Props {
@@ -23,31 +24,13 @@ function formatEval(cp: number): string {
   return `${p > 0 ? '+' : ''}${p.toFixed(1)}`;
 }
 
-function description(move: CurrentMove): string {
-  const cls = move.cls;
-
-  if (cls === 'book') return `${move.san} is a book move — theory continues.`;
-
-  if (cls === 'brilliant') return `A stunning sacrifice! ${move.bestSan} is the best move and it gives up material.`;
-  if (cls === 'great') return `${move.san} is the only good move in this position.`;
-  if (cls === 'best') return `${move.san} is the strongest move.`;
-  if (cls === 'excellent') return `${move.san} is a strong move, but there was something even better.`;
-  if (cls === 'good') return `${move.san} keeps the balance, but isn't the most accurate.`;
-
-  if (cls === 'inaccuracy') return `Better was ${move.bestSan}.`;
-  if (cls === 'mistake') return `Better was ${move.bestSan}. This could have been punished.`;
-  if (cls === 'blunder') return `Better was ${move.bestSan}. This is a blunder.`;
-
-  return '';
-}
-
 export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
   const meta = move ? CLASS_META[move.cls] : null;
   const evalPositive = evalCp >= 0;
   const wantsBetter = move && (move.cls === 'inaccuracy' || move.cls === 'mistake' || move.cls === 'blunder');
   const isGood = move && (move.cls === 'brilliant' || move.cls === 'great' || move.cls === 'best');
   const isNeutral = move && (move.cls === 'excellent' || move.cls === 'good' || move.cls === 'book');
-  const comment = move ? description(move) : '';
+  const comment = move ? move.explanation : '';
 
   // Auto-speak coach comment when landing on a new move.
   const prevMoveRef = useRef<CurrentMove | null>(null);

@@ -9,6 +9,7 @@ import { ImportPanel } from './components/ImportPanel';
 import { ReviewBoard } from './components/ReviewBoard';
 import { EvalBar } from './components/EvalBar';
 import { CoachCard, type CurrentMove } from './components/CoachCard';
+import { explainMove } from './coach/explain';
 import { MoveList } from './components/MoveList';
 import { EvalGraph } from './components/EvalGraph';
 import { SummaryPanel } from './components/SummaryPanel';
@@ -244,13 +245,17 @@ export default function App() {
 
   const currentMove = useMemo((): CurrentMove | null => {
     if (!playedPly) return null;
+    const bestSan = uciToSan(playedPly.fenBefore, playedPly.bestMoveUci);
+    const next = review?.plies[ply] ?? null;
+    const nextBestSan = next?.bestMoveUci ? uciToSan(next.fenBefore, next.bestMoveUci) : null;
     return {
       san: playedPly.san,
       cls: playedPly.classification,
-      bestSan: uciToSan(playedPly.fenBefore, playedPly.bestMoveUci),
+      bestSan,
       isBest: playedPly.uci === playedPly.bestMoveUci,
+      explanation: explainMove(playedPly, { bestSan, nextBestSan }),
     };
-  }, [playedPly]);
+  }, [playedPly, review, ply]);
 
   const whiteEvals = useMemo(() => {
     if (!review) return [];
