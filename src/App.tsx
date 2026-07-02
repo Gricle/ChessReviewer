@@ -12,6 +12,7 @@ import { CoachCard, type CurrentMove } from './components/CoachCard';
 import { MoveList } from './components/MoveList';
 import { EvalGraph } from './components/EvalGraph';
 import { SummaryPanel } from './components/SummaryPanel';
+import { playerRatings } from './chess/ratings';
 import type { ParsedGame } from './chess/types';
 
 const DEPTH = 14;
@@ -36,6 +37,10 @@ export default function App() {
 
   const total = game?.plies.length ?? 0;
   const result = game?.headers.Result ?? null;
+  const ratings = useMemo(
+    () => playerRatings(game?.headers ?? {}),
+    [game],
+  );
 
   async function run(pgnText: string) {
     setError(null);
@@ -163,7 +168,9 @@ export default function App() {
           <button onClick={() => setShowImport(true)}>↺ New game</button>
           {game && review && (
             <span className="gamebar-title">
-              {game.white} <span className="vs">vs</span> {game.black}
+              {game.white}{ratings.white !== null && <span className="elo"> ({ratings.white})</span>}
+              <span className="vs">vs</span>
+              {game.black}{ratings.black !== null && <span className="elo"> ({ratings.black})</span>}
               {result && <span className="result">{result}</span>}
               {review.summary.opening && <span className="muted"> · {review.summary.opening.name}</span>}
             </span>
@@ -185,21 +192,25 @@ export default function App() {
       {game && fen && (
         <div className="review-grid">
           <section className="board-col">
-            <div className="player black-name">{game.black}</div>
+            <div className="player black-name">
+              {game.black}{ratings.black !== null && <span className="player-elo"> ({ratings.black})</span>}
+            </div>
             <div className="board-area">
               <EvalBar cp={currentWhiteCp} />
               <div className="board">
                 <ReviewBoard fen={fen} lastMove={lastMove} badge={badge} arrow={arrow} />
               </div>
             </div>
-            <div className="player white-name">{game.white}</div>
+            <div className="player white-name">
+              {game.white}{ratings.white !== null && <span className="player-elo"> ({ratings.white})</span>}
+            </div>
           </section>
 
           {review && (
             <aside className="panel">
               <CoachCard opening={review.summary.opening} evalCp={currentWhiteCp} move={currentMove} voiceOn={voiceOn} />
 
-              <SummaryPanel summary={review.summary} white={game.white} black={game.black} result={result}>
+              <SummaryPanel summary={review.summary} white={game.white} black={game.black} ratings={ratings} result={result}>
                 <MoveList plies={review.plies} current={ply} onSelect={setPly} />
               </SummaryPanel>
 
