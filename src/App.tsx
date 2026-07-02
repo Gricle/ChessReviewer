@@ -125,6 +125,8 @@ export default function App() {
     const row = await fetchSavedGame(supabase, gameId);
     const rebuilt = row ? rowToReview(row.pgn, row.analysis) : null;
     if (!rebuilt) { setError('That saved review could not be loaded.'); setView('game'); return; }
+    runSeq.current++;      // invalidate any in-flight analysis so it can't clobber this saved review
+    setProgress(null);
     setError(null);
     setAutoplaySpeed('off');
     setGame(rebuilt.game);
