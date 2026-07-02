@@ -15,7 +15,11 @@ export function loadQueue(storage: Storage): QueuedUpload[] {
     const raw = storage.getItem(QUEUE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (q): q is QueuedUpload =>
+        !!q && typeof q.id === 'string' && typeof q.payload === 'object' && q.payload !== null,
+    );
   } catch {
     return [];
   }
@@ -28,7 +32,18 @@ function saveQueue(storage: Storage, queue: QueuedUpload[]): void {
 export function enqueue(storage: Storage, payload: ReviewUpload, id: string): void {
   const queue = loadQueue(storage).filter((q) => q.id !== id);
   queue.push({ id, payload });
-  saveQueue(storage, queue);
+  try {
+    saveQueue(storage, queue);
+  } catch {
+    // Storage full (payloads are ~100-300KB each). Best-effort: drop the
+    // oldest pending upload to make room; if even that fails, skip queueing —
+    // sync is a background nicety, never worth crashing the review UI.
+    try {
+      saveQueue(storage, queue.slice(1));
+    } catch {
+      /* give up silently */
+    }
+  }
 }
 
 // djb2 — stable, dependency-free string hash for building queue ids.

@@ -67,4 +67,35 @@ describe('syncQueue', () => {
     expect(hashString('abc')).not.toBe(hashString('abd'));
     expect(hashString('')).toBe(hashString(''));
   });
+
+  it('recovers from valid-JSON-but-non-array storage', () => {
+    storage.setItem(QUEUE_KEY, '{}');
+    expect(loadQueue(storage)).toEqual([]);
+  });
+
+  it('filters malformed items out of a stored array', () => {
+    storage.setItem(QUEUE_KEY, JSON.stringify([42, { id: 'ok', payload: {} }, { id: 7, payload: {} }, null]));
+    expect(loadQueue(storage).map((q) => q.id)).toEqual(['ok']);
+  });
+
+  it('drops the oldest item instead of crashing when storage is full', () => {
+    enqueue(storage, payload, 'old');
+    enqueue(storage, payload, 'new');
+    let failNext = 1; // fail the first setItem call only
+    const realSet = storage.setItem.bind(storage);
+    storage.setItem = (k: string, v: string) => {
+      if (failNext > 0) { failNext--; throw new DOMException('quota', 'QuotaExceededError'); }
+      realSet(k, v);
+    };
+    expect(() => enqueue(storage, payload, 'newest')).not.toThrow();
+    expect(loadQueue(storage).map((q) => q.id)).toEqual(['new', 'newest']);
+  });
+
+  it('gives up silently when storage stays full', () => {
+    const realSet = storage.setItem.bind(storage);
+    storage.setItem = () => { throw new DOMException('quota', 'QuotaExceededError'); };
+    expect(() => enqueue(storage, payload, 'x')).not.toThrow();
+    storage.setItem = realSet;
+    expect(loadQueue(storage)).toEqual([]);
+  });
 });
