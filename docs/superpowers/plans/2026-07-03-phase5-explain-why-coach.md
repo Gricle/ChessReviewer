@@ -111,3 +111,11 @@ Commit: `feat: motif tags on move facts for weakness reports`
 
 ### Task 5: verification (controller)
 Browser: step through games; blunder shows "Better was X. The threat is now Y." style text; voice reads it; brilliant/fork phrasing appears where applicable; guest + saved-review reopen unaffected.
+
+---
+
+## Status (2026-07-03, post-merge)
+
+Shipped: motif detectors (hanging/fork/mate), rule-based explainMove, CoachCard wiring, motif tags + migration.
+DEFERRED detectors from the spec's Phase 5 list (tracked, not dropped): pins, skewers, discovered attacks, back-rank weakness — add to src/coach/motifs.ts when wanted; backfill motif tags from reviews.analysis per the init-migration NOTE.
+Phase 6 note: missed_mate/walked_into_mate tags are ungated by classification (unlike hung_piece/missed_fork) — filter by classification in aggregations if consistency matters.
