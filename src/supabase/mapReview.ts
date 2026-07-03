@@ -1,11 +1,13 @@
 // Pure mapping from an in-memory review to the row payloads uploadReview
 // writes to Postgres. No supabase import — unit-testable offline.
-import type { ParsedGame } from '../chess/types';
+import type { AnalyzedPly, ParsedGame } from '../chess/types';
 import type { Review } from '../analysis/assemble';
 import { playerRatings } from '../chess/ratings';
 import { cpToWinPercent } from '../analysis/winPercent';
 import { gamePhase } from '../analysis/gamePhase';
 import { hashString } from './syncQueue';
+import { forkTargets, isMateScore, isMatedScore, newlyHungPiece } from '../coach/motifs';
+import { BAD_CLASSES } from '../coach/explain';
 
 export type GameSource = 'paste' | 'chesscom' | 'lichess';
 
@@ -38,7 +40,35 @@ export interface ReviewUpload {
     classification: string;
     win_drop: number;
     phase: 'opening' | 'middlegame' | 'endgame';
+    motifs: string[];
   }>;
+}
+
+// Tags a ply with the motifs Phase 6's weakness reports aggregate over.
+// Mirrors the conditions explain.ts uses to pick its "why" clause (rules
+// 2a/2b/2c) plus fork detection on both the played and the best move.
+function motifsFor(p: AnalyzedPly): string[] {
+  const moverColor: 'w' | 'b' = p.color === 'white' ? 'w' : 'b';
+  const isBad = BAD_CLASSES.has(p.classification);
+  const motifs: string[] = [];
+
+  if (isMatedScore(p.evalAfterCp) && !isMatedScore(p.evalBeforeCp)) {
+    motifs.push('walked_into_mate');
+  }
+  if (isMateScore(p.evalBeforeCp) && !isMateScore(p.evalAfterCp)) {
+    motifs.push('missed_mate');
+  }
+  if (isBad && newlyHungPiece(p.fenBefore, p.fenAfter, moverColor)) {
+    motifs.push('hung_piece');
+  }
+  if (isBad && forkTargets(p.fenBefore, p.bestMoveUci).length >= 2) {
+    motifs.push('missed_fork');
+  }
+  if (forkTargets(p.fenBefore, p.uci).length >= 2) {
+    motifs.push('fork');
+  }
+
+  return motifs;
 }
 
 // PGN dates are "YYYY.MM.DD", possibly with "??" parts for unknowns.
@@ -94,6 +124,7 @@ export function mapReview(
         cpToWinPercent(p.evalBeforeCp) - cpToWinPercent(p.evalAfterCp),
       ),
       phase: gamePhase(p.fenBefore, p.index),
+      motifs: motifsFor(p),
     })),
   };
 }

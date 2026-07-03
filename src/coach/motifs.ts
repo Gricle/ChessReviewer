@@ -77,6 +77,22 @@ export function forkTargets(fenBefore: string, uci: string): string[] {
   return targets;
 }
 
+/**
+ * The first own piece present in `hangingPieces(fenAfter, color)` that was
+ * not already hanging in `hangingPieces(fenBefore, color)`, by square.
+ * Shared by explain.ts (rule 2c) and mapReview.ts (`hung_piece` motif) so
+ * the newly-hung set-difference logic lives in one place.
+ */
+export function newlyHungPiece(
+  fenBefore: string,
+  fenAfter: string,
+  color: 'w' | 'b',
+): HangingPiece | undefined {
+  const hungBefore = hangingPieces(fenBefore, color);
+  const hungAfter = hangingPieces(fenAfter, color);
+  return hungAfter.find((p) => !hungBefore.some((b) => b.square === p.square));
+}
+
 /** True when a mover-perspective cp encodes a forced mate for the mover. */
 export function isMateScore(cp: number): boolean {
   return cp >= 31000;

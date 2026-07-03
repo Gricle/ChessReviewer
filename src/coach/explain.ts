@@ -1,5 +1,5 @@
 import type { AnalyzedPly } from '../chess/types';
-import { hangingPieces, forkTargets, isMateScore, isMatedScore } from './motifs';
+import { forkTargets, isMateScore, isMatedScore, newlyHungPiece } from './motifs';
 
 export interface ExplainCtx {
   bestSan: string; // SAN of ply.bestMoveUci at fenBefore
@@ -14,7 +14,7 @@ const PIECE_NAMES: Record<'p' | 'n' | 'b' | 'r' | 'q', string> = {
   q: 'queen',
 };
 
-const BAD_CLASSES = new Set(['inaccuracy', 'mistake', 'blunder']);
+export const BAD_CLASSES = new Set(['inaccuracy', 'mistake', 'blunder']);
 
 export function explainMove(ply: AnalyzedPly, ctx: ExplainCtx): string {
   const { san, uci, bestMoveUci, classification, evalBeforeCp, evalAfterCp, fenBefore, fenAfter } =
@@ -38,11 +38,7 @@ export function explainMove(ply: AnalyzedPly, ctx: ExplainCtx): string {
       // 2b
       why = 'You had a forced mate and let it slip.';
     } else {
-      const hungBefore = hangingPieces(fenBefore, moverColor);
-      const hungAfter = hangingPieces(fenAfter, moverColor);
-      const newlyHung = hungAfter.find(
-        (p) => !hungBefore.some((b) => b.square === p.square),
-      );
+      const newlyHung = newlyHungPiece(fenBefore, fenAfter, moverColor);
 
       if (newlyHung) {
         // 2c

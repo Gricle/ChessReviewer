@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { mapReview } from './mapReview';
 import { parsePgn } from '../chess/pgnParser';
-import { assembleReview } from '../analysis/assemble';
+import { assembleReview, type Review } from '../analysis/assemble';
 import { OPENINGS } from '../data/openings.sample';
 import { hashString } from './syncQueue';
-import type { ParsedGame, PositionAnalysis } from '../chess/types';
+import type { AnalyzedPly, ParsedGame, PositionAnalysis } from '../chess/types';
 
 const PGN = `[White "Hikaru"]
 [Black "Magnus"]
@@ -92,5 +92,54 @@ describe('mapReview', () => {
     expect(mk('[Date "2024.13.40"]').game.played_at).toBeNull();
     expect(mk('[UTCDate "????.??.??"]\n[Date "2024.03.15"]').game.played_at).toBe('2024-03-15');
     expect(mk('[UTCDate "2024.03.14"]\n[Date "2024.03.15"]').game.played_at).toBe('2024-03-14');
+  });
+
+  it('gives every move_fact a motifs array', () => {
+    const { move_facts } = fixture();
+    for (const f of move_facts) {
+      expect(Array.isArray(f.motifs)).toBe(true);
+    }
+  });
+
+  it('tags hung_piece on a bad move that leaves a piece newly hanging', () => {
+    // Same fixture FENs as explain.test.ts rule 2c: Kb1 leaves the white
+    // rook on c2 hanging to a black rook that wasn't there before.
+    const badPly: AnalyzedPly = {
+      index: 0,
+      fenBefore: 'k7/8/8/8/8/8/2R5/K7 w - - 0 1',
+      fenAfter: 'k7/8/8/2r5/8/8/2R5/K7 b - - 0 1',
+      san: 'Kb1',
+      uci: 'a1b1',
+      color: 'white',
+      moveNumber: 1,
+      bestMoveUci: 'c2c5',
+      evalBeforeCp: 20,
+      evalAfterCp: -30,
+      classification: 'mistake',
+      accuracy: 40,
+    };
+    const review: Review = {
+      plies: [badPly],
+      summary: {
+        opening: null,
+        whiteAccuracy: 40,
+        blackAccuracy: 100,
+        counts: {
+          book: { white: 0, black: 0 },
+          brilliant: { white: 0, black: 0 },
+          great: { white: 0, black: 0 },
+          best: { white: 0, black: 0 },
+          excellent: { white: 0, black: 0 },
+          good: { white: 0, black: 0 },
+          inaccuracy: { white: 0, black: 0 },
+          mistake: { white: 1, black: 0 },
+          blunder: { white: 0, black: 0 },
+        },
+        estRating: { white: 1200, black: 1200 },
+      },
+    };
+    const game = parsePgn(PGN);
+    const { move_facts } = mapReview(game, review, 'paste', 14);
+    expect(move_facts[0].motifs).toContain('hung_piece');
   });
 });
