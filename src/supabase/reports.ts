@@ -50,6 +50,10 @@ export async function fetchReportFacts(client: SupabaseClient, gameIds: string[]
         .from('move_facts')
         .select('game_id, side, classification, phase, motifs, win_drop')
         .in('game_id', chunk)
+        // Stable unique ordering makes offset pagination deterministic
+        // (Postgres guarantees nothing across pages without ORDER BY).
+        .order('game_id')
+        .order('ply')
         .range(from, from + PAGE_SIZE - 1);
       if (error) throw new Error(error.message);
       const rows = (data ?? []) as ReportFactRow[];
