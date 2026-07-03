@@ -23,11 +23,40 @@ export async function fetchReportGames(client: SupabaseClient, limit = 200): Pro
   return (data ?? []) as unknown as ReportGameRow[];
 }
 
-export async function fetchReportFacts(client: SupabaseClient, limit = 10000): Promise<ReportFactRow[]> {
-  const { data, error } = await client
-    .from('move_facts')
-    .select('game_id, side, classification, phase, motifs, win_drop')
-    .limit(limit);
-  if (error) throw new Error(error.message);
-  return (data ?? []) as ReportFactRow[];
+// Small enough that a chunk's .in('game_id', chunk) clause stays well under
+// any practical URL length limit.
+const ID_CHUNK_SIZE = 50;
+// PostgREST commonly caps a single response at 1000 rows regardless of an
+// explicit .limit(); a chunk of 50 games could plausibly carry well over
+// 1000 move_facts between them (long games, many motifs per move). Rather
+// than guess a "safe" chunk size from an average facts-per-game figure (which
+// could be wrong for any individual chunk), page each chunk with .range()
+// until a page comes back short — that is correct regardless of how the
+// facts happen to be distributed across the games in the chunk.
+const PAGE_SIZE = 1000;
+
+/**
+ * Fetch move_facts rows strictly scoped to `gameIds` (chunked + paginated, see
+ * above) — coverage is deterministic: facts are fetched only for the games
+ * passed in, never an arbitrary slice of the table.
+ */
+export async function fetchReportFacts(client: SupabaseClient, gameIds: string[]): Promise<ReportFactRow[]> {
+  const out: ReportFactRow[] = [];
+  for (let i = 0; i < gameIds.length; i += ID_CHUNK_SIZE) {
+    const chunk = gameIds.slice(i, i + ID_CHUNK_SIZE);
+    let from = 0;
+    for (;;) {
+      const { data, error } = await client
+        .from('move_facts')
+        .select('game_id, side, classification, phase, motifs, win_drop')
+        .in('game_id', chunk)
+        .range(from, from + PAGE_SIZE - 1);
+      if (error) throw new Error(error.message);
+      const rows = (data ?? []) as ReportFactRow[];
+      out.push(...rows);
+      if (rows.length < PAGE_SIZE) break;
+      from += PAGE_SIZE;
+    }
+  }
+  return out;
 }

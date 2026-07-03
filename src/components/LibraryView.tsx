@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../supabase/client';
 import { fetchLibrary, fetchProfile, saveProfile, type LibraryRow, type Profile } from '../supabase/library';
+import { ReportsView } from './ReportsView';
 
 interface Props {
   user: User;
@@ -70,6 +71,8 @@ export function LibraryView({ user, onOpen, onClose }: Props) {
           ))}
         </div>
       )}
+
+      <ReportsView user={user} />
     </div>
   );
 }
