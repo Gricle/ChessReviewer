@@ -16,6 +16,9 @@ dist-ssr
 supabase/.temp
 supabase/.branches
 
+# Brainstorming visual-companion scratch
+.superpowers/
+
 # Babysitter run cache/logs
 .a5c
 
