@@ -20,6 +20,15 @@ export async function fetchLibrary(client: SupabaseClient, limit = 50): Promise<
   return (data ?? []) as unknown as LibraryRow[];
 }
 
+// id + pgn_hash for every game the user already has, so the login auto-review
+// can skip re-analyzing games already in the library (dedupe by the same djb2
+// hash uploadReview stores). RLS scopes this to the signed-in user's rows.
+export async function fetchLibraryPgnHashes(client: SupabaseClient): Promise<Array<{ id: string; pgn_hash: string }>> {
+  const { data, error } = await client.from('games').select('id, pgn_hash');
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Array<{ id: string; pgn_hash: string }>;
+}
+
 export async function fetchSavedGame(client: SupabaseClient, gameId: string): Promise<{ pgn: string; analysis: unknown } | null> {
   const { data, error } = await client
     .from('games')
