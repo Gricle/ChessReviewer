@@ -28,7 +28,7 @@ import { rowToReview } from './supabase/rowToReview';
 import { enqueue, flushQueue, hashString } from './supabase/syncQueue';
 import { fetchRecentGames as fetchComGames } from './importers/chesscom';
 import { fetchRecentGames as fetchLiGames } from './importers/lichess';
-import { chooseImportSource, latestGames } from './importers/autoImport';
+import { chooseImportSource, latestGames, unreviewedGames } from './importers/autoImport';
 import { Engine } from './engine/engine';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -202,8 +202,10 @@ export default function App() {
     // Score every remaining not-yet-reviewed game from the latest N, serially,
     // on one worker. Per-game errors are swallowed so one bad game can't abort
     // the batch. This never touches the board.
-    const toScore = latest.filter(
-      (g) => !scored.has(g.id) && !reviewedHashes.has(hashString(g.pgn)),
+    const toScore = unreviewedGames(
+      latest.filter((g) => !scored.has(g.id)),
+      reviewedHashes,
+      hashString,
     );
     if (toScore.length === 0) return;
 
