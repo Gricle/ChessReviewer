@@ -51,17 +51,27 @@ const BADGE_SYM: Record<string, string> = {
  *
  *  The badge sits at the top-right corner (100,0); it extends slightly
  *  outside the square, so the group is overflow:visible.
+ *
+ *  Position is baked directly onto the <circle>/<text> (cx/cy, x/y) rather
+ *  than a wrapping <g transform="translate(100,0)">. The badge-pop animation
+ *  (`.cg-custom-svgs g` in index.css) animates a CSS `transform: scale()`,
+ *  and a CSS transform *overrides* an SVG `transform` presentation attribute.
+ *  If the offset lived on a <g transform="translate(...)">, the pop would
+ *  clobber that translate for the duration of the animation — the badge would
+ *  render at the un-offset origin and then snap back to the corner when the
+ *  (non-`forwards`) animation ended. Keeping the offset off the animated
+ *  element avoids that jump entirely.
  */
 function badgeSvg(cls: Classification): string {
   const hex = BADGE_COLOR[cls] ?? '#888';
   const sym = BADGE_SYM[cls] ?? '?';
   const fontSize = sym.length > 1 ? 30 : 36;
   const r = sym.length > 1 ? 20 : 24;
-  return `<g style="overflow:visible"><g transform="translate(100,0)">
-    <circle r="${r}" fill="${hex}" stroke="#ffffff" stroke-width="3" />
-    <text dy="0.33em" text-anchor="middle" font-family="Arial,sans-serif"
+  return `<g style="overflow:visible">
+    <circle cx="100" cy="0" r="${r}" fill="${hex}" stroke="#ffffff" stroke-width="3" />
+    <text x="100" y="0" dy="0.33em" text-anchor="middle" font-family="Arial,sans-serif"
       font-weight="700" font-size="${fontSize}" fill="#ffffff">${sym}</text>
-  </g></g>`;
+  </g>`;
 }
 
 export function ReviewBoard({ fen, lastMove, badge, arrow, checkSquare }: Props) {
