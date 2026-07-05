@@ -269,12 +269,20 @@ export default function App() {
 
   const currentWhiteCp = useMemo(() => {
     if (!review) return 0;
+    // At the final position, reflect the game result rather than the last engine
+    // eval: a resignation or agreed draw isn't captured by the board evaluation,
+    // so drive the bar fully to the winner (or centre for a draw).
+    if (ply === total) {
+      if (result === '1-0') return 32000;
+      if (result === '0-1') return -32000;
+      if (result === '1/2-1/2') return 0;
+    }
     if (ply === 0) {
       const p0 = review.plies[0];
       return p0 ? (p0.color === 'white' ? p0.evalBeforeCp : -p0.evalBeforeCp) : 0;
     }
     return whiteEvals[ply - 1] ?? 0;
-  }, [review, ply, whiteEvals]);
+  }, [review, ply, whiteEvals, total, result]);
 
   useEffect(() => {
     if (review && soundOn && ply > 0 && ply !== prevPly.current) {
