@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { userSide, worstOpenings, missedMotifs, phaseCollapse, accuracyTrend } from './aggregate';
+import { userSide, worstOpenings, missedMotifs, phaseCollapse } from './aggregate';
 import { gameResult, trendSeries, type TrendFilter } from './aggregate';
 import { rollingAverage } from './aggregate';
 import { blundersPerGame } from './aggregate';
@@ -149,23 +149,6 @@ describe('phaseCollapse', () => {
     expect(result).toEqual([
       { phase: 'opening', moves: 2, avgWinDrop: 15, badMovePct: 50 },
       { phase: 'middlegame', moves: 1, avgWinDrop: 20, badMovePct: 100 },
-    ]);
-  });
-});
-
-describe('accuracyTrend', () => {
-  it('returns one point per reviewed game, sorted ascending, preferring played_at over created_at', () => {
-    const games: ReportGameRow[] = [
-      game({ id: 'g2', played_at: '2026-02-01', created_at: '2026-02-05T00:00:00.000Z', reviews: { white_accuracy: 80, black_accuracy: 60, white_est_rating: 1700, black_est_rating: 1500 } }),
-      // No played_at — falls back to created_at, which sorts before g2's played_at.
-      game({ id: 'g1', played_at: null, created_at: '2026-01-01T00:00:00.000Z', reviews: { white_accuracy: 70, black_accuracy: 50, white_est_rating: 1600, black_est_rating: 1400 } }),
-      // No review at all — excluded entirely.
-      game({ id: 'g3', played_at: '2026-03-01', reviews: null }),
-    ];
-    const result = accuracyTrend(games, null);
-    expect(result).toEqual([
-      { date: '2026-01-01T00:00:00.000Z', accuracy: 60, estRating: 1500 },
-      { date: '2026-02-01', accuracy: 70, estRating: 1600 },
     ]);
   });
 });

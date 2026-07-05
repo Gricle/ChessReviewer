@@ -286,20 +286,3 @@ export function headlineStats(
     blundersPerGame: stat((r) => r.blunders),
   };
 }
-
-export interface TrendPoint { date: string; accuracy: number; estRating: number; }
-
-/** One point per game with a review, user side when known else mean, sorted by played_at ?? created_at ascending. */
-export function accuracyTrend(games: ReportGameRow[], profile: Profile | null): TrendPoint[] {
-  const points: TrendPoint[] = [];
-  for (const g of games) {
-    if (!g.reviews) continue;
-    const side = userSide(g, profile);
-    points.push({
-      date: g.played_at ?? g.created_at,
-      accuracy: sidedValue(side, g.reviews.white_accuracy, g.reviews.black_accuracy),
-      estRating: sidedValue(side, g.reviews.white_est_rating, g.reviews.black_est_rating),
-    });
-  }
-  return points.sort((a, b) => a.date.localeCompare(b.date));
-}

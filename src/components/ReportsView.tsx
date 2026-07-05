@@ -4,8 +4,8 @@ import { supabase } from '../supabase/client';
 import { fetchProfile } from '../supabase/library';
 import { fetchReportGames, fetchReportFacts } from '../supabase/reports';
 import {
-  worstOpenings, missedMotifs, phaseCollapse, accuracyTrend,
-  type OpeningStat, type MotifStat, type PhaseStat, type TrendPoint,
+  worstOpenings, missedMotifs, phaseCollapse,
+  type OpeningStat, type MotifStat, type PhaseStat,
 } from '../reports/aggregate';
 
 interface Props { user: User; }
@@ -14,7 +14,6 @@ interface ReportData {
   openings: OpeningStat[];
   motifs: MotifStat[];
   phases: PhaseStat[];
-  trend: TrendPoint[];
   hasHistory: boolean;
 }
 
@@ -54,7 +53,6 @@ export function ReportsView({ user }: Props) {
           openings: worstOpenings(games, profile),
           motifs: missedMotifs(facts, games, profile),
           phases: phaseCollapse(facts, games, profile),
-          trend: accuracyTrend(games, profile),
           hasHistory: games.length > 0,
         });
       } catch (e) {
@@ -90,7 +88,6 @@ export function ReportsView({ user }: Props) {
       <OpeningsCard openings={data.openings} />
       <MotifsCard motifs={data.motifs} />
       <PhaseCard phases={data.phases} />
-      <TrendCard trend={data.trend} />
     </div>
   );
 }
@@ -161,46 +158,6 @@ function PhaseCard({ phases }: { phases: PhaseStat[] }) {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-const TW = 480;
-const TH = 96;
-
-function TrendCard({ trend }: { trend: TrendPoint[] }) {
-  if (trend.length < 3) {
-    return (
-      <div className="card report-card">
-        <h4>Accuracy trend</h4>
-        <div className="report-empty-row">Analyze more games to see your trend.</div>
-      </div>
-    );
-  }
-
-  const x = (i: number) => (i / Math.max(1, trend.length - 1)) * TW;
-  const yAcc = (v: number) => TH - (Math.max(0, Math.min(100, v)) / 100) * TH;
-
-  const ratings = trend.map((t) => t.estRating);
-  const ratingMin = Math.min(...ratings);
-  const ratingMax = Math.max(...ratings);
-  const ratingSpan = ratingMax - ratingMin || 1;
-  const yRating = (v: number) => TH - ((v - ratingMin) / ratingSpan) * TH;
-
-  const accPts = trend.map((t, i) => `${x(i)},${yAcc(t.accuracy)}`).join(' ');
-  const ratingPts = trend.map((t, i) => `${x(i)},${yRating(t.estRating)}`).join(' ');
-
-  return (
-    <div className="card report-card">
-      <h4>Accuracy trend</h4>
-      <svg className="rep-trend" width="100%" viewBox={`0 0 ${TW} ${TH}`} preserveAspectRatio="none">
-        <polyline points={ratingPts} fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth={1.2} />
-        <polyline points={accPts} fill="none" stroke="#81b64c" strokeWidth={1.8} />
-      </svg>
-      <div className="rep-trend-legend">
-        <span className="rep-legend-acc">— accuracy</span>
-        <span className="rep-legend-rating">— est. rating</span>
-      </div>
     </div>
   );
 }
