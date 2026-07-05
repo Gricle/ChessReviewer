@@ -35,7 +35,11 @@ export function useAuth(): Auth {
     },
     signUp: async (email, password) => {
       if (!supabase) return 'Cloud sync is not configured.';
-      const { error } = await supabase.auth.signUp({ email, password });
+      // Send the confirmation email's redirect to this app's base URL (works in
+      // dev at /ChessReviewer/ on :5173 and in prod on GitHub Pages), so the
+      // callback lands on a page we serve rather than a 404.
+      const emailRedirectTo = window.location.origin + import.meta.env.BASE_URL;
+      const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo } });
       return error ? error.message : null;
     },
     signInWithGoogle: async () => {

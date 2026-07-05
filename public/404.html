@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Chess Reviewer</title>
+    <script>
+      // GitHub Pages has no server-side routing, so any path it can't map to a
+      // static file returns this 404 page. The Supabase email-confirmation
+      // callback (and any other deep link) lands here. Redirect back to the
+      // app's index.html, preserving the query string and hash so the auth
+      // tokens (?code=... / #access_token=...) survive and the Supabase client
+      // can complete the session on load.
+      (function () {
+        var base = '/ChessReviewer/';
+        var target = base + window.location.search + window.location.hash;
+        window.location.replace(target);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
