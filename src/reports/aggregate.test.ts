@@ -271,4 +271,25 @@ describe('headlineStats', () => {
     ];
     expect(headlineStats(games, [], profile, ALL).winRate).toBeNull();
   });
+  it('computes non-null deltas across two adjacent 30d windows', () => {
+    // Window math (range 30d, measured from newest = 2026-02-15):
+    //   curStart  = 2026-02-15 − 30d = 2026-01-16  → current  = games on/after it
+    //   prevStart = 2026-01-16 − 30d = 2025-12-17  → previous = [prevStart, curStart)
+    // current window: 2026-02-15 + 2026-02-01 ; previous window: 2026-01-01.
+    const games = [
+      game({ id: 'cur1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-02-15', result: '1-0',
+        reviews: { white_accuracy: 90, black_accuracy: 10, white_est_rating: 1500, black_est_rating: 1200 } }),
+      game({ id: 'cur2', white_name: 'Alice', black_name: 'Bob', played_at: '2026-02-01', result: '0-1',
+        reviews: { white_accuracy: 70, black_accuracy: 30, white_est_rating: 1500, black_est_rating: 1200 } }),
+      game({ id: 'prev1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01', result: '1-0',
+        reviews: { white_accuracy: 60, black_accuracy: 40, white_est_rating: 1500, black_est_rating: 1200 } }),
+    ];
+    const stats = headlineStats(games, [], profile, { color: 'all', range: '30d' });
+    // current accuracy mean = (90 + 70) / 2 = 80 ; previous = 60 → delta 20.
+    expect(stats.avgAccuracy.value).toBe(80);
+    expect(stats.avgAccuracy.delta).toBe(20);
+    // current results (Alice = white): win + loss = 50% ; previous: win = 100% → delta −50.
+    expect(stats.winRate?.value).toBe(50);
+    expect(stats.winRate?.delta).toBe(-50);
+  });
 });

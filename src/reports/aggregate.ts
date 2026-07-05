@@ -177,12 +177,11 @@ export function rollingAverage(values: number[], window = 5): number[] {
 
 export interface BlunderPoint { date: string; blunders: number; }
 
-/** Blunders per game over time; side-filtered like missedMotifs, color/range-filtered, zero-filled, sorted asc. */
-export function blundersPerGame(
-  facts: ReportFactRow[], games: ReportGameRow[], profile: Profile | null, filter: TrendFilter,
-): BlunderPoint[] {
-  const sides = new Map(games.map((g) => [g.id, userSide(g, profile)]));
-  const eligible = games.filter((g) => g.reviews && inColor(sides.get(g.id) ?? null, filter.color));
+// Side-filtered blunder count per eligible game, zero-filled. Shared by
+// blundersPerGame and combinedSeries so the two counts can never diverge.
+function blunderCountByGame(
+  eligible: ReportGameRow[], facts: ReportFactRow[], sides: Map<string, 'white' | 'black' | null>,
+): Map<string, number> {
   const counts = new Map<string, number>();
   for (const g of eligible) counts.set(g.id, 0);
   for (const f of facts) {
@@ -191,6 +190,16 @@ export function blundersPerGame(
     if (side && side !== f.side) continue;
     if (f.classification === 'blunder') counts.set(f.game_id, (counts.get(f.game_id) ?? 0) + 1);
   }
+  return counts;
+}
+
+/** Blunders per game over time; side-filtered like missedMotifs, color/range-filtered, zero-filled, sorted asc. */
+export function blundersPerGame(
+  facts: ReportFactRow[], games: ReportGameRow[], profile: Profile | null, filter: TrendFilter,
+): BlunderPoint[] {
+  const sides = sideByGameId(games, profile);
+  const eligible = games.filter((g) => g.reviews && inColor(sides.get(g.id) ?? null, filter.color));
+  const counts = blunderCountByGame(eligible, facts, sides);
   const points = eligible.map((g) => ({ date: gameDate(g), ms: toMs(gameDate(g)), blunders: counts.get(g.id) ?? 0 }));
   return applyRange(points, filter.range)
     .sort((a, b) => a.ms - b.ms)
@@ -211,16 +220,9 @@ interface CombinedPoint { ms: number; accuracy: number; estRating: number; resul
 function combinedSeries(
   games: ReportGameRow[], facts: ReportFactRow[], profile: Profile | null, color: ColorFilter,
 ): CombinedPoint[] {
-  const sides = new Map(games.map((g) => [g.id, userSide(g, profile)]));
+  const sides = sideByGameId(games, profile);
   const eligible = games.filter((g) => g.reviews && inColor(sides.get(g.id) ?? null, color));
-  const blunders = new Map<string, number>();
-  for (const g of eligible) blunders.set(g.id, 0);
-  for (const f of facts) {
-    if (!blunders.has(f.game_id)) continue;
-    const side = sides.get(f.game_id);
-    if (side && side !== f.side) continue;
-    if (f.classification === 'blunder') blunders.set(f.game_id, (blunders.get(f.game_id) ?? 0) + 1);
-  }
+  const blunders = blunderCountByGame(eligible, facts, sides);
   return eligible
     .map((g) => {
       const side = sides.get(g.id) ?? null;
