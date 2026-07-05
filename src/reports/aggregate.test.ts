@@ -3,6 +3,7 @@ import { userSide, worstOpenings, missedMotifs, phaseCollapse, accuracyTrend } f
 import { gameResult, trendSeries, type TrendFilter } from './aggregate';
 import { rollingAverage } from './aggregate';
 import { blundersPerGame } from './aggregate';
+import { headlineStats } from './aggregate';
 import type { ReportGameRow, ReportFactRow } from '../supabase/reports';
 import type { Profile } from '../supabase/library';
 
@@ -247,5 +248,27 @@ describe('blundersPerGame', () => {
       { date: '2026-01-01', blunders: 1 },
       { date: '2026-01-02', blunders: 0 },
     ]);
+  });
+});
+
+describe('headlineStats', () => {
+  const profile = { display_name: 'Alice', chesscom_username: null, lichess_username: null };
+  it('computes current-window values with null deltas when range is all', () => {
+    const games = [
+      game({ id: 'g1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01', result: '1-0',
+        reviews: { white_accuracy: 80, black_accuracy: 50, white_est_rating: 1400, black_est_rating: 1200 } }),
+    ];
+    const stats = headlineStats(games, [], profile, ALL);
+    expect(stats.avgAccuracy.value).toBe(80);
+    expect(stats.avgAccuracy.delta).toBeNull();
+    expect(stats.winRate?.value).toBe(100);
+    expect(stats.blundersPerGame.value).toBe(0);
+  });
+  it('returns winRate null when no game has a determinable result', () => {
+    const games = [
+      game({ id: 'g1', white_name: 'Carol', black_name: 'Dave', played_at: '2026-01-01',
+        reviews: { white_accuracy: 70, black_accuracy: 70, white_est_rating: 1300, black_est_rating: 1300 } }),
+    ];
+    expect(headlineStats(games, [], profile, ALL).winRate).toBeNull();
   });
 });
