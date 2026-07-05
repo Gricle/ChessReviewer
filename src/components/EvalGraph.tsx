@@ -28,8 +28,8 @@ export function EvalGraph({ evalsCp, classifications, current, onSelect }: Props
   const pts = evalsCp.map((cp, i) => ({ x: x(i), y: y(cp), raw: cp }));
   const lineStr = pts.map((p) => `${p.x},${p.y}`).join(' ');
 
-  // Chess.com-style: fill green above midline when white is winning,
-  // red below midline when black is winning.
+  // Chess.com-style: fill white above midline when white is winning,
+  // black below midline when black is winning.
   const fillDefs = pts.map((p, i) => ({
     key: i,
     d: i === 0 ? '' : pathSegment(pts[i - 1], p),
@@ -68,13 +68,13 @@ export function EvalGraph({ evalsCp, classifications, current, onSelect }: Props
       {/* Midline */}
       <line x1={0} y1={H / 2} x2={W} y2={H / 2} stroke="rgba(255,255,255,0.18)" strokeWidth={1} />
 
-      {/* Area fill — green above when white ahead, red below when black ahead */}
+      {/* Area fill — white above when white ahead, black below when black ahead */}
       {fillDefs.slice(1).map((seg) => (
-        <path key={seg.key} d={seg.d} fill={seg.pos ? 'rgba(129,182,76,0.25)' : 'rgba(250,65,45,0.18)'} />
+        <path key={seg.key} d={seg.d} fill={seg.pos ? 'rgba(244,244,242,0.85)' : 'rgba(20,18,16,0.9)'} />
       ))}
 
       {/* Line */}
-      <polyline points={lineStr} fill="none" stroke="#81b64c" strokeWidth={1.6} />
+      <polyline points={lineStr} fill="none" stroke="#b7b5b0" strokeWidth={1.6} />
 
       {/* Classification dots */}
       {classifications && evalsCp.map((cp, i) => {
