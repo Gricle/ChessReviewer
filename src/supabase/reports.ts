@@ -4,6 +4,7 @@ export interface ReportGameRow {
   id: string;
   white_name: string; black_name: string;
   opening_name: string | null;
+  result: string | null;
   played_at: string | null; created_at: string;
   reviews: { white_accuracy: number; black_accuracy: number; white_est_rating: number; black_est_rating: number } | null;
 }
@@ -16,7 +17,7 @@ export interface ReportFactRow {
 export async function fetchReportGames(client: SupabaseClient, limit = 200): Promise<ReportGameRow[]> {
   const { data, error } = await client
     .from('games')
-    .select('id, white_name, black_name, opening_name, played_at, created_at, reviews(white_accuracy, black_accuracy, white_est_rating, black_est_rating)')
+    .select('id, white_name, black_name, opening_name, result, played_at, created_at, reviews(white_accuracy, black_accuracy, white_est_rating, black_est_rating)')
     .order('created_at', { ascending: false })
     .limit(limit);
   if (error) throw new Error(error.message);
