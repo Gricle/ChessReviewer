@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { userSide, worstOpenings, missedMotifs, phaseCollapse, accuracyTrend } from './aggregate';
 import { gameResult, trendSeries, type TrendFilter } from './aggregate';
 import { rollingAverage } from './aggregate';
+import { blundersPerGame } from './aggregate';
 import type { ReportGameRow, ReportFactRow } from '../supabase/reports';
 import type { Profile } from '../supabase/library';
 
@@ -226,5 +227,25 @@ describe('rollingAverage', () => {
   });
   it('handles an empty array', () => {
     expect(rollingAverage([], 5)).toEqual([]);
+  });
+});
+
+describe('blundersPerGame', () => {
+  const profile = { display_name: 'Alice', chesscom_username: null, lichess_username: null };
+  it('counts blunders per game, including zero-blunder games, sorted by date', () => {
+    const games = [
+      game({ id: 'g1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01' }),
+      game({ id: 'g2', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-02' }),
+    ];
+    const facts = [
+      fact({ game_id: 'g1', side: 'white', classification: 'blunder' }),
+      fact({ game_id: 'g1', side: 'white', classification: 'mistake' }),
+      fact({ game_id: 'g1', side: 'black', classification: 'blunder' }), // opponent — excluded
+    ];
+    const out = blundersPerGame(facts, games, profile, ALL);
+    expect(out).toEqual([
+      { date: '2026-01-01', blunders: 1 },
+      { date: '2026-01-02', blunders: 0 },
+    ]);
   });
 });

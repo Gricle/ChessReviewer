@@ -175,6 +175,28 @@ export function rollingAverage(values: number[], window = 5): number[] {
   });
 }
 
+export interface BlunderPoint { date: string; blunders: number; }
+
+/** Blunders per game over time; side-filtered like missedMotifs, color/range-filtered, zero-filled, sorted asc. */
+export function blundersPerGame(
+  facts: ReportFactRow[], games: ReportGameRow[], profile: Profile | null, filter: TrendFilter,
+): BlunderPoint[] {
+  const sides = new Map(games.map((g) => [g.id, userSide(g, profile)]));
+  const eligible = games.filter((g) => g.reviews && inColor(sides.get(g.id) ?? null, filter.color));
+  const counts = new Map<string, number>();
+  for (const g of eligible) counts.set(g.id, 0);
+  for (const f of facts) {
+    if (!counts.has(f.game_id)) continue;
+    const side = sides.get(f.game_id);
+    if (side && side !== f.side) continue;
+    if (f.classification === 'blunder') counts.set(f.game_id, (counts.get(f.game_id) ?? 0) + 1);
+  }
+  const points = eligible.map((g) => ({ date: gameDate(g), ms: toMs(gameDate(g)), blunders: counts.get(g.id) ?? 0 }));
+  return applyRange(points, filter.range)
+    .sort((a, b) => a.ms - b.ms)
+    .map(({ ms: _ms, ...p }) => p);
+}
+
 export interface TrendPoint { date: string; accuracy: number; estRating: number; }
 
 /** One point per game with a review, user side when known else mean, sorted by played_at ?? created_at ascending. */
