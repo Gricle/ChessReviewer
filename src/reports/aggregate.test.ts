@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { userSide, worstOpenings, missedMotifs, phaseCollapse, accuracyTrend } from './aggregate';
 import { gameResult, trendSeries, type TrendFilter } from './aggregate';
+import { rollingAverage } from './aggregate';
 import type { ReportGameRow, ReportFactRow } from '../supabase/reports';
 import type { Profile } from '../supabase/library';
 
@@ -216,5 +217,14 @@ describe('trendSeries', () => {
     // 30d window ends at 2026-03-01, so the January game is excluded.
     const s = trendSeries(games, profile, { color: 'all', range: '30d' });
     expect(s.map((p) => p.date)).toEqual(['2026-03-01']);
+  });
+});
+
+describe('rollingAverage', () => {
+  it('averages a trailing window, shrinking at the start', () => {
+    expect(rollingAverage([10, 20, 30], 2)).toEqual([10, 15, 25]);
+  });
+  it('handles an empty array', () => {
+    expect(rollingAverage([], 5)).toEqual([]);
   });
 });

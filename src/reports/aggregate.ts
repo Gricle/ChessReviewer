@@ -167,6 +167,14 @@ export function trendSeries(games: ReportGameRow[], profile: Profile | null, fil
     .map(({ ms: _ms, ...p }) => p);
 }
 
+/** Trailing moving average; positions with < window prior points average what exists. */
+export function rollingAverage(values: number[], window = 5): number[] {
+  return values.map((_, i) => {
+    const slice = values.slice(Math.max(0, i - window + 1), i + 1);
+    return slice.reduce((sum, v) => sum + v, 0) / slice.length;
+  });
+}
+
 export interface TrendPoint { date: string; accuracy: number; estRating: number; }
 
 /** One point per game with a review, user side when known else mean, sorted by played_at ?? created_at ascending. */
