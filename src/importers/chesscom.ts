@@ -13,6 +13,7 @@ export interface GameSummary {
   black: string;
   date: string;
   pgn: string;
+  playedAt: number; // epoch ms, for ordering games played on the same day
 }
 
 function gameId(url: string): string {
@@ -28,6 +29,7 @@ export function summarizeGames(games: ChessComGame[]): GameSummary[] {
     black: g.black.username,
     date: new Date(g.end_time * 1000).toISOString().slice(0, 10),
     pgn: g.pgn,
+    playedAt: g.end_time * 1000,
   }));
 }
 

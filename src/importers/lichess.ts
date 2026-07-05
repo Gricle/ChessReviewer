@@ -15,6 +15,7 @@ export interface GameSummary {
   black: string;
   date: string;
   pgn: string;
+  playedAt: number; // epoch ms, for ordering games played on the same day
 }
 
 function toSummary(g: LichessGame): GameSummary {
@@ -27,6 +28,7 @@ function toSummary(g: LichessGame): GameSummary {
     black,
     date: new Date(g.createdAt).toISOString().slice(0, 10),
     pgn: g.pgn,
+    playedAt: g.createdAt,
   };
 }
 

@@ -23,9 +23,14 @@ import { AuthBar } from './components/AuthBar';
 import { LibraryView } from './components/LibraryView';
 import { mapReview, type GameSource } from './supabase/mapReview';
 import { uploadReview } from './supabase/uploadReview';
-import { fetchSavedGame } from './supabase/library';
+import { fetchSavedGame, fetchProfile, fetchLibraryPgnHashes } from './supabase/library';
 import { rowToReview } from './supabase/rowToReview';
 import { enqueue, flushQueue, hashString } from './supabase/syncQueue';
+import { fetchRecentGames as fetchComGames } from './importers/chesscom';
+import { fetchRecentGames as fetchLiGames } from './importers/lichess';
+import { chooseImportSource, latestGames } from './importers/autoImport';
+import { Engine } from './engine/engine';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 // localStorage can throw SecurityError in storage-blocked contexts; settings
 // are a nicety — never let them take down the app.
@@ -37,6 +42,7 @@ function safeStorageSet(key: string, value: string): void {
 }
 
 const DEPTH = 14;
+const LATEST_N = 10; // how many recent games to pull + score on login
 type Speed = 'off' | 'slow' | 'medium' | 'fast';
 const SPEED_CYCLE: Speed[] = ['off', 'slow', 'medium', 'fast'];
 const SPEED_MS: Record<Speed, number> = { off: 0, slow: 1200, medium: 600, fast: 250 };
@@ -58,9 +64,11 @@ export default function App() {
   const [view, setView] = useState<'game' | 'library'>('game');
   const auth = useAuth();
   const [lastImport, setLastImport] = useState<{ pgn: string; source: GameSource } | null>(null);
+  const [autoScore, setAutoScore] = useState<{ done: number; total: number } | null>(null);
   const prevPly = useRef(0);
   const autoplayTimer = useRef<number | null>(null);
   const runSeq = useRef(0);
+  const autoRanForUser = useRef<string | null>(null); // guards "once per login"
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   const total = game?.plies.length ?? 0;
@@ -137,6 +145,99 @@ export default function App() {
     setLastImport(null);   // prevents the sync effect from re-uploading (guard requires lastImport)
     setView('game');
   }
+
+  // Analyze + queue one game WITHOUT touching the board — reuses the exact same
+  // pipeline run() uses (parsePgn → analyzeGame → assembleReview → mapReview),
+  // then hands the payload to the write-behind sync queue. A shared Engine is
+  // threaded through so the whole batch runs on one Stockfish worker, serially.
+  async function analyzeAndQueue(pgnText: string, source: GameSource, userId: string, engine: Engine) {
+    const parsed = parsePgn(pgnText);
+    const analyses = await analyzeGame(parsed, DEPTH, undefined, engine);
+    const review = assembleReview(parsed, analyses, OPENINGS);
+    const payload = mapReview(parsed, review, source, DEPTH, pgnText);
+    enqueue(localStorage, payload, `${userId}:${hashString(pgnText)}`);
+  }
+
+  // ── on login: fetch the player's latest games, auto-open the newest, and
+  // score the rest in the background (see the guarded effect below) ──
+  async function runAutoReview(client: SupabaseClient, userId: string) {
+    let profile;
+    try { profile = await fetchProfile(client, userId); } catch { return; }
+    const target = chooseImportSource(profile);
+    if (!target) return; // no linked chess.com / lichess account
+
+    // Snapshot the run counter: if the user starts their own game while we're
+    // fetching, runSeq changes and we must NOT clobber their board.
+    const startSeq = runSeq.current;
+
+    let fetched;
+    try {
+      fetched = target.source === 'chesscom'
+        ? await fetchComGames(target.username)
+        : await fetchLiGames(target.username);
+    } catch { return; } // bad username / site down — stay silent, don't disrupt
+    const latest = latestGames(fetched, LATEST_N);
+    if (latest.length === 0) return;
+
+    let existing: Array<{ id: string; pgn_hash: string }> = [];
+    try { existing = await fetchLibraryPgnHashes(client); } catch { /* best-effort dedupe */ }
+    const reviewedHashes = new Set(existing.map((e) => e.pgn_hash));
+    const idByHash = new Map(existing.map((e) => [e.pgn_hash, e.id] as const));
+
+    // "Latest" = the most-recently-played fetched game. Auto-open it so the user
+    // lands on it — but only if they haven't started their own game meanwhile.
+    const newest = latest[0];
+    const newestHash = hashString(newest.pgn);
+    const scored = new Set<string>();
+    if (runSeq.current === startSeq) {
+      if (reviewedHashes.has(newestHash)) {
+        const id = idByHash.get(newestHash);
+        if (id) await openSaved(id); // already analyzed — just load it, no re-run
+      } else {
+        await run(newest.pgn, target.source); // analyze + display + upload
+        scored.add(newest.id);
+      }
+    }
+
+    // Score every remaining not-yet-reviewed game from the latest N, serially,
+    // on one worker. Per-game errors are swallowed so one bad game can't abort
+    // the batch. This never touches the board.
+    const toScore = latest.filter(
+      (g) => !scored.has(g.id) && !reviewedHashes.has(hashString(g.pgn)),
+    );
+    if (toScore.length === 0) return;
+
+    const engine = new Engine();
+    try {
+      setAutoScore({ done: 0, total: toScore.length });
+      for (let i = 0; i < toScore.length; i++) {
+        try { await analyzeAndQueue(toScore[i].pgn, target.source, userId, engine); }
+        catch { /* skip this game, keep going */ }
+        setAutoScore({ done: i + 1, total: toScore.length });
+      }
+    } finally {
+      engine.quit();
+      setAutoScore(null);
+    }
+
+    void flushQueue(localStorage, (p, id) =>
+      id.startsWith(`${userId}:`)
+        ? uploadReview(client, userId, p)
+        : Promise.reject(new Error('queued by another user')),
+    ).catch(() => { /* fire-and-forget; retried on next login */ });
+  }
+
+  // Runs once per login: the ref guard survives React StrictMode's double
+  // effect invocation, and resets on sign-out so a later login re-runs.
+  useEffect(() => {
+    const client = supabase;
+    const user = auth.user;
+    if (!client || !user) { autoRanForUser.current = null; return; }
+    if (autoRanForUser.current === user.id) return;
+    autoRanForUser.current = user.id;
+    void runAutoReview(client, user.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.user?.id]);
 
   // ── autoplay ──
   useEffect(() => {
@@ -337,6 +438,15 @@ export default function App() {
               <span className="status-text">
                 <span className="dot" /> {progress}
                 {progressPct > 0 && <span className="pct">{progressPct}%</span>}
+              </span>
+            </div>
+          )}
+          {autoScore && autoScore.total > 0 && (
+            <div className="status">
+              <div className="status-bar" style={{ width: `${Math.round((autoScore.done / autoScore.total) * 100)}%` }} />
+              <span className="status-text">
+                <span className="dot" /> Scoring your recent games…
+                <span className="pct">{autoScore.done} / {autoScore.total}</span>
               </span>
             </div>
           )}
