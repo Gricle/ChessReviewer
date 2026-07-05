@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Supabase CLI local artifacts
+supabase/.temp
+supabase/.branches
+
 # Babysitter run cache/logs
 .a5c
 
