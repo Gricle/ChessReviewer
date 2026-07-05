@@ -110,6 +110,63 @@ export function phaseCollapse(facts: ReportFactRow[], games: ReportGameRow[], pr
   return result;
 }
 
+export type ColorFilter = 'all' | 'white' | 'black';
+export type RangeFilter = 'all' | '30d' | '3mo';
+export interface TrendFilter { color: ColorFilter; range: RangeFilter; }
+export type GameOutcome = 'win' | 'loss' | 'draw' | null;
+
+const DAY_MS = 86_400_000;
+
+function gameDate(g: ReportGameRow): string { return g.played_at ?? g.created_at; }
+function toMs(date: string): number { return new Date(date).getTime(); }
+
+function inColor(side: 'white' | 'black' | null, color: ColorFilter): boolean {
+  return color === 'all' ? true : side === color;
+}
+
+// Range is measured from the newest date in `points` (not wall-clock now),
+// so results are deterministic and testable.
+function applyRange<T extends { ms: number }>(points: T[], range: RangeFilter): T[] {
+  if (range === 'all' || points.length === 0) return points;
+  const days = range === '30d' ? 30 : 90;
+  const newest = Math.max(...points.map((p) => p.ms));
+  const cutoff = newest - days * DAY_MS;
+  return points.filter((p) => p.ms >= cutoff);
+}
+
+/** win/loss/draw from a game's result string relative to the user's side, or null. */
+export function gameResult(game: ReportGameRow, side: 'white' | 'black' | null): GameOutcome {
+  if (!side || !game.result) return null;
+  const r = game.result.trim();
+  if (r === '1/2-1/2' || r === '½-½' || r === '0.5-0.5') return 'draw';
+  if (r === '1-0') return side === 'white' ? 'win' : 'loss';
+  if (r === '0-1') return side === 'black' ? 'win' : 'loss';
+  return null;
+}
+
+export interface TrendSeriesPoint { date: string; accuracy: number; estRating: number; result: GameOutcome; }
+
+/** One point per reviewed game passing the filter, user side when known else mean, sorted by date asc. */
+export function trendSeries(games: ReportGameRow[], profile: Profile | null, filter: TrendFilter): TrendSeriesPoint[] {
+  const points = games
+    .filter((g) => g.reviews)
+    .map((g) => {
+      const side = userSide(g, profile);
+      return { g, side };
+    })
+    .filter(({ side }) => inColor(side, filter.color))
+    .map(({ g, side }) => ({
+      date: gameDate(g),
+      ms: toMs(gameDate(g)),
+      accuracy: sidedValue(side, g.reviews!.white_accuracy, g.reviews!.black_accuracy),
+      estRating: sidedValue(side, g.reviews!.white_est_rating, g.reviews!.black_est_rating),
+      result: gameResult(g, side),
+    }));
+  return applyRange(points, filter.range)
+    .sort((a, b) => a.ms - b.ms)
+    .map(({ ms: _ms, ...p }) => p);
+}
+
 export interface TrendPoint { date: string; accuracy: number; estRating: number; }
 
 /** One point per game with a review, user side when known else mean, sorted by played_at ?? created_at ascending. */

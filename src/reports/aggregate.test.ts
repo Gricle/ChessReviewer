@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { userSide, worstOpenings, missedMotifs, phaseCollapse, accuracyTrend } from './aggregate';
+import { gameResult, trendSeries, type TrendFilter } from './aggregate';
 import type { ReportGameRow, ReportFactRow } from '../supabase/reports';
 import type { Profile } from '../supabase/library';
 
@@ -9,6 +10,7 @@ function game(overrides: Partial<ReportGameRow> = {}): ReportGameRow {
     white_name: 'Alice',
     black_name: 'Bob',
     opening_name: 'Italian Game',
+    result: '1-0',
     played_at: '2026-01-01',
     created_at: '2026-01-01T00:00:00.000Z',
     reviews: { white_accuracy: 90, black_accuracy: 80, white_est_rating: 1800, black_est_rating: 1600 },
@@ -162,5 +164,57 @@ describe('accuracyTrend', () => {
       { date: '2026-01-01T00:00:00.000Z', accuracy: 60, estRating: 1500 },
       { date: '2026-02-01', accuracy: 70, estRating: 1600 },
     ]);
+  });
+});
+
+const ALL: TrendFilter = { color: 'all', range: 'all' };
+
+describe('gameResult', () => {
+  it('maps result + side to win/loss/draw', () => {
+    expect(gameResult(game({ result: '1-0' }), 'white')).toBe('win');
+    expect(gameResult(game({ result: '1-0' }), 'black')).toBe('loss');
+    expect(gameResult(game({ result: '0-1' }), 'black')).toBe('win');
+    expect(gameResult(game({ result: '1/2-1/2' }), 'white')).toBe('draw');
+  });
+  it('returns null when side or result is unknown', () => {
+    expect(gameResult(game({ result: '1-0' }), null)).toBeNull();
+    expect(gameResult(game({ result: null }), 'white')).toBeNull();
+    expect(gameResult(game({ result: '*' }), 'white')).toBeNull();
+  });
+});
+
+describe('trendSeries', () => {
+  const profile = { display_name: 'Alice', chesscom_username: null, lichess_username: null };
+  it('emits one point per reviewed game, user side, sorted by date', () => {
+    const games = [
+      game({ id: 'b', played_at: '2026-02-01', result: '1-0',
+        reviews: { white_accuracy: 90, black_accuracy: 50, white_est_rating: 1500, black_est_rating: 1200 } }),
+      game({ id: 'a', played_at: '2026-01-01', result: '0-1',
+        reviews: { white_accuracy: 80, black_accuracy: 60, white_est_rating: 1400, black_est_rating: 1300 } }),
+    ];
+    const s = trendSeries(games, profile, ALL);
+    expect(s.map((p) => p.date)).toEqual(['2026-01-01', '2026-02-01']);
+    expect(s[0]).toEqual({ date: '2026-01-01', accuracy: 80, estRating: 1400, result: 'loss' });
+    expect(s[1].result).toBe('win');
+  });
+  it('skips games without a review', () => {
+    const games = [game({ reviews: null })];
+    expect(trendSeries(games, profile, ALL)).toEqual([]);
+  });
+  it('filters by color, excluding undeterminable sides', () => {
+    const games = [
+      game({ id: 'w', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01' }),
+      game({ id: 'x', white_name: 'Carol', black_name: 'Dave', played_at: '2026-01-02' }),
+    ];
+    expect(trendSeries(games, profile, { color: 'white', range: 'all' }).length).toBe(1);
+  });
+  it('filters by range relative to the newest game', () => {
+    const games = [
+      game({ id: 'old', played_at: '2026-01-01' }),
+      game({ id: 'new', played_at: '2026-03-01' }),
+    ];
+    // 30d window ends at 2026-03-01, so the January game is excluded.
+    const s = trendSeries(games, profile, { color: 'all', range: '30d' });
+    expect(s.map((p) => p.date)).toEqual(['2026-03-01']);
   });
 });
