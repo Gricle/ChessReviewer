@@ -4,7 +4,7 @@ import { uciToSan } from './chess/san';
 import { playSound, sanToSound, classToStinger, setVolume, getVolume } from './sound';
 import { analyzeGame } from './analysis/analyzeGame';
 import { assembleReview, type Review } from './analysis/assemble';
-import { OPENINGS } from './data/openings.sample';
+import { OPENINGS } from './data/openings';
 import { ImportPanel } from './components/ImportPanel';
 import { ReviewBoard } from './components/ReviewBoard';
 import { EvalBar } from './components/EvalBar';
@@ -102,8 +102,12 @@ export default function App() {
     let parsed: ParsedGame;
     try {
       parsed = parsePgn(pgnText);
-    } catch {
-      setError('That PGN could not be read. Check the moves and try again.');
+    } catch (e) {
+      // Surface the real reason (bad move, truncated paste, non-PGN text) so a
+      // failed import is diagnosable instead of a fixed, opaque string.
+      const detail = e instanceof Error ? e.message : String(e);
+      console.error('[ChessReviewer] PGN parse failed:', e);
+      setError(`That PGN could not be read: ${detail}. Check the moves and try again.`);
       return;
     }
     setGame(parsed);
@@ -122,9 +126,13 @@ export default function App() {
       setShowReveal(true);
       setProgress(null);
       setShowImport(false);
-    } catch {
+    } catch (e) {
       if (seq !== runSeq.current) return;
-      setError('The engine could not load in this browser. Try reloading the page.');
+      // Engine failures (WASM blocked by a proxy/CSP, worker load error, UCI
+      // timeout) were previously undiagnosable — log the cause for support.
+      const detail = e instanceof Error ? e.message : String(e);
+      console.error('[ChessReviewer] Analysis failed:', e);
+      setError(`The engine could not analyze this game (${detail}). Try reloading the page.`);
       setProgress(null);
     }
   }

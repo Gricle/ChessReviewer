@@ -54,9 +54,11 @@ accuracies. The engine runs in a Web Worker, so the UI stays responsive.
 - Move classification uses win%-drop thresholds tuned in
   `src/analysis/thresholds.ts`. It reproduces chess.com's look-and-feel closely
   but not their exact proprietary "Brilliant"/"Miss" logic.
-- The bundled opening set in `src/data/openings.sample.ts` is small; drop in the
-  full [Lichess ECO set](https://github.com/lichess-org/chess-openings)
-  (mapped to the same `{ eco, name, uciMoves }` shape) for complete coverage.
+- The full [Lichess ECO set](https://github.com/lichess-org/chess-openings)
+  (~3,800 openings) ships in `src/data/openings.ts`, generated from the source
+  TSVs by `scripts/genOpenings.mjs` (`node scripts/genOpenings.mjs` to refresh).
+  `src/data/openings.sample.ts` is retained only as a small deterministic test
+  fixture.
 - Analysis depth is set in `src/App.tsx` (`DEPTH`).
 - The engine is the **single-threaded** Stockfish build, so it runs on any
   static host without cross-origin-isolation (COOP/COEP) headers.
