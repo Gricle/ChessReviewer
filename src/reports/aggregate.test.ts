@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { userSide, worstOpenings, missedMotifs, phaseCollapse, accuracyTrend } from './aggregate';
+import { userSide, worstOpenings, missedMotifs, phaseCollapse } from './aggregate';
+import { gameResult, trendSeries, type TrendFilter } from './aggregate';
+import { rollingAverage } from './aggregate';
+import { blundersPerGame } from './aggregate';
+import { headlineStats } from './aggregate';
 import type { ReportGameRow, ReportFactRow } from '../supabase/reports';
 import type { Profile } from '../supabase/library';
 
@@ -9,6 +13,7 @@ function game(overrides: Partial<ReportGameRow> = {}): ReportGameRow {
     white_name: 'Alice',
     black_name: 'Bob',
     opening_name: 'Italian Game',
+    result: '1-0',
     played_at: '2026-01-01',
     created_at: '2026-01-01T00:00:00.000Z',
     reviews: { white_accuracy: 90, black_accuracy: 80, white_est_rating: 1800, black_est_rating: 1600 },
@@ -148,19 +153,126 @@ describe('phaseCollapse', () => {
   });
 });
 
-describe('accuracyTrend', () => {
-  it('returns one point per reviewed game, sorted ascending, preferring played_at over created_at', () => {
-    const games: ReportGameRow[] = [
-      game({ id: 'g2', played_at: '2026-02-01', created_at: '2026-02-05T00:00:00.000Z', reviews: { white_accuracy: 80, black_accuracy: 60, white_est_rating: 1700, black_est_rating: 1500 } }),
-      // No played_at — falls back to created_at, which sorts before g2's played_at.
-      game({ id: 'g1', played_at: null, created_at: '2026-01-01T00:00:00.000Z', reviews: { white_accuracy: 70, black_accuracy: 50, white_est_rating: 1600, black_est_rating: 1400 } }),
-      // No review at all — excluded entirely.
-      game({ id: 'g3', played_at: '2026-03-01', reviews: null }),
+const ALL: TrendFilter = { color: 'all', range: 'all' };
+
+describe('gameResult', () => {
+  it('maps result + side to win/loss/draw', () => {
+    expect(gameResult(game({ result: '1-0' }), 'white')).toBe('win');
+    expect(gameResult(game({ result: '1-0' }), 'black')).toBe('loss');
+    expect(gameResult(game({ result: '0-1' }), 'black')).toBe('win');
+    expect(gameResult(game({ result: '1/2-1/2' }), 'white')).toBe('draw');
+  });
+  it('returns null when side or result is unknown', () => {
+    expect(gameResult(game({ result: '1-0' }), null)).toBeNull();
+    expect(gameResult(game({ result: null }), 'white')).toBeNull();
+    expect(gameResult(game({ result: '*' }), 'white')).toBeNull();
+  });
+});
+
+describe('trendSeries', () => {
+  const profile = { display_name: 'Alice', chesscom_username: null, lichess_username: null };
+  it('emits one point per reviewed game, user side, sorted by date', () => {
+    const games = [
+      game({ id: 'b', played_at: '2026-02-01', result: '1-0',
+        reviews: { white_accuracy: 90, black_accuracy: 50, white_est_rating: 1500, black_est_rating: 1200 } }),
+      game({ id: 'a', played_at: '2026-01-01', result: '0-1',
+        reviews: { white_accuracy: 80, black_accuracy: 60, white_est_rating: 1400, black_est_rating: 1300 } }),
     ];
-    const result = accuracyTrend(games, null);
-    expect(result).toEqual([
-      { date: '2026-01-01T00:00:00.000Z', accuracy: 60, estRating: 1500 },
-      { date: '2026-02-01', accuracy: 70, estRating: 1600 },
+    const s = trendSeries(games, profile, ALL);
+    expect(s.map((p) => p.date)).toEqual(['2026-01-01', '2026-02-01']);
+    expect(s[0]).toEqual({ date: '2026-01-01', accuracy: 80, estRating: 1400, result: 'loss' });
+    expect(s[1].result).toBe('win');
+  });
+  it('skips games without a review', () => {
+    const games = [game({ reviews: null })];
+    expect(trendSeries(games, profile, ALL)).toEqual([]);
+  });
+  it('filters by color, excluding undeterminable sides', () => {
+    const games = [
+      game({ id: 'w', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01' }),
+      game({ id: 'x', white_name: 'Carol', black_name: 'Dave', played_at: '2026-01-02' }),
+    ];
+    expect(trendSeries(games, profile, { color: 'white', range: 'all' }).length).toBe(1);
+  });
+  it('filters by range relative to the newest game', () => {
+    const games = [
+      game({ id: 'old', played_at: '2026-01-01' }),
+      game({ id: 'new', played_at: '2026-03-01' }),
+    ];
+    // 30d window ends at 2026-03-01, so the January game is excluded.
+    const s = trendSeries(games, profile, { color: 'all', range: '30d' });
+    expect(s.map((p) => p.date)).toEqual(['2026-03-01']);
+  });
+});
+
+describe('rollingAverage', () => {
+  it('averages a trailing window, shrinking at the start', () => {
+    expect(rollingAverage([10, 20, 30], 2)).toEqual([10, 15, 25]);
+  });
+  it('handles an empty array', () => {
+    expect(rollingAverage([], 5)).toEqual([]);
+  });
+});
+
+describe('blundersPerGame', () => {
+  const profile = { display_name: 'Alice', chesscom_username: null, lichess_username: null };
+  it('counts blunders per game, including zero-blunder games, sorted by date', () => {
+    const games = [
+      game({ id: 'g1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01' }),
+      game({ id: 'g2', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-02' }),
+    ];
+    const facts = [
+      fact({ game_id: 'g1', side: 'white', classification: 'blunder' }),
+      fact({ game_id: 'g1', side: 'white', classification: 'mistake' }),
+      fact({ game_id: 'g1', side: 'black', classification: 'blunder' }), // opponent — excluded
+    ];
+    const out = blundersPerGame(facts, games, profile, ALL);
+    expect(out).toEqual([
+      { date: '2026-01-01', blunders: 1 },
+      { date: '2026-01-02', blunders: 0 },
     ]);
+  });
+});
+
+describe('headlineStats', () => {
+  const profile = { display_name: 'Alice', chesscom_username: null, lichess_username: null };
+  it('computes current-window values with null deltas when range is all', () => {
+    const games = [
+      game({ id: 'g1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01', result: '1-0',
+        reviews: { white_accuracy: 80, black_accuracy: 50, white_est_rating: 1400, black_est_rating: 1200 } }),
+    ];
+    const stats = headlineStats(games, [], profile, ALL);
+    expect(stats.avgAccuracy.value).toBe(80);
+    expect(stats.avgAccuracy.delta).toBeNull();
+    expect(stats.winRate?.value).toBe(100);
+    expect(stats.blundersPerGame.value).toBe(0);
+  });
+  it('returns winRate null when no game has a determinable result', () => {
+    const games = [
+      game({ id: 'g1', white_name: 'Carol', black_name: 'Dave', played_at: '2026-01-01',
+        reviews: { white_accuracy: 70, black_accuracy: 70, white_est_rating: 1300, black_est_rating: 1300 } }),
+    ];
+    expect(headlineStats(games, [], profile, ALL).winRate).toBeNull();
+  });
+  it('computes non-null deltas across two adjacent 30d windows', () => {
+    // Window math (range 30d, measured from newest = 2026-02-15):
+    //   curStart  = 2026-02-15 − 30d = 2026-01-16  → current  = games on/after it
+    //   prevStart = 2026-01-16 − 30d = 2025-12-17  → previous = [prevStart, curStart)
+    // current window: 2026-02-15 + 2026-02-01 ; previous window: 2026-01-01.
+    const games = [
+      game({ id: 'cur1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-02-15', result: '1-0',
+        reviews: { white_accuracy: 90, black_accuracy: 10, white_est_rating: 1500, black_est_rating: 1200 } }),
+      game({ id: 'cur2', white_name: 'Alice', black_name: 'Bob', played_at: '2026-02-01', result: '0-1',
+        reviews: { white_accuracy: 70, black_accuracy: 30, white_est_rating: 1500, black_est_rating: 1200 } }),
+      game({ id: 'prev1', white_name: 'Alice', black_name: 'Bob', played_at: '2026-01-01', result: '1-0',
+        reviews: { white_accuracy: 60, black_accuracy: 40, white_est_rating: 1500, black_est_rating: 1200 } }),
+    ];
+    const stats = headlineStats(games, [], profile, { color: 'all', range: '30d' });
+    // current accuracy mean = (90 + 70) / 2 = 80 ; previous = 60 → delta 20.
+    expect(stats.avgAccuracy.value).toBe(80);
+    expect(stats.avgAccuracy.delta).toBe(20);
+    // current results (Alice = white): win + loss = 50% ; previous: win = 100% → delta −50.
+    expect(stats.winRate?.value).toBe(50);
+    expect(stats.winRate?.delta).toBe(-50);
   });
 });

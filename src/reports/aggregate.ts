@@ -110,19 +110,179 @@ export function phaseCollapse(facts: ReportFactRow[], games: ReportGameRow[], pr
   return result;
 }
 
-export interface TrendPoint { date: string; accuracy: number; estRating: number; }
+export type ColorFilter = 'all' | 'white' | 'black';
+export type RangeFilter = 'all' | '30d' | '3mo';
+export interface TrendFilter { color: ColorFilter; range: RangeFilter; }
+export type GameOutcome = 'win' | 'loss' | 'draw' | null;
 
-/** One point per game with a review, user side when known else mean, sorted by played_at ?? created_at ascending. */
-export function accuracyTrend(games: ReportGameRow[], profile: Profile | null): TrendPoint[] {
-  const points: TrendPoint[] = [];
-  for (const g of games) {
-    if (!g.reviews) continue;
-    const side = userSide(g, profile);
-    points.push({
-      date: g.played_at ?? g.created_at,
-      accuracy: sidedValue(side, g.reviews.white_accuracy, g.reviews.black_accuracy),
-      estRating: sidedValue(side, g.reviews.white_est_rating, g.reviews.black_est_rating),
-    });
+const DAY_MS = 86_400_000;
+
+function gameDate(g: ReportGameRow): string { return g.played_at ?? g.created_at; }
+function toMs(date: string): number { return new Date(date).getTime(); }
+
+function inColor(side: 'white' | 'black' | null, color: ColorFilter): boolean {
+  return color === 'all' ? true : side === color;
+}
+
+// Range is measured from the newest date in `points` (not wall-clock now),
+// so results are deterministic and testable.
+function applyRange<T extends { ms: number }>(points: T[], range: RangeFilter): T[] {
+  if (range === 'all' || points.length === 0) return points;
+  const days = range === '30d' ? 30 : 90;
+  const newest = Math.max(...points.map((p) => p.ms));
+  const cutoff = newest - days * DAY_MS;
+  return points.filter((p) => p.ms >= cutoff);
+}
+
+/** win/loss/draw from a game's result string relative to the user's side, or null. */
+export function gameResult(game: ReportGameRow, side: 'white' | 'black' | null): GameOutcome {
+  if (!side || !game.result) return null;
+  const r = game.result.trim();
+  if (r === '1/2-1/2' || r === '½-½' || r === '0.5-0.5') return 'draw';
+  if (r === '1-0') return side === 'white' ? 'win' : 'loss';
+  if (r === '0-1') return side === 'black' ? 'win' : 'loss';
+  return null;
+}
+
+export interface TrendSeriesPoint { date: string; accuracy: number; estRating: number; result: GameOutcome; }
+
+/** One point per reviewed game passing the filter, user side when known else mean, sorted by date asc. */
+export function trendSeries(games: ReportGameRow[], profile: Profile | null, filter: TrendFilter): TrendSeriesPoint[] {
+  const points = games
+    .filter((g) => g.reviews)
+    .map((g) => {
+      const side = userSide(g, profile);
+      return { g, side };
+    })
+    .filter(({ side }) => inColor(side, filter.color))
+    .map(({ g, side }) => ({
+      date: gameDate(g),
+      ms: toMs(gameDate(g)),
+      accuracy: sidedValue(side, g.reviews!.white_accuracy, g.reviews!.black_accuracy),
+      estRating: sidedValue(side, g.reviews!.white_est_rating, g.reviews!.black_est_rating),
+      result: gameResult(g, side),
+    }));
+  return applyRange(points, filter.range)
+    .sort((a, b) => a.ms - b.ms)
+    .map(({ ms: _ms, ...p }) => p);
+}
+
+/** Trailing moving average; positions with < window prior points average what exists. */
+export function rollingAverage(values: number[], window = 5): number[] {
+  return values.map((_, i) => {
+    const slice = values.slice(Math.max(0, i - window + 1), i + 1);
+    return slice.reduce((sum, v) => sum + v, 0) / slice.length;
+  });
+}
+
+export interface BlunderPoint { date: string; blunders: number; }
+
+// Side-filtered blunder count per eligible game, zero-filled. Shared by
+// blundersPerGame and combinedSeries so the two counts can never diverge.
+function blunderCountByGame(
+  eligible: ReportGameRow[], facts: ReportFactRow[], sides: Map<string, 'white' | 'black' | null>,
+): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const g of eligible) counts.set(g.id, 0);
+  for (const f of facts) {
+    if (!counts.has(f.game_id)) continue;
+    const side = sides.get(f.game_id);
+    if (side && side !== f.side) continue;
+    if (f.classification === 'blunder') counts.set(f.game_id, (counts.get(f.game_id) ?? 0) + 1);
   }
-  return points.sort((a, b) => a.date.localeCompare(b.date));
+  return counts;
+}
+
+/** Blunders per game over time; side-filtered like missedMotifs, color/range-filtered, zero-filled, sorted asc. */
+export function blundersPerGame(
+  facts: ReportFactRow[], games: ReportGameRow[], profile: Profile | null, filter: TrendFilter,
+): BlunderPoint[] {
+  const sides = sideByGameId(games, profile);
+  const eligible = games.filter((g) => g.reviews && inColor(sides.get(g.id) ?? null, filter.color));
+  const counts = blunderCountByGame(eligible, facts, sides);
+  const points = eligible.map((g) => ({ date: gameDate(g), ms: toMs(gameDate(g)), blunders: counts.get(g.id) ?? 0 }));
+  return applyRange(points, filter.range)
+    .sort((a, b) => a.ms - b.ms)
+    .map(({ ms: _ms, ...p }) => p);
+}
+
+export interface Stat { value: number; delta: number | null; }
+export interface HeadlineStats {
+  avgAccuracy: Stat;
+  estRating: Stat;
+  winRate: Stat | null;
+  blundersPerGame: Stat;
+}
+
+interface CombinedPoint { ms: number; accuracy: number; estRating: number; result: GameOutcome; blunders: number; }
+
+// Color-filtered, review-only, blunder-merged, sorted asc. Range is applied later by window slicing.
+function combinedSeries(
+  games: ReportGameRow[], facts: ReportFactRow[], profile: Profile | null, color: ColorFilter,
+): CombinedPoint[] {
+  const sides = sideByGameId(games, profile);
+  const eligible = games.filter((g) => g.reviews && inColor(sides.get(g.id) ?? null, color));
+  const blunders = blunderCountByGame(eligible, facts, sides);
+  return eligible
+    .map((g) => {
+      const side = sides.get(g.id) ?? null;
+      return {
+        ms: toMs(gameDate(g)),
+        accuracy: sidedValue(side, g.reviews!.white_accuracy, g.reviews!.black_accuracy),
+        estRating: sidedValue(side, g.reviews!.white_est_rating, g.reviews!.black_est_rating),
+        result: gameResult(g, side),
+        blunders: blunders.get(g.id) ?? 0,
+      };
+    })
+    .sort((a, b) => a.ms - b.ms);
+}
+
+function mean(values: number[]): number {
+  return values.length ? values.reduce((s, v) => s + v, 0) / values.length : 0;
+}
+
+// Score % (win=1, draw=0.5), or null when no game has a determinable result.
+function scorePct(rows: CombinedPoint[]): number | null {
+  const decided = rows.filter((r) => r.result !== null);
+  if (!decided.length) return null;
+  const score = decided.reduce((s, r) => s + (r.result === 'win' ? 1 : r.result === 'draw' ? 0.5 : 0), 0);
+  return (score / decided.length) * 100;
+}
+
+/** Headline tiles for the current window with deltas vs the equal-length previous window (null when range is all). */
+export function headlineStats(
+  games: ReportGameRow[], facts: ReportFactRow[], profile: Profile | null, filter: TrendFilter,
+): HeadlineStats {
+  const full = combinedSeries(games, facts, profile, filter.color);
+  let current: CombinedPoint[];
+  let previous: CombinedPoint[];
+  if (filter.range === 'all' || full.length === 0) {
+    current = full;
+    previous = [];
+  } else {
+    const days = filter.range === '30d' ? 30 : 90;
+    const newest = Math.max(...full.map((r) => r.ms));
+    const curStart = newest - days * DAY_MS;
+    const prevStart = curStart - days * DAY_MS;
+    current = full.filter((r) => r.ms >= curStart);
+    previous = full.filter((r) => r.ms >= prevStart && r.ms < curStart);
+  }
+
+  const stat = (sel: (r: CombinedPoint) => number): Stat => {
+    const value = mean(current.map(sel));
+    const delta = previous.length ? value - mean(previous.map(sel)) : null;
+    return { value, delta };
+  };
+
+  const winCur = scorePct(current);
+  const winPrev = previous.length ? scorePct(previous) : null;
+  const winRate: Stat | null =
+    winCur === null ? null : { value: winCur, delta: winPrev === null ? null : winCur - winPrev };
+
+  return {
+    avgAccuracy: stat((r) => r.accuracy),
+    estRating: stat((r) => r.estRating),
+    winRate,
+    blundersPerGame: stat((r) => r.blunders),
+  };
 }
