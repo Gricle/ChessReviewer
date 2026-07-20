@@ -426,7 +426,18 @@ export default function App() {
       ) : (
         <>
           {showImport ? (
-            <ImportPanel onPgn={run} />
+            <>
+              <section className="hero">
+                <span className="eyebrow">Stockfish · depth 14 · in your browser</span>
+                <h1>See your game the way the <span className="grad">engine</span> sees it.</h1>
+                <p>
+                  Paste a PGN or pull your latest games from chess.com and lichess. Every move is
+                  scored — brilliant to blunder — with the best line, an accuracy read, and a coach
+                  who tells you why. Nothing leaves your browser.
+                </p>
+              </section>
+              <ImportPanel onPgn={run} />
+            </>
           ) : (
             <div className="gamebar">
               <button onClick={() => setShowImport(true)}>↺ New game</button>
