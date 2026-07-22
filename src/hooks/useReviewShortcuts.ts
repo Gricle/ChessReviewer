@@ -9,7 +9,7 @@ export interface ShortcutHandlers {
   onFlip: () => void;
 }
 
-const IGNORE_SELECTOR = 'input, textarea, select, button, [contenteditable="true"]';
+export const IGNORE_SELECTOR = 'input, textarea, select, button, [contenteditable="true"]';
 
 export function useReviewShortcuts(enabled: boolean, h: ShortcutHandlers) {
   useEffect(() => {

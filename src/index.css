@@ -448,7 +448,6 @@ input::placeholder { color: var(--text-mute); }
 /* ── signature: the glowing eval "spectrum" ── */
 .evalbar {
   width: 22px;
-  height: var(--bs);
   border-radius: 7px;
   overflow: hidden;
   background: #0a0818;

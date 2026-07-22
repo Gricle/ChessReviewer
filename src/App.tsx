@@ -10,7 +10,7 @@ import { Header } from './components/Header';
 import { ImportSection } from './components/ImportSection';
 import { AnalysisProgress } from './components/AnalysisProgress';
 import { PlayerCard } from './components/PlayerCard';
-import { PlaybackControls } from './components/PlaybackControls';
+import { PlaybackControls, type Speed } from './components/PlaybackControls';
 import { ReviewBoard } from './components/ReviewBoard';
 import { EvalBar } from './components/EvalBar';
 import { CoachCard, type CurrentMove } from './components/CoachCard';
@@ -19,7 +19,7 @@ import { MoveList } from './components/MoveList';
 import { EvalGraphCard } from './components/EvalGraphCard';
 import { SummaryPanel } from './components/SummaryPanel';
 import { RevealOverlay } from './components/RevealOverlay';
-import { useReviewShortcuts } from './hooks/useReviewShortcuts';
+import { useReviewShortcuts, IGNORE_SELECTOR } from './hooks/useReviewShortcuts';
 import { playerRatings } from './chess/ratings';
 import { kingSquare } from './chess/kingSquare';
 import type { ParsedGame } from './chess/types';
@@ -49,7 +49,6 @@ function safeStorageSet(key: string, value: string): void {
 
 const DEPTH = 14;
 const LATEST_N = 10; // how many recent games to pull + score on login
-type Speed = 'off' | 'slow' | 'medium' | 'fast';
 const SPEED_CYCLE: Speed[] = ['off', 'slow', 'medium', 'fast'];
 const SPEED_MS: Record<Speed, number> = { off: 0, slow: 1200, medium: 600, fast: 250 };
 
@@ -81,6 +80,7 @@ export default function App() {
 
   const total = game?.plies.length ?? 0;
   const onTouchStart = useCallback((e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest?.(IGNORE_SELECTOR)) { touchStart.current = null; return; }
     const t = e.touches[0];
     touchStart.current = { x: t.clientX, y: t.clientY };
   }, []);
@@ -302,7 +302,7 @@ export default function App() {
   useEffect(() => { safeStorageSet('chessreviewer.soundOn', soundOn ? '1' : '0'); }, [soundOn]);
   useEffect(() => { safeStorageSet('chessreviewer.voiceOn', voiceOn ? '1' : '0'); }, [voiceOn]);
 
-  const handleAutoplay = useCallback(() => {
+  const cycleAutoplaySpeed = useCallback(() => {
     setAutoplaySpeed((s) => {
       const idx = SPEED_CYCLE.indexOf(s);
       return SPEED_CYCLE[(idx + 1) % SPEED_CYCLE.length];
@@ -432,11 +432,9 @@ export default function App() {
     onNext: goNext,
     onStart: goStart,
     onEnd: goEnd,
-    onToggleAutoplay: handleAutoplay,
+    onToggleAutoplay: cycleAutoplaySpeed,
     onFlip: handleFlip,
   });
-
-  const deckReady = tab === 'review' && game !== null && fen !== undefined && review !== null;
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -450,19 +448,28 @@ export default function App() {
       />
 
       <main className="flex-1 w-full pb-16">
-        {autoScore && autoScore.total > 0 && (
-          <div className="max-w-3xl mx-auto mt-4 px-4">
-            <div className="glass-panel rounded-xl p-3 text-xs font-mono text-slate-300 space-y-2">
-              <span>Scoring your recent games… {autoScore.done} / {autoScore.total}</span>
-              <div className="w-full h-1 bg-indigo-950 rounded-full overflow-hidden">
+        {autoScore && autoScore.total > 0 && (() => {
+          const pct = Math.round((autoScore.done / autoScore.total) * 100);
+          return (
+            <div className="max-w-3xl mx-auto mt-4 px-4">
+              <div className="glass-panel rounded-xl p-3 text-xs font-mono text-slate-300 space-y-2">
+                <p>Scoring your recent games… {autoScore.done} / {autoScore.total}</p>
                 <div
-                  className="h-full bg-cyan-400 rounded-full transition-all duration-300"
-                  style={{ width: `${Math.round((autoScore.done / autoScore.total) * 100)}%` }}
-                />
+                  role="progressbar"
+                  aria-valuenow={pct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  className="w-full h-1 bg-indigo-950 rounded-full overflow-hidden"
+                >
+                  <div
+                    className="h-full bg-cyan-400 rounded-full transition-all duration-300"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {error && tab !== 'library' && (
           <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-200 text-xs font-mono flex items-center gap-3 max-w-3xl mx-auto mt-4">
@@ -499,7 +506,7 @@ export default function App() {
           )
         ) : progress && !review ? (
           <AnalysisProgress label={progress} pct={progressPct} />
-        ) : deckReady && game && fen && review ? (
+        ) : tab === 'review' && game && fen && review ? (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* Left column: player cards, eval bar + board, playback */}
@@ -519,7 +526,10 @@ export default function App() {
                   <EvalBar cp={currentWhiteCp} flipped={flipped} />
                   {/* The .board sizing/fx CSS keys off --bs; with the legacy
                       .review-grid gone, derive it from this frame's width via a
-                      container query so the checkerboard + fx keep working. */}
+                      container query so the checkerboard + fx keep working.
+                      The EvalBar needs no such bridge — it sits outside this
+                      container-query frame and is sized by the flex
+                      items-stretch row instead. */}
                   <div
                     className="flex-1 rounded-2xl overflow-hidden border border-indigo-400/20 shadow-2xl"
                     style={{ containerType: 'inline-size' }}
@@ -549,7 +559,7 @@ export default function App() {
                   total={total}
                   onSelectPly={handleSelectPly}
                   speed={autoplaySpeed}
-                  onCycleSpeed={handleAutoplay}
+                  onCycleSpeed={cycleAutoplaySpeed}
                   flipped={flipped}
                   onToggleFlip={handleFlip}
                   soundOn={soundOn}
@@ -562,10 +572,7 @@ export default function App() {
               </div>
 
               {/* Right column: coach, move list, breakdown + eval graph */}
-              <div
-                className="lg:col-span-6 flex flex-col gap-4 panel-enter"
-                key={game.plies[0]?.fenBefore ?? 'panel'}
-              >
+              <div className="lg:col-span-6 flex flex-col gap-4 panel-enter">
                 <CoachCard
                   opening={review.summary.opening}
                   evalCp={currentWhiteCp}
@@ -573,7 +580,7 @@ export default function App() {
                   voiceOn={voiceOn}
                 />
 
-                <MoveList plies={review.plies} current={ply} onSelect={setPly} />
+                <MoveList plies={review.plies} current={ply} onSelect={handleSelectPly} />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <SummaryPanel
@@ -587,7 +594,7 @@ export default function App() {
                     evalsCp={whiteEvals}
                     classifications={classifications}
                     current={Math.max(0, ply - 1)}
-                    onSelect={(i) => setPly(i + 1)}
+                    onSelect={(i) => handleSelectPly(i + 1)}
                   />
                 </div>
               </div>
