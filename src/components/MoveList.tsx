@@ -1,6 +1,7 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import type { AnalyzedPly } from '../chess/types';
 import { CLASS_META } from './classMeta';
+import { ClassChip } from './ClassChip';
 
 interface Props {
   plies: AnalyzedPly[];
@@ -23,6 +24,8 @@ function Cell({
     <button
       ref={active ? activeRef : null}
       onClick={() => onSelect(ply.index + 1)}
+      aria-current={active ? 'true' : undefined}
+      aria-label={`${ply.san}, ${meta.label}`}
       className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border text-left transition-all cursor-pointer ${
         active
           ? 'bg-cyan-500/25 border-cyan-400 text-cyan-200 shadow-[0_0_12px_rgba(56,225,214,0.3)] font-bold'
@@ -30,11 +33,8 @@ function Cell({
       }`}
     >
       <span>{ply.san}</span>
-      <span
-        className="text-[10px] px-1.5 rounded font-bold ml-1"
-        style={{ backgroundColor: meta.hex, color: '#05040c' }}
-      >
-        {meta.sym}
+      <span className="ml-1">
+        <ClassChip cls={ply.classification} size="sm" showLabel={false} />
       </span>
     </button>
   );

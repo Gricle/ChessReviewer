@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Volume2 } from 'lucide-react';
 import type { Classification } from '../chess/types';
 import { CLASS_META } from './classMeta';
+import { ClassChip } from './ClassChip';
 import { speak, cancelSpeech } from '../speech';
 
 export interface CurrentMove {
@@ -93,13 +94,8 @@ export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
 
       {move && meta && (
         <>
-          <div className="flex items-center justify-between bg-indigo-950/40 p-3 rounded-xl border border-indigo-400/10">
-            <span
-              className="px-2.5 py-1 rounded-md text-xs font-extrabold font-mono"
-              style={{ backgroundColor: meta.hex, color: '#05040c' }}
-            >
-              {meta.sym} {meta.label}
-            </span>
+          <div className="bg-indigo-950/40 p-3 rounded-xl border border-indigo-400/10">
+            <ClassChip cls={move.cls} size="md" />
           </div>
 
           <div className="text-sm font-mono bg-black/20 p-3 rounded-xl border border-white/5 space-y-1">

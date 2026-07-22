@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { ReviewSummary } from '../chess/types';
 import type { PlayerRatings } from '../chess/ratings';
 import { CLASS_META, CLASS_ORDER } from './classMeta';
+import { ClassChip } from './ClassChip';
 
 interface Props {
   summary: ReviewSummary;
@@ -76,8 +77,8 @@ export function SummaryPanel({ summary, white, black, ratings, result, children 
         <div className="space-y-1.5 font-mono text-xs">
           <div className="grid grid-cols-[1fr_50px_50px] px-3 py-1.5 text-slate-400 font-bold border-b border-indigo-400/10">
             <span>Classification</span>
-            <span className="text-center text-slate-200">{white.substring(0, 6)}</span>
-            <span className="text-center text-slate-200">{black.substring(0, 6)}</span>
+            <span className="text-center text-slate-200 truncate" title={white}>{white}</span>
+            <span className="text-center text-slate-200 truncate" title={black}>{black}</span>
           </div>
           {CLASS_ORDER.map((label) => {
             const c = summary.counts[label];
@@ -86,15 +87,10 @@ export function SummaryPanel({ summary, white, black, ratings, result, children 
             return (
               <div
                 key={label}
-                className="grid grid-cols-[1fr_50px_50px] items-center px-3 py-1.5 rounded-lg bg-indigo-950/30 hover:bg-indigo-900/40 border border-indigo-500/10"
+                className="grid grid-cols-[1fr_50px_50px] items-center px-3 py-1.5 rounded-lg bg-indigo-950/30 border border-indigo-500/10"
               >
                 <div className="flex items-center gap-2">
-                  <span
-                    className="px-1.5 py-0.5 rounded text-[10px] font-bold"
-                    style={{ backgroundColor: meta.hex, color: '#05040c' }}
-                  >
-                    {meta.sym}
-                  </span>
+                  <ClassChip cls={label} size="sm" showLabel={false} />
                   <span className="text-slate-200">{meta.label}</span>
                 </div>
                 <span className={`text-center font-bold ${c.white > 0 ? 'text-white' : 'text-slate-600'}`}>{c.white}</span>
