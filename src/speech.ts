@@ -2,6 +2,8 @@
 // Uses the browser's built-in speech synthesis — no external assets.
 // Chess.com-style: speaks the coach's evaluation aloud when landing on a move.
 
+import i18n from './i18n';
+
 export function speak(text: string): void {
   if (!('speechSynthesis' in window)) return;
 
@@ -12,6 +14,7 @@ export function speak(text: string): void {
   u.rate = 0.92;   // Slightly slower than default for a calm coach voice
   u.pitch = 1.0;
   u.volume = 0.85;
+  u.lang = i18n.language; // Match the utterance language to the active UI locale.
 
   // Try to pick a male English voice — authoritative coach tone.
   const voices = window.speechSynthesis.getVoices();

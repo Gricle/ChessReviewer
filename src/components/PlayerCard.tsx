@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 interface Props {
   name: string;
   elo: number | null;
@@ -6,6 +8,7 @@ interface Props {
 }
 
 export function PlayerCard({ name, elo, accuracy, color }: Props) {
+  const { t } = useTranslation('review');
   const isWhite = color === 'white';
   return (
     <div className="glass-panel rounded-2xl p-3 flex items-center justify-between border border-indigo-400/20">
@@ -22,13 +25,13 @@ export function PlayerCard({ name, elo, accuracy, color }: Props) {
         </div>
         <div>
           <p className="text-xs font-bold text-white font-mono">{name}</p>
-          <p className="text-[10px] font-mono text-slate-400">Elo: {elo ?? '?'}</p>
+          <p className="text-[10px] font-mono text-slate-400">{t('playerCard.elo', { elo: elo ?? '?' })}</p>
         </div>
       </div>
 
       {accuracy !== null && (
         <div className="text-right font-mono text-xs">
-          <span className="text-cyan-300 font-bold">{accuracy.toFixed(1)}% Acc</span>
+          <span className="text-cyan-300 font-bold">{t('playerCard.accuracy', { value: accuracy.toFixed(1) })}</span>
         </div>
       )}
     </div>

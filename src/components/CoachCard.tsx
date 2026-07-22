@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Volume2 } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import type { Classification } from '../chess/types';
 import { CLASS_META } from './classMeta';
 import { ClassChip } from './ClassChip';
@@ -27,6 +28,7 @@ function formatEval(cp: number): string {
 }
 
 export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
+  const { t } = useTranslation('review');
   const meta = move ? CLASS_META[move.cls] : null;
   const wantsBetter = move && (move.cls === 'inaccuracy' || move.cls === 'mistake' || move.cls === 'blunder');
   const isGood = move && (move.cls === 'brilliant' || move.cls === 'great' || move.cls === 'best');
@@ -66,7 +68,7 @@ export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-              Engine Coach
+              {t('coachCard.title')}
             </span>
             {opening && (
               <span className="text-[11px] text-slate-400 font-mono bg-indigo-950/60 px-2 py-0.5 rounded-md border border-indigo-500/20">
@@ -83,8 +85,8 @@ export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
           <button
             className="p-2 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 text-cyan-300 border border-indigo-500/30 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
             onClick={(e) => { e.stopPropagation(); speak(comment); }}
-            title="Read aloud"
-            aria-label="Read coach comment aloud"
+            title={t('coachCard.readAloud')}
+            aria-label={t('coachCard.readAloudAria')}
             disabled={!voiceOn || !comment}
           >
             <Volume2 className="w-4 h-4" />
@@ -102,23 +104,39 @@ export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
             {wantsBetter && (
               <>
                 <div className="text-slate-300">
-                  You played <strong className="text-cyan-300">{move.san}</strong>
+                  <Trans
+                    i18nKey="review:coachCard.youPlayed"
+                    values={{ san: move.san }}
+                    components={{ bold: <strong className="text-cyan-300" /> }}
+                  />
                 </div>
                 <div className="text-emerald-400 font-semibold">
-                  Best move <strong className="underline underline-offset-2">{move.bestSan}</strong>
+                  <Trans
+                    i18nKey="review:coachCard.bestMove"
+                    values={{ bestSan: move.bestSan }}
+                    components={{ bold: <strong className="underline underline-offset-2" /> }}
+                  />
                 </div>
               </>
             )}
 
             {isGood && (
               <div className="text-slate-300">
-                You found the best move: <strong className="text-cyan-300">{move.san}</strong>
+                <Trans
+                  i18nKey="review:coachCard.foundBest"
+                  values={{ san: move.san }}
+                  components={{ bold: <strong className="text-cyan-300" /> }}
+                />
               </div>
             )}
 
             {isNeutral && (
               <div className="text-slate-300">
-                You played <strong className="text-cyan-300">{move.san}</strong>
+                <Trans
+                  i18nKey="review:coachCard.youPlayed"
+                  values={{ san: move.san }}
+                  components={{ bold: <strong className="text-cyan-300" /> }}
+                />
               </div>
             )}
           </div>
@@ -129,7 +147,7 @@ export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
 
       {!move && (
         <div className="text-center text-indigo-200/60 text-sm py-4">
-          Step through the game to see each move reviewed.
+          {t('coachCard.empty')}
         </div>
       )}
     </div>

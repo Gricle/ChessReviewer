@@ -1,1 +1,68 @@
-{}
+{
+  "hero": {
+    "badge": "Stockfish · Depth 14 · Client-side",
+    "title": "See your game the way the <0>engine</0> sees it.",
+    "description": "Paste a PGN or import your latest games from Chess.com or Lichess. Every move is scored from <0>Brilliant</0> to <1>Blunder</1> with accuracy readouts, best-line arrows, opening theory detection, and a natural-language coach.",
+    "quickDemos": "Quick Demos:"
+  },
+  "paste": {
+    "title": "Paste PGN",
+    "description": "Paste any raw PGN text with headers or move history.",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "Review This PGN"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "From Chess.com",
+      "description": "Enter your public Chess.com username to fetch recent games.",
+      "placeholder": "e.g. Hikaru"
+    },
+    "lichess": {
+      "title": "From Lichess.org",
+      "description": "Enter your public Lichess username to fetch recent games.",
+      "placeholder": "e.g. MagnusCarlsen"
+    },
+    "load": "Load",
+    "noGames": "No recent games found.",
+    "loadFailed": "Failed to load games"
+  },
+  "samples": {
+    "immortal": {
+      "label": "Immortal Game (1851)",
+      "sub": "Anderssen's sacrificial masterpiece"
+    },
+    "opera": {
+      "label": "Opera Game (Morphy)",
+      "sub": "A lesson in rapid development"
+    },
+    "blunderfest": {
+      "label": "Tactics & Blunders",
+      "sub": "Réti's queen-sac trap — a blunder punished by mate"
+    }
+  },
+  "progress": {
+    "heading": "Evaluating Positions",
+    "subtitle": "Stockfish Depth 14 · Client-side",
+    "footer": "Computing move classifications and coach insights..."
+  },
+  "auth": {
+    "close": "Close",
+    "titleAccount": "Account Profile",
+    "titleSignIn": "Sign In / Account Sync",
+    "subtitleCloud": "Cloud storage active",
+    "subtitleGuest": "Guest mode active",
+    "signedInAs": "Signed in as:",
+    "signOut": "Sign Out",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "Sign In & Enable Sync",
+    "submitSignUp": "Create Account",
+    "google": "Continue with Google",
+    "toggleToSignUp": "No account? Create one",
+    "toggleToSignIn": "Have an account? Sign in",
+    "confirmEmailNotice": "Check your email to confirm your account."
+  }
+}

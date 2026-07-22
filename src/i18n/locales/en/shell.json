@@ -17,5 +17,21 @@
   },
   "language": {
     "label": "Change language"
+  },
+  "errors": {
+    "pgnParse": "That PGN could not be read: {{detail}}. Check the moves and try again.",
+    "engineFailure": "The engine could not analyze this game ({{detail}}). Try reloading the page.",
+    "savedReviewLoadFailed": "That saved review could not be loaded."
+  },
+  "progress": {
+    "analyzing": "Analyzing with Stockfish…",
+    "analyzingPosition": "Analyzing position {{done}} / {{total}}",
+    "autoScore": "Scoring your recent games… {{done}} / {{total}}"
+  },
+  "librarySignedOut": {
+    "title": "Sign in to build your library",
+    "syncDescription": "Analyzed games sync to your cloud library with weakness reports and trends.",
+    "syncUnavailable": "Cloud sync is not configured for this deployment.",
+    "cta": "Sign In & Enable Sync"
   }
 }

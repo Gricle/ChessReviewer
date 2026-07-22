@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RefreshCw, Zap, CheckCircle2, UserPlus } from 'lucide-react';
 import { fetchRecentGames as fetchComGames, type GameSummary } from '../importers/chesscom';
 import { fetchRecentGames as fetchLiGames } from '../importers/lichess';
@@ -30,6 +31,7 @@ const SOURCE_BADGE: Record<RecentSource, { label: string; className: string }> =
 // (both platforms when both usernames are set) and lets the user open an
 // already-saved review or kick off a fresh analysis with one click.
 export function RecentGamesSidebar({ chesscomUsername, lichessUsername, reviewedIdByHash, onAnalyze, onOpenSaved }: Props) {
+  const { t } = useTranslation('library');
   const [games, setGames] = useState<RecentGame[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -60,14 +62,14 @@ export function RecentGamesSidebar({ chesscomUsername, lichessUsername, reviewed
   }, [refresh]);
 
   return (
-    <aside aria-label="Recent games" className="glass-panel rounded-3xl p-5 border border-indigo-400/20 space-y-4">
+    <aside aria-label={t('recent.ariaLabel')} className="glass-panel rounded-3xl p-5 border border-indigo-400/20 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">Recent Games</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">{t('recent.heading')}</h3>
         {hasAccount && (
           <button
             onClick={() => void refresh()}
             disabled={loading}
-            aria-label="Refresh recent games"
+            aria-label={t('recent.refreshAriaLabel')}
             className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-cyan-500/10 transition-all cursor-pointer disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -81,7 +83,7 @@ export function RecentGamesSidebar({ chesscomUsername, lichessUsername, reviewed
             <UserPlus className="w-5 h-5" />
           </div>
           <p className="text-xs font-mono text-slate-400 leading-relaxed">
-            Add your chess.com or lichess username in the Profile form to see your latest games here automatically.
+            {t('recent.setupPrompt')}
           </p>
         </div>
       )}
@@ -99,7 +101,7 @@ export function RecentGamesSidebar({ chesscomUsername, lichessUsername, reviewed
       )}
 
       {games && games.length === 0 && !error && (
-        <p className="py-6 text-center text-xs font-mono text-slate-400">No recent games found.</p>
+        <p className="py-6 text-center text-xs font-mono text-slate-400">{t('recent.empty')}</p>
       )}
 
       {games && games.length > 0 && (
@@ -114,18 +116,18 @@ export function RecentGamesSidebar({ chesscomUsername, lichessUsername, reviewed
                   className="w-full p-3 rounded-xl bg-indigo-950/40 hover:bg-cyan-500/15 border border-indigo-500/20 hover:border-cyan-400/30 transition-all text-left space-y-1.5 cursor-pointer"
                 >
                   <span className="block text-xs font-bold text-white font-sans truncate">
-                    {g.white} vs {g.black}
+                    {t('recent.matchup', { white: g.white, black: g.black })}
                   </span>
                   <span className="flex items-center justify-between gap-2 text-[10px] font-mono">
                     <span className={`px-1.5 py-0.5 rounded border ${badge.className}`}>{badge.label}</span>
                     <span className="text-slate-400">{g.date}</span>
                     {savedId ? (
                       <span className="flex items-center gap-1 text-cyan-300 font-bold">
-                        <CheckCircle2 className="w-3 h-3" /> Saved
+                        <CheckCircle2 className="w-3 h-3" /> {t('recent.saved')}
                       </span>
                     ) : (
                       <span className="flex items-center gap-1 text-amber-300 font-bold">
-                        <Zap className="w-3 h-3" /> Analyze
+                        <Zap className="w-3 h-3" /> {t('recent.analyze')}
                       </span>
                     )}
                   </span>

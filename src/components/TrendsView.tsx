@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../supabase/client';
 import { fetchProfile } from '../supabase/library';
 import { fetchReportGames, fetchReportFacts, type ReportGameRow, type ReportFactRow } from '../supabase/reports';
@@ -13,6 +14,7 @@ interface Props { user: User; }
 interface Loaded { games: ReportGameRow[]; facts: ReportFactRow[]; profile: Profile | null; }
 
 export function TrendsView({ user }: Props) {
+  const { t } = useTranslation('library');
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<TrendFilter>({ color: 'all', range: 'all' });
@@ -45,7 +47,7 @@ export function TrendsView({ user }: Props) {
   if (error) return <div className="err">{error}</div>;
   if (!derived) return <div className="card report-card skel" style={{ height: 320 }} />;
   if (loaded && loaded.games.length === 0) {
-    return <div className="card report-empty">Analyze a few games to unlock your trends.</div>;
+    return <div className="card report-empty">{t('trends.empty')}</div>;
   }
 
   return (

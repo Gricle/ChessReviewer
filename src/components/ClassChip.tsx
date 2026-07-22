@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { Classification } from '../chess/types';
 import { CLASS_META } from './classMeta';
 
@@ -17,14 +18,16 @@ const SIZE_CLASSES: Record<'sm' | 'md', string> = {
 // accessible name (the label is always available to screen readers, even
 // when visually hidden) consistent everywhere it's used.
 export function ClassChip({ cls, size = 'md', showLabel = true }: Props) {
+  const { t } = useTranslation('review');
   const meta = CLASS_META[cls];
+  const label = t(`cls.${cls}`);
   return (
     <span
       className={`inline-flex items-center gap-1 font-mono ${SIZE_CLASSES[size]}`}
       style={{ backgroundColor: meta.hex, color: '#05040c' }}
     >
       <span>{meta.sym}</span>
-      {showLabel ? <span>{meta.label}</span> : <span className="sr-only">{meta.label}</span>}
+      {showLabel ? <span>{label}</span> : <span className="sr-only">{label}</span>}
     </span>
   );
 }

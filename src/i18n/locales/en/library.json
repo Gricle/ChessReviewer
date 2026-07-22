@@ -1,1 +1,72 @@
-{}
+{
+  "tabs": {
+    "games": "Games ({{count}})",
+    "reports": "Weakness Reports",
+    "trends": "Trends"
+  },
+  "subTabs": {
+    "ariaLabel": "Library section"
+  },
+  "profile": {
+    "savedCount": "{{count}} saved game reviews",
+    "loading": "Loading your library…"
+  },
+  "profileForm": {
+    "heading": "Profile",
+    "displayNamePlaceholder": "display name",
+    "chesscomPlaceholder": "chess.com username",
+    "lichessPlaceholder": "lichess username",
+    "save": "Save",
+    "saved": "Profile saved."
+  },
+  "history": {
+    "heading": "Saved Analysis History",
+    "empty": "No saved games yet — analyze a game and it lands here automatically.",
+    "matchup": "{{white}} vs {{black}}",
+    "accuracyLabel": "Accuracy",
+    "accuracyValue": "W: {{white}}% | B: {{black}}%",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "Recent Games",
+    "ariaLabel": "Recent games",
+    "refreshAriaLabel": "Refresh recent games",
+    "setupPrompt": "Add your chess.com or lichess username in the Profile form to see your latest games here automatically.",
+    "empty": "No recent games found.",
+    "matchup": "{{white}} vs {{black}}",
+    "saved": "Saved",
+    "analyze": "Analyze"
+  },
+  "reports": {
+    "empty": "Analyze a few games to unlock your weakness reports.",
+    "worstOpenings": {
+      "heading": "Worst openings",
+      "empty": "Play the same opening a couple of times to see this.",
+      "gamesCount": "{{count}} games"
+    },
+    "motifs": {
+      "heading": "Missed motifs",
+      "empty": "No recurring tactical misses found — nice.",
+      "labels": {
+        "missedMate": "missed mates",
+        "walkedIntoMate": "walked into mate",
+        "hungPiece": "hung pieces",
+        "missedFork": "missed forks"
+      }
+    },
+    "phases": {
+      "heading": "Phase breakdown",
+      "empty": "Not enough analyzed moves yet.",
+      "avgWinDrop": "avg win-drop",
+      "badMoves": "bad moves",
+      "labels": {
+        "opening": "Opening",
+        "middlegame": "Middlegame",
+        "endgame": "Endgame"
+      }
+    }
+  },
+  "trends": {
+    "empty": "Analyze a few games to unlock your trends."
+  }
+}

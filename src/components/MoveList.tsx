@@ -1,6 +1,6 @@
 import { useEffect, useRef, type RefObject } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AnalyzedPly } from '../chess/types';
-import { CLASS_META } from './classMeta';
 import { ClassChip } from './ClassChip';
 
 interface Props {
@@ -17,15 +17,15 @@ function Cell({
   onSelect: (p: number) => void;
   activeRef: RefObject<HTMLButtonElement | null>;
 }) {
+  const { t } = useTranslation('review');
   if (!ply) return <div />;
   const active = current === ply.index + 1;
-  const meta = CLASS_META[ply.classification];
   return (
     <button
       ref={active ? activeRef : null}
       onClick={() => onSelect(ply.index + 1)}
       aria-current={active ? 'true' : undefined}
-      aria-label={`${ply.san}, ${meta.label}`}
+      aria-label={t('moveList.cellAriaLabel', { san: ply.san, label: t(`cls.${ply.classification}`) })}
       className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border text-left transition-all cursor-pointer ${
         active
           ? 'bg-cyan-500/25 border-cyan-400 text-cyan-200 shadow-[0_0_12px_rgba(56,225,214,0.3)] font-bold'
@@ -41,6 +41,7 @@ function Cell({
 }
 
 export function MoveList({ plies, current, onSelect }: Props) {
+  const { t } = useTranslation('review');
   const activeRef = useRef<HTMLButtonElement | null>(null);
 
   // Auto-scroll the active move into view as playback moves through the game.
@@ -57,7 +58,7 @@ export function MoveList({ plies, current, onSelect }: Props) {
     <div className="glass-panel rounded-2xl p-4 border border-indigo-400/20 flex flex-col h-[280px]">
       <div className="flex items-center justify-between pb-3 mb-2 border-b border-indigo-400/10">
         <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-          Game Move List
+          {t('moveList.title')}
         </h3>
         <span className="text-xs font-mono text-slate-400">
           {current} / {plies.length}

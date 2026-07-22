@@ -1,4 +1,5 @@
 import { Cpu, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   label: string;
@@ -6,6 +7,7 @@ interface Props {
 }
 
 export function AnalysisProgress({ label, pct }: Props) {
+  const { t } = useTranslation('import');
   const p = Math.min(100, Math.max(0, Math.round(pct)));
 
   return (
@@ -16,10 +18,10 @@ export function AnalysisProgress({ label, pct }: Props) {
 
       <div>
         <h3 className="text-xl font-extrabold text-white font-display">
-          Evaluating Positions
+          {t('progress.heading')}
         </h3>
         <p className="text-xs font-mono text-slate-400 mt-1">
-          Stockfish Depth 14 · Client-side
+          {t('progress.subtitle')}
         </p>
       </div>
 
@@ -48,7 +50,7 @@ export function AnalysisProgress({ label, pct }: Props) {
 
       <div className="flex items-center gap-2 text-xs font-mono text-indigo-200/60">
         <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
-        <span>Computing move classifications and coach insights...</span>
+        <span>{t('progress.footer')}</span>
       </div>
     </div>
   );

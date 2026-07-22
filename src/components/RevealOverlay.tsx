@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ReviewSummary } from '../chess/types';
 import type { PlayerRatings } from '../chess/ratings';
 import { CLASS_META, CLASS_ORDER } from './classMeta';
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function RevealOverlay({ summary, white, black, ratings, soundOn, onClose }: Props) {
+  const { t } = useTranslation('review');
   const [stage, setStage] = useState<RevealStage>(() => (prefersReducedMotion() ? 'done' : 'enter'));
 
   // Advance the timeline.
@@ -67,11 +69,11 @@ export function RevealOverlay({ summary, white, black, ratings, soundOn, onClose
   const skip = () => { if (!done) setStage('done'); };
 
   return (
-    <div className="reveal-overlay" onClick={skip} role="dialog" aria-modal="true" aria-label="Game review results">
+    <div className="reveal-overlay" onClick={skip} role="dialog" aria-modal="true" aria-label={t('reveal.ariaLabel')}>
       <div className="reveal-card">
         <div className="reveal-head">
           <span className="reveal-knight" aria-hidden="true">♞</span>
-          <h2>Game Review</h2>
+          <h2>{t('reveal.title')}</h2>
           {summary.opening && <div className="reveal-opening">{summary.opening.name}</div>}
         </div>
 
@@ -84,7 +86,7 @@ export function RevealOverlay({ summary, white, black, ratings, soundOn, onClose
               <span className="rp-est">~{summary.estRating.white}</span>
             </div>
           </div>
-          <div className="reveal-vs">vs</div>
+          <div className="reveal-vs">{t('reveal.vs')}</div>
           <div className="reveal-player">
             <div className="rp-name">{black}</div>
             <div className="rp-acc">{blackAcc.toFixed(1)}</div>
@@ -106,7 +108,7 @@ export function RevealOverlay({ summary, white, black, ratings, soundOn, onClose
                 style={{ animationDelay: `${i * 80}ms` }}
               >
                 <span className={`badge ${meta.cls}`}>{meta.sym}</span>
-                <span className="rb-label">{meta.label}</span>
+                <span className="rb-label">{t(`cls.${label}`)}</span>
                 <span className="rb-w">{c.white}</span>
                 <span className="rb-b">{c.black}</span>
               </div>
@@ -119,7 +121,7 @@ export function RevealOverlay({ summary, white, black, ratings, soundOn, onClose
             className="primary reveal-start"
             onClick={(e) => { e.stopPropagation(); onClose(); }}
           >
-            Start review
+            {t('reveal.startReview')}
           </button>
         </div>
       </div>

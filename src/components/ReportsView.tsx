@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../supabase/client';
 import { fetchProfile } from '../supabase/library';
 import { fetchReportGames, fetchReportFacts } from '../supabase/reports';
@@ -17,20 +18,21 @@ interface ReportData {
   hasHistory: boolean;
 }
 
-const MOTIF_LABELS: Record<string, string> = {
-  missed_mate: 'missed mates',
-  walked_into_mate: 'walked into mate',
-  hung_piece: 'hung pieces',
-  missed_fork: 'missed forks',
+const MOTIF_LABEL_KEYS: Record<string, string> = {
+  missed_mate: 'reports.motifs.labels.missedMate',
+  walked_into_mate: 'reports.motifs.labels.walkedIntoMate',
+  hung_piece: 'reports.motifs.labels.hungPiece',
+  missed_fork: 'reports.motifs.labels.missedFork',
 };
 
-const PHASE_LABELS: Record<PhaseStat['phase'], string> = {
-  opening: 'Opening',
-  middlegame: 'Middlegame',
-  endgame: 'Endgame',
+const PHASE_LABEL_KEYS: Record<PhaseStat['phase'], string> = {
+  opening: 'reports.phases.labels.opening',
+  middlegame: 'reports.phases.labels.middlegame',
+  endgame: 'reports.phases.labels.endgame',
 };
 
 export function ReportsView({ user }: Props) {
+  const { t } = useTranslation('library');
   const [data, setData] = useState<ReportData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -78,7 +80,7 @@ export function ReportsView({ user }: Props) {
   if (!data.hasHistory) {
     return (
       <div className="reports">
-        <div className="card report-empty">Analyze a few games to unlock your weakness reports.</div>
+        <div className="card report-empty">{t('reports.empty')}</div>
       </div>
     );
   }
@@ -93,17 +95,18 @@ export function ReportsView({ user }: Props) {
 }
 
 function OpeningsCard({ openings }: { openings: OpeningStat[] }) {
+  const { t } = useTranslation('library');
   return (
     <div className="card report-card">
-      <h4>Worst openings</h4>
+      <h4>{t('reports.worstOpenings.heading')}</h4>
       {openings.length === 0 ? (
-        <div className="report-empty-row">Play the same opening a couple of times to see this.</div>
+        <div className="report-empty-row">{t('reports.worstOpenings.empty')}</div>
       ) : (
         <div className="rep-rows">
           {openings.slice(0, 8).map((o) => (
             <div className="rep-row" key={o.opening}>
               <span className="rep-label">{o.opening}</span>
-              <span className="rep-sub">{o.games} games</span>
+              <span className="rep-sub">{t('reports.worstOpenings.gamesCount', { count: o.games })}</span>
               <span className="rep-bar-track">
                 <span className="rep-bar" style={{ width: `${Math.max(0, Math.min(100, o.avgAccuracy))}%` }} />
               </span>
@@ -117,17 +120,18 @@ function OpeningsCard({ openings }: { openings: OpeningStat[] }) {
 }
 
 function MotifsCard({ motifs }: { motifs: MotifStat[] }) {
+  const { t } = useTranslation('library');
   const max = Math.max(1, ...motifs.map((m) => m.count));
   return (
     <div className="card report-card">
-      <h4>Missed motifs</h4>
+      <h4>{t('reports.motifs.heading')}</h4>
       {motifs.length === 0 ? (
-        <div className="report-empty-row">No recurring tactical misses found — nice.</div>
+        <div className="report-empty-row">{t('reports.motifs.empty')}</div>
       ) : (
         <div className="rep-rows">
           {motifs.map((m) => (
             <div className="rep-row" key={m.motif}>
-              <span className="rep-label">{MOTIF_LABELS[m.motif] ?? m.motif}</span>
+              <span className="rep-label">{MOTIF_LABEL_KEYS[m.motif] ? t(MOTIF_LABEL_KEYS[m.motif]) : m.motif}</span>
               <span className="rep-bar-track">
                 <span className="rep-bar" style={{ width: `${(m.count / max) * 100}%` }} />
               </span>
@@ -141,19 +145,20 @@ function MotifsCard({ motifs }: { motifs: MotifStat[] }) {
 }
 
 function PhaseCard({ phases }: { phases: PhaseStat[] }) {
+  const { t } = useTranslation('library');
   const worst = phases.reduce<PhaseStat | null>((w, p) => (!w || p.badMovePct > w.badMovePct ? p : w), null);
   return (
     <div className="card report-card">
-      <h4>Phase breakdown</h4>
+      <h4>{t('reports.phases.heading')}</h4>
       {phases.length === 0 ? (
-        <div className="report-empty-row">Not enough analyzed moves yet.</div>
+        <div className="report-empty-row">{t('reports.phases.empty')}</div>
       ) : (
         <div className="rep-phases">
           {phases.map((p) => (
             <div className={`rep-phase${worst && p.phase === worst.phase ? ' rep-phase-worst' : ''}`} key={p.phase}>
-              <div className="rep-phase-name">{PHASE_LABELS[p.phase]}</div>
-              <div className="rep-phase-stat">{p.avgWinDrop.toFixed(1)}<span className="rep-phase-unit">avg win-drop</span></div>
-              <div className="rep-phase-stat">{p.badMovePct.toFixed(0)}%<span className="rep-phase-unit">bad moves</span></div>
+              <div className="rep-phase-name">{t(PHASE_LABEL_KEYS[p.phase])}</div>
+              <div className="rep-phase-stat">{p.avgWinDrop.toFixed(1)}<span className="rep-phase-unit">{t('reports.phases.avgWinDrop')}</span></div>
+              <div className="rep-phase-stat">{p.badMovePct.toFixed(0)}%<span className="rep-phase-unit">{t('reports.phases.badMoves')}</span></div>
             </div>
           ))}
         </div>

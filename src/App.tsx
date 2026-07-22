@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AlertCircle, Library } from 'lucide-react';
 import { parsePgn } from './chess/pgnParser';
 import { uciToSan } from './chess/san';
@@ -55,6 +56,7 @@ const SPEED_MS: Record<Speed, number> = { off: 0, slow: 1200, medium: 600, fast:
 type Tab = 'import' | 'review' | 'library';
 
 export default function App() {
+  const { t } = useTranslation('shell');
   const [game, setGame] = useState<ParsedGame | null>(null);
   const [review, setReview] = useState<Review | null>(null);
   const [ply, setPly] = useState(0);
@@ -116,18 +118,18 @@ export default function App() {
       // failed import is diagnosable instead of a fixed, opaque string.
       const detail = e instanceof Error ? e.message : String(e);
       console.error('[ChessReviewer] PGN parse failed:', e);
-      setError(`That PGN could not be read: ${detail}. Check the moves and try again.`);
+      setError(t('errors.pgnParse', { detail }));
       return;
     }
     setGame(parsed);
     setPly(0);
-    setProgress('Analyzing with Stockfish…');
+    setProgress(t('progress.analyzing'));
     setProgressPct(0);
     try {
-      const analyses = await analyzeGame(parsed, DEPTH, (d, t) => {
+      const analyses = await analyzeGame(parsed, DEPTH, (d, total) => {
         if (seq === runSeq.current) {
-          setProgress(`Analyzing position ${d} / ${t}`);
-          setProgressPct(t > 0 ? Math.round((d / t) * 100) : 0);
+          setProgress(t('progress.analyzingPosition', { done: d, total }));
+          setProgressPct(total > 0 ? Math.round((d / total) * 100) : 0);
         }
       });
       if (seq !== runSeq.current) return;
@@ -141,7 +143,7 @@ export default function App() {
       // timeout) were previously undiagnosable — log the cause for support.
       const detail = e instanceof Error ? e.message : String(e);
       console.error('[ChessReviewer] Analysis failed:', e);
-      setError(`The engine could not analyze this game (${detail}). Try reloading the page.`);
+      setError(t('errors.engineFailure', { detail }));
       setProgress(null);
     }
   }
@@ -158,7 +160,7 @@ export default function App() {
     if (!supabase) return;
     const row = await fetchSavedGame(supabase, gameId);
     const rebuilt = row ? rowToReview(row.pgn, row.analysis) : null;
-    if (!rebuilt) { setError('That saved review could not be loaded.'); setTab('import'); return; }
+    if (!rebuilt) { setError(t('errors.savedReviewLoadFailed')); setTab('import'); return; }
     runSeq.current++;      // invalidate any in-flight analysis so it can't clobber this saved review
     setProgress(null);
     setError(null);
@@ -465,7 +467,7 @@ export default function App() {
           return (
             <div className="max-w-3xl mx-auto mt-4 px-4">
               <div className="glass-panel rounded-xl p-3 text-xs font-mono text-slate-300 space-y-2">
-                <p>Scoring your recent games… {autoScore.done} / {autoScore.total}</p>
+                <p>{t('progress.autoScore', { done: autoScore.done, total: autoScore.total })}</p>
                 <div
                   role="progressbar"
                   aria-valuenow={pct}
@@ -499,19 +501,19 @@ export default function App() {
                 <Library className="w-7 h-7" />
               </div>
               <h3 className="text-xl font-extrabold text-white font-display">
-                Sign in to build your library
+                {t('librarySignedOut.title')}
               </h3>
               <p className="text-xs font-mono text-slate-400">
                 {auth.enabled
-                  ? 'Analyzed games sync to your cloud library with weakness reports and trends.'
-                  : 'Cloud sync is not configured for this deployment.'}
+                  ? t('librarySignedOut.syncDescription')
+                  : t('librarySignedOut.syncUnavailable')}
               </p>
               {auth.enabled && (
                 <button
                   onClick={() => setShowAuth(true)}
                   className="w-full py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-[#05040c] font-sans font-bold text-sm shadow-[0_0_15px_rgba(56,225,214,0.3)] transition-all cursor-pointer"
                 >
-                  Sign In & Enable Sync
+                  {t('librarySignedOut.cta')}
                 </button>
               )}
             </div>
@@ -534,7 +536,8 @@ export default function App() {
                   color={flipped ? 'white' : 'black'}
                 />
 
-                <div className="flex items-stretch justify-center gap-3 w-full">
+                {/* dir="ltr" guard: chess coords + eval bar must never mirror under RTL locales (ar/fa) */}
+                <div className="flex items-stretch justify-center gap-3 w-full" dir="ltr">
                   <EvalBar cp={currentWhiteCp} flipped={flipped} />
                   {/* The .board sizing/fx CSS keys off --bs; with the legacy
                       .review-grid gone, derive it from this frame's width via a
@@ -545,6 +548,7 @@ export default function App() {
                   <div
                     className="flex-1 rounded-2xl overflow-hidden border border-indigo-400/20 shadow-2xl"
                     style={{ containerType: 'inline-size' }}
+                    dir="ltr"
                   >
                     <div className="board" ref={boardRef} style={{ '--bs': '100cqw' } as React.CSSProperties}>
                       <ReviewBoard

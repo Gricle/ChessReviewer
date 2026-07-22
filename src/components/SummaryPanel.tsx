@@ -1,6 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import type { ReviewSummary } from '../chess/types';
 import type { PlayerRatings } from '../chess/ratings';
-import { CLASS_META, CLASS_ORDER } from './classMeta';
+import { CLASS_ORDER } from './classMeta';
 import { ClassChip } from './ClassChip';
 
 interface Props {
@@ -38,6 +39,7 @@ function AccuracyTile({
 }
 
 export function SummaryPanel({ summary, white, black, ratings, result }: Props) {
+  const { t } = useTranslation('review');
   const whiteHasMoves = movesPlayed(summary, 'white') > 0;
   const blackHasMoves = movesPlayed(summary, 'black') > 0;
 
@@ -53,7 +55,7 @@ export function SummaryPanel({ summary, white, black, ratings, result }: Props) 
         />
         {result ? (
           <div className="bg-indigo-950/50 rounded-2xl p-3 border border-indigo-500/20 text-center flex flex-col justify-center">
-            <div className="text-xs font-mono text-slate-400 font-bold">Result</div>
+            <div className="text-xs font-mono text-slate-400 font-bold">{t('summary.result')}</div>
             <div className="text-lg font-extrabold font-mono text-cyan-300">{result}</div>
           </div>
         ) : <div />}
@@ -68,18 +70,17 @@ export function SummaryPanel({ summary, white, black, ratings, result }: Props) 
 
       <div>
         <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono mb-3">
-          Move Classification Breakdown
+          {t('summary.breakdownTitle')}
         </h3>
         <div className="space-y-1.5 font-mono text-xs">
           <div className="grid grid-cols-[1fr_50px_50px] px-3 py-1.5 text-slate-400 font-bold border-b border-indigo-400/10">
-            <span>Classification</span>
+            <span>{t('summary.classificationHeader')}</span>
             <span className="text-center text-slate-200 truncate" title={white}>{white}</span>
             <span className="text-center text-slate-200 truncate" title={black}>{black}</span>
           </div>
           {CLASS_ORDER.map((label) => {
             const c = summary.counts[label];
             if (c.white === 0 && c.black === 0) return null;
-            const meta = CLASS_META[label];
             return (
               <div
                 key={label}
@@ -87,7 +88,7 @@ export function SummaryPanel({ summary, white, black, ratings, result }: Props) 
               >
                 <div className="flex items-center gap-2">
                   <ClassChip cls={label} size="sm" showLabel={false} />
-                  <span className="text-slate-200">{meta.label}</span>
+                  <span className="text-slate-200">{t(`cls.${label}`)}</span>
                 </div>
                 <span className={`text-center font-bold ${c.white > 0 ? 'text-white' : 'text-slate-600'}`}>{c.white}</span>
                 <span className={`text-center font-bold ${c.black > 0 ? 'text-white' : 'text-slate-600'}`}>{c.black}</span>

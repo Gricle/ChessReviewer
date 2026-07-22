@@ -1,1 +1,61 @@
-{}
+{
+  "cls": {
+    "brilliant": "Brilliant",
+    "great": "Great",
+    "best": "Best",
+    "excellent": "Excellent",
+    "good": "Good",
+    "book": "Book",
+    "inaccuracy": "Inaccuracy",
+    "mistake": "Mistake",
+    "blunder": "Blunder"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "{{value}}% Acc"
+  },
+  "playback": {
+    "jumpStart": "Jump to Start (Home)",
+    "prevMove": "Previous Move (←)",
+    "cycleSpeed": "Cycle Autoplay Speed (Space)",
+    "nextMove": "Next Move (→)",
+    "jumpEnd": "Jump to End (End)",
+    "flipBoard": "Flip Board Orientation (F)",
+    "muteSound": "Mute Sound FX",
+    "unmuteSound": "Unmute Sound FX",
+    "volume": "Volume",
+    "disableVoice": "Disable Coach Voice",
+    "enableVoice": "Enable Coach Voice",
+    "speed": {
+      "autoplay": "Autoplay"
+    }
+  },
+  "coachCard": {
+    "title": "Engine Coach",
+    "readAloud": "Read aloud",
+    "readAloudAria": "Read coach comment aloud",
+    "youPlayed": "You played <bold>{{san}}</bold>",
+    "bestMove": "Best move <bold>{{bestSan}}</bold>",
+    "foundBest": "You found the best move: <bold>{{san}}</bold>",
+    "empty": "Step through the game to see each move reviewed."
+  },
+  "moveList": {
+    "title": "Game Move List",
+    "cellAriaLabel": "{{san}}, {{label}}"
+  },
+  "summary": {
+    "result": "Result",
+    "breakdownTitle": "Move Classification Breakdown",
+    "classificationHeader": "Classification"
+  },
+  "evalGraph": {
+    "title": "Evaluation History",
+    "subtitle": "White advantage (+10) / Black advantage (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "Game review results",
+    "title": "Game Review",
+    "vs": "vs",
+    "startReview": "Start review"
+  }
+}

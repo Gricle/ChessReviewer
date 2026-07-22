@@ -1,1 +1,25 @@
-{}
+{
+  "bookMove": "{{san}} is a book move — theory continues.",
+  "betterWas": "Better was {{bestSan}}.",
+  "walksIntoMate": "This walks into a forced mate.",
+  "hadForcedMateSlip": "You had a forced mate and let it slip.",
+  "leavesHanging": "This leaves your {{piece}} on {{square}} hanging.",
+  "threatNow": "The threat is now {{nextBestSan}}.",
+  "losesSignificantGround": "This loses significant ground.",
+  "couldHaveBeenPunished": "This could have been punished.",
+  "brilliantFork": "A stunning sacrifice! {{san}} gives up material and sets up a fork.",
+  "brilliant": "A stunning sacrifice! {{san}} gives up material.",
+  "onlyGoodMove": "{{san}} is the only good move here.",
+  "keepsForcedMate": "{{san}} keeps the forced mate on track.",
+  "forksPieces": "{{san}} forks {{count}} pieces.",
+  "strongestMove": "{{san}} is the strongest move.",
+  "strongOnlyBetter": "{{san}} is strong — only {{bestSan}} was better.",
+  "keepsBalance": "{{san}} keeps the balance, but {{bestSan}} was more accurate.",
+  "piece": {
+    "pawn": "pawn",
+    "knight": "knight",
+    "bishop": "bishop",
+    "rook": "rook",
+    "queen": "queen"
+  }
+}

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { useTranslation } from 'react-i18next';
 import { Library, AlertTriangle, TrendingUp } from 'lucide-react';
 import { supabase } from '../supabase/client';
 import { fetchLibrary, fetchLibraryPgnHashes, fetchProfile, saveProfile, type LibraryRow, type Profile } from '../supabase/library';
@@ -14,9 +15,9 @@ interface Props {
 }
 
 const SUB_TABS = [
-  { id: 'games' as const, label: 'Games', icon: Library, iconClass: '' },
-  { id: 'reports' as const, label: 'Weakness Reports', icon: AlertTriangle, iconClass: 'text-amber-400' },
-  { id: 'trends' as const, label: 'Trends', icon: TrendingUp, iconClass: 'text-emerald-400' },
+  { id: 'games' as const, labelKey: 'tabs.games', icon: Library, iconClass: '' },
+  { id: 'reports' as const, labelKey: 'tabs.reports', icon: AlertTriangle, iconClass: 'text-amber-400' },
+  { id: 'trends' as const, labelKey: 'tabs.trends', icon: TrendingUp, iconClass: 'text-emerald-400' },
 ];
 
 function pillClass(active: boolean): string {
@@ -31,6 +32,7 @@ const inputClass =
   'bg-[#0b0918] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-400';
 
 export function LibraryView({ user, onOpen, onAnalyze }: Props) {
+  const { t } = useTranslation('library');
   const [rows, setRows] = useState<LibraryRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile>({ display_name: null, chesscom_username: null, lichess_username: null });
@@ -76,7 +78,7 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
               {profile.display_name || user.email}
             </h2>
             <p className="text-xs font-mono text-slate-400">
-              {rows ? `${rows.length} saved game reviews` : 'Loading your library…'}
+              {rows ? t('profile.savedCount', { count: rows.length }) : t('profile.loading')}
             </p>
           </div>
         </div>
@@ -84,10 +86,10 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
         {/* Sub-tab pill switcher */}
         <div
           role="group"
-          aria-label="Library section"
+          aria-label={t('subTabs.ariaLabel')}
           className="flex items-center gap-1.5 bg-indigo-950/60 p-1.5 rounded-2xl border border-indigo-500/20"
         >
-          {SUB_TABS.map(({ id, label, icon: Icon, iconClass }) => (
+          {SUB_TABS.map(({ id, labelKey, icon: Icon, iconClass }) => (
             <button
               key={id}
               onClick={() => setTab(id)}
@@ -95,7 +97,7 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
               className={pillClass(tab === id)}
             >
               <Icon className={`w-3.5 h-3.5 ${iconClass}`} />
-              {id === 'games' ? `Games (${rows?.length ?? 0})` : label}
+              {id === 'games' ? t('tabs.games', { count: rows?.length ?? 0 }) : t(labelKey)}
             </button>
           ))}
         </div>
@@ -121,22 +123,22 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
         <>
           {/* Profile form */}
           <form className="glass-panel rounded-3xl p-6 border border-indigo-400/20 space-y-4" onSubmit={submitProfile}>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">Profile</h3>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">{t('profileForm.heading')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <input
-                placeholder="display name"
+                placeholder={t('profileForm.displayNamePlaceholder')}
                 value={profile.display_name ?? ''}
                 onChange={(e) => setProfile({ ...profile, display_name: e.target.value || null })}
                 className={inputClass}
               />
               <input
-                placeholder="chess.com username"
+                placeholder={t('profileForm.chesscomPlaceholder')}
                 value={profile.chesscom_username ?? ''}
                 onChange={(e) => setProfile({ ...profile, chesscom_username: e.target.value || null })}
                 className={inputClass}
               />
               <input
-                placeholder="lichess username"
+                placeholder={t('profileForm.lichessPlaceholder')}
                 value={profile.lichess_username ?? ''}
                 onChange={(e) => setProfile({ ...profile, lichess_username: e.target.value || null })}
                 className={inputClass}
@@ -147,16 +149,16 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
                 type="submit"
                 className="px-4 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-[#05040c] font-sans font-bold text-xs shadow-[0_0_15px_rgba(56,225,214,0.3)] transition-all cursor-pointer"
               >
-                Save
+                {t('profileForm.save')}
               </button>
-              {saved && <span className="text-xs font-mono text-cyan-300">Profile saved.</span>}
+              {saved && <span className="text-xs font-mono text-cyan-300">{t('profileForm.saved')}</span>}
             </div>
           </form>
 
           {/* Games list */}
           <div className="glass-panel rounded-3xl p-6 border border-indigo-400/20 space-y-4">
             <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
-              Saved Analysis History
+              {t('history.heading')}
             </h3>
 
             {!rows && !error && (
@@ -165,13 +167,16 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
 
             {rows && rows.length === 0 && (
               <div className="py-12 text-center text-slate-400 font-mono text-xs">
-                No saved games yet — analyze a game and it lands here automatically.
+                {t('history.empty')}
               </div>
             )}
 
             {rows && rows.length > 0 && (
               <div className="space-y-2">
-                {rows.map((r) => (
+                {rows.map((r) => {
+                  const whiteLabel = `${r.white_name}${r.white_rating != null ? ` (${r.white_rating})` : ''}`;
+                  const blackLabel = `${r.black_name}${r.black_rating != null ? ` (${r.black_rating})` : ''}`;
+                  return (
                   <button
                     key={r.id}
                     onClick={() => onOpen(r.id)}
@@ -179,7 +184,7 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
                   >
                     <div className="space-y-1">
                       <span className="text-sm font-extrabold text-white font-sans">
-                        {r.white_name}{r.white_rating != null && ` (${r.white_rating})`} vs {r.black_name}{r.black_rating != null && ` (${r.black_rating})`}
+                        {t('history.matchup', { white: whiteLabel, black: blackLabel })}
                       </span>
                       <p className="text-xs font-mono text-slate-400">
                         {r.opening_name ?? '—'} · {r.result ?? '*'} · {r.played_at ?? r.created_at.slice(0, 10)}
@@ -187,17 +192,21 @@ export function LibraryView({ user, onOpen, onAnalyze }: Props) {
                     </div>
 
                     <div className="text-xs font-mono text-right">
-                      <p className="text-slate-400 font-bold">Accuracy</p>
+                      <p className="text-slate-400 font-bold">{t('history.accuracyLabel')}</p>
                       {r.reviews ? (
                         <p className="text-cyan-300 font-extrabold">
-                          W: {r.reviews.white_accuracy.toFixed(0)}% | B: {r.reviews.black_accuracy.toFixed(0)}%
+                          {t('history.accuracyValue', {
+                            white: r.reviews.white_accuracy.toFixed(0),
+                            black: r.reviews.black_accuracy.toFixed(0),
+                          })}
                         </p>
                       ) : (
-                        <p className="text-cyan-300 font-extrabold">…</p>
+                        <p className="text-cyan-300 font-extrabold">{t('history.accuracyPending')}</p>
                       )}
                     </div>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
