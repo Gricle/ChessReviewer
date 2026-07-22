@@ -480,7 +480,7 @@ export default function App() {
 
         {tab === 'library' ? (
           auth.user ? (
-            <LibraryView user={auth.user} onOpen={openSaved} onClose={() => setTab('import')} />
+            <LibraryView user={auth.user} onOpen={openSaved} />
           ) : (
             <div className="max-w-md mx-auto my-16 glass-panel rounded-3xl p-8 border border-cyan-400/30 text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-300">
