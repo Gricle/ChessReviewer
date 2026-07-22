@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Volume2 } from 'lucide-react';
 import type { Classification } from '../chess/types';
 import { CLASS_META } from './classMeta';
 import { speak, cancelSpeech } from '../speech';
@@ -26,7 +27,6 @@ function formatEval(cp: number): string {
 
 export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
   const meta = move ? CLASS_META[move.cls] : null;
-  const evalPositive = evalCp >= 0;
   const wantsBetter = move && (move.cls === 'inaccuracy' || move.cls === 'mistake' || move.cls === 'blunder');
   const isGood = move && (move.cls === 'brilliant' || move.cls === 'great' || move.cls === 'best');
   const isNeutral = move && (move.cls === 'excellent' || move.cls === 'good' || move.cls === 'book');
@@ -43,73 +43,97 @@ export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
     prevMoveRef.current = move;
   }, [move, voiceOn]);
 
+  const evalPillClass = evalCp > 50
+    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+    : evalCp < -50
+      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+      : 'bg-slate-800 text-slate-300 border border-slate-700';
+
   return (
-    <div className="card coach">
-      <div className="coach-head">
-        <div className="avatar" aria-hidden="true">♞</div>
-        <div className="coach-title">
-          <h3>Game Review</h3>
-          {opening && <div className="opening">{opening.eco} · {opening.name}</div>}
+    <div className="glass-panel rounded-2xl p-5 border border-indigo-400/20 flex flex-col gap-3 shadow-xl relative overflow-hidden">
+      {move && meta && (
+        <div
+          className="absolute top-0 right-0 w-32 h-32 blur-3xl opacity-20 pointer-events-none rounded-full"
+          style={{ backgroundColor: meta.hex }}
+        />
+      )}
+
+      <div className="flex items-center justify-between border-b border-indigo-400/10 pb-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600/40 to-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-xl text-cyan-300" aria-hidden="true">
+            ♞
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+              Engine Coach
+            </span>
+            {opening && (
+              <span className="text-[11px] text-slate-400 font-mono bg-indigo-950/60 px-2 py-0.5 rounded-md border border-indigo-500/20">
+                {opening.eco} · {opening.name}
+              </span>
+            )}
+          </div>
         </div>
-        <div className={`eval-pill ${evalPositive ? 'pos' : 'neg'}`}>{formatEval(evalCp)}</div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <div className={`px-2.5 py-1 rounded-lg font-mono text-xs font-bold ${evalPillClass}`}>
+            {formatEval(evalCp)}
+          </div>
+          <button
+            className="p-2 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 text-cyan-300 border border-indigo-500/30 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            onClick={(e) => { e.stopPropagation(); speak(comment); }}
+            title="Read aloud"
+            aria-label="Read coach comment aloud"
+            disabled={!voiceOn || !comment}
+          >
+            <Volume2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {move && (
-        <div className="coach-move">
-          <div className="move-class-row">
-            <span className={`badge lg ${meta!.cls}`}>{meta!.sym}</span>
-            <span className="class-label">{meta!.label}</span>
+      {move && meta && (
+        <>
+          <div className="flex items-center justify-between bg-indigo-950/40 p-3 rounded-xl border border-indigo-400/10">
+            <span
+              className="px-2.5 py-1 rounded-md text-xs font-extrabold font-mono"
+              style={{ backgroundColor: meta.hex, color: '#05040c' }}
+            >
+              {meta.sym} {meta.label}
+            </span>
           </div>
 
-          <div className="move-detail">
+          <div className="text-sm font-mono bg-black/20 p-3 rounded-xl border border-white/5 space-y-1">
             {wantsBetter && (
               <>
-                <div className="dual-line">
-                  <span className="line-label">You played</span>
-                  <span className="played-san">{move.san}</span>
+                <div className="text-slate-300">
+                  You played <strong className="text-cyan-300">{move.san}</strong>
                 </div>
-                <div className="dual-line best">
-                  <span className="line-label">Best move</span>
-                  <span className="best-san">{move.bestSan}</span>
+                <div className="text-emerald-400 font-semibold">
+                  Best move <strong className="underline underline-offset-2">{move.bestSan}</strong>
                 </div>
               </>
             )}
 
             {isGood && (
-              <div className="single-line found">
-                You found the best move: <strong>{move.san}</strong>
+              <div className="text-slate-300">
+                You found the best move: <strong className="text-cyan-300">{move.san}</strong>
               </div>
             )}
 
             {isNeutral && (
-              <div className="single-line">
-                You played <strong>{move.san}</strong>
+              <div className="text-slate-300">
+                You played <strong className="text-cyan-300">{move.san}</strong>
               </div>
             )}
           </div>
 
-          <div className="desc-row">
-            <p className="desc">{comment}</p>
-            <button
-              className="speak-btn"
-              onClick={(e) => { e.stopPropagation(); speak(comment); }}
-              title="Read aloud"
-              aria-label="Read coach comment aloud"
-              disabled={!voiceOn || !comment}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-              </svg>
-            </button>
-          </div>
-        </div>
+          <p className="text-sm text-indigo-100/90 leading-relaxed font-sans">{comment}</p>
+        </>
       )}
 
       {!move && (
-        <div className="coach-empty">
-          <p>Step through the game to see each move reviewed.</p>
+        <div className="text-center text-indigo-200/60 text-sm py-4">
+          Step through the game to see each move reviewed.
         </div>
       )}
     </div>
