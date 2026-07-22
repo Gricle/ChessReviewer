@@ -123,7 +123,7 @@ export function PlaybackControls({
       </div>
 
       {/* Board Flip & Sound Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-3">
         <button
           onClick={onToggleFlip}
           title="Flip Board Orientation (F)"
@@ -172,7 +172,7 @@ export function PlaybackControls({
         </button>
 
         {/* Ply Counter */}
-        <div className="px-3 py-1.5 rounded-xl bg-indigo-950/80 border border-indigo-400/20 font-mono text-xs font-bold text-cyan-300">
+        <div className="px-3 py-1.5 rounded-xl bg-indigo-950/80 border border-indigo-400/20 font-mono text-xs font-bold text-cyan-300 whitespace-nowrap">
           {ply} / {total}
         </div>
       </div>

@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import type { ReviewSummary } from '../chess/types';
 import type { PlayerRatings } from '../chess/ratings';
 import { CLASS_META, CLASS_ORDER } from './classMeta';
@@ -10,7 +9,6 @@ interface Props {
   black: string;
   ratings: PlayerRatings;
   result?: string | null;
-  children?: ReactNode;
 }
 
 function movesPlayed(summary: ReviewSummary, color: 'white' | 'black'): number {
@@ -39,7 +37,7 @@ function AccuracyTile({
   );
 }
 
-export function SummaryPanel({ summary, white, black, ratings, result, children }: Props) {
+export function SummaryPanel({ summary, white, black, ratings, result }: Props) {
   const whiteHasMoves = movesPlayed(summary, 'white') > 0;
   const blackHasMoves = movesPlayed(summary, 'black') > 0;
 
@@ -68,9 +66,7 @@ export function SummaryPanel({ summary, white, black, ratings, result, children 
         />
       </div>
 
-      {children}
-
-      <div className={children ? 'mt-4' : ''}>
+      <div>
         <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono mb-3">
           Move Classification Breakdown
         </h3>
