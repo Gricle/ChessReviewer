@@ -285,6 +285,8 @@ export default function App() {
         ? uploadReview(client, userId, p)
         : Promise.reject(new Error('queued by another user')),
     ).catch(() => { /* fire-and-forget */ });
+    // Enqueue exactly once per finished review — other values are read, not triggers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [review]);
 
   // Retry anything pending whenever a user (re)appears.
@@ -297,6 +299,8 @@ export default function App() {
         ? uploadReview(client, userId, p)
         : Promise.reject(new Error('queued by another user')),
     ).catch(() => { /* fire-and-forget */ });
+    // Retry once per (re)appearing user id — client identity is stable per id.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.user?.id]);
 
   useEffect(() => { safeStorageSet('chessreviewer.soundOn', soundOn ? '1' : '0'); }, [soundOn]);

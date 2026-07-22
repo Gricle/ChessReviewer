@@ -24,7 +24,7 @@ const TABS: TabDef[] = [
 ];
 
 function pill(active: boolean): string {
-  return `px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+  return `px-3.5 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all cursor-pointer ${
     active
       ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(56,225,214,0.2)]'
       : 'bg-indigo-950/40 text-slate-300 border border-indigo-500/20 hover:bg-indigo-900/40'
@@ -43,7 +43,7 @@ export function Header({
 
   return (
     <header className="w-full sticky top-0 z-40 bg-[rgba(24,22,50,0.65)] backdrop-blur-xl border-b border-indigo-400/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-y-2">
         {/* Brand Logo */}
         <button
           type="button"
@@ -69,7 +69,7 @@ export function Header({
         </button>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           {tabs.map((tab) => {
             const active = activeTab === tab.id;
             const Icon = tab.icon;
@@ -91,7 +91,7 @@ export function Header({
             <button
               onClick={onOpenAuth}
               aria-label={userEmail ?? 'Sign in'}
-              className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/30 text-slate-200 transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/30 text-slate-200 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <UserCheck className="w-3.5 h-3.5 text-cyan-400" />
               <span className="hidden sm:inline max-w-[160px] truncate">

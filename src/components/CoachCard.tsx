@@ -42,7 +42,7 @@ export function CoachCard({ opening, evalCp, move, voiceOn = true }: Props) {
       cancelSpeech();
     }
     prevMoveRef.current = move;
-  }, [move, voiceOn]);
+  }, [move, voiceOn, comment]);
 
   const evalPillClass = evalCp > 50
     ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'

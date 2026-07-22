@@ -83,6 +83,8 @@ export function ReviewBoard({ fen, lastMove, badge, arrow, checkSquare, orientat
     if (!el.current) return;
     api.current = Chessground(el.current, { fen, viewOnly: true, coordinates: true, orientation });
     return () => api.current?.destroy();
+    // Mount-once: later fen/orientation changes are applied via api.current.set below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
