@@ -6,6 +6,8 @@ interface Props {
 }
 
 export function AnalysisProgress({ label, pct }: Props) {
+  const p = Math.min(100, Math.max(0, Math.round(pct)));
+
   return (
     <div className="w-full max-w-xl mx-auto my-12 glass-panel rounded-3xl p-8 border border-cyan-400/30 shadow-[0_0_40px_rgba(56,225,214,0.15)] flex flex-col items-center gap-5 text-center">
       <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-[0_0_20px_rgba(56,225,214,0.3)]">
@@ -27,13 +29,19 @@ export function AnalysisProgress({ label, pct }: Props) {
           <span className="text-slate-300 font-semibold">
             {label}
           </span>
-          <span className="text-cyan-300 font-bold">{pct}%</span>
+          <span className="text-cyan-300 font-bold">{p}%</span>
         </div>
 
-        <div className="w-full h-3 bg-indigo-950 rounded-full overflow-hidden border border-indigo-500/30 p-0.5">
+        <div
+          role="progressbar"
+          aria-valuenow={p}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          className="w-full h-3 bg-indigo-950 rounded-full overflow-hidden border border-indigo-500/30 p-0.5"
+        >
           <div
             className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(56,225,214,0.6)]"
-            style={{ width: `${pct}%` }}
+            style={{ width: `${p}%` }}
           />
         </div>
       </div>

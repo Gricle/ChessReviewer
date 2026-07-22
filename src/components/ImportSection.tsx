@@ -17,21 +17,118 @@ const SAMPLE_ICON_COLOR: Record<keyof typeof SAMPLE_PGNS, string> = {
   blunderfest: 'text-rose-400',
 };
 
+interface PlatformImportCardProps {
+  title: string;
+  iconAccent: string;
+  description: string;
+  placeholder: string;
+  value: string;
+  onValueChange: (v: string) => void;
+  onLoad: () => void;
+  isLoading: boolean;
+  loading: string | null;
+  games: GameSummary[];
+  loaded: boolean;
+  source: GameSource;
+  onPgn: (pgn: string, source: GameSource) => void;
+}
+
+function PlatformImportCard({
+  title,
+  iconAccent,
+  description,
+  placeholder,
+  value,
+  onValueChange,
+  onLoad,
+  isLoading,
+  loading,
+  games,
+  loaded,
+  source,
+  onPgn,
+}: PlatformImportCardProps) {
+  return (
+    <div className="glass-panel rounded-2xl p-6 border border-indigo-400/20 flex flex-col shadow-xl space-y-4">
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-cyan-400 font-bold font-mono text-sm">
+          <Globe className={`w-4 h-4 ${iconAccent}`} />
+          <span>{title}</span>
+        </div>
+        <p className="text-xs text-slate-400 font-sans">{description}</p>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onValueChange(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && value.trim() && loading === null) onLoad(); }}
+            placeholder={placeholder}
+            className="flex-1 bg-[#0b0918]/90 border border-indigo-500/20 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400/60"
+          />
+          <button
+            onClick={onLoad}
+            disabled={loading !== null || !value.trim()}
+            className="px-3 py-2 rounded-xl bg-indigo-900/60 hover:bg-cyan-500/20 border border-indigo-500/30 text-xs font-mono text-cyan-300 disabled:opacity-40 cursor-pointer"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Load'}
+          </button>
+        </div>
+
+        {/* Games List */}
+        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+          {games.map((g) => (
+            <button
+              key={g.id}
+              type="button"
+              onClick={() => onPgn(g.pgn, source)}
+              title={g.url}
+              className="w-full p-2.5 rounded-xl bg-indigo-950/40 hover:bg-cyan-500/20 border border-indigo-500/15 cursor-pointer transition-all flex items-center justify-between text-xs font-mono group text-left"
+            >
+              <div className="truncate pr-2">
+                <p className="text-white font-semibold truncate">
+                  {g.white} vs {g.black}
+                </p>
+                <p className="text-[10px] text-slate-400">
+                  #{g.id} · {g.date}
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all shrink-0" />
+            </button>
+          ))}
+          {loaded && games.length === 0 && (
+            <p className="text-[11px] text-slate-500 font-mono px-1 py-1">No recent games found.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ImportSection({ onPgn }: Props) {
   const [pgnInput, setPgnInput] = useState('');
   const [comUser, setComUser] = useState('');
   const [liUser, setLiUser] = useState('');
   const [comGames, setComGames] = useState<GameSummary[]>([]);
   const [liGames, setLiGames] = useState<GameSummary[]>([]);
+  const [comLoaded, setComLoaded] = useState(false);
+  const [liLoaded, setLiLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
 
-  async function loadChessCom() {
+  async function loadPlatform(
+    key: 'chess.com' | 'lichess',
+    username: string,
+    fetchFn: (u: string) => Promise<GameSummary[]>,
+    setGames: (g: GameSummary[]) => void,
+    setLoaded: (b: boolean) => void,
+  ) {
     setError(null);
-    setComGames([]);
-    setLoading('chess.com');
+    setGames([]);
+    setLoaded(false);
+    setLoading(key);
     try {
-      setComGames(await fetchComGames(comUser.trim()));
+      setGames(await fetchFn(username.trim()));
+      setLoaded(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load games');
     } finally {
@@ -39,18 +136,8 @@ export function ImportSection({ onPgn }: Props) {
     }
   }
 
-  async function loadLichess() {
-    setError(null);
-    setLiGames([]);
-    setLoading('lichess');
-    try {
-      setLiGames(await fetchLiGames(liUser.trim()));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load games');
-    } finally {
-      setLoading(null);
-    }
-  }
+  const loadChessCom = () => loadPlatform('chess.com', comUser, fetchComGames, setComGames, setComLoaded);
+  const loadLichess = () => loadPlatform('lichess', liUser, fetchLiGames, setLiGames, setLiLoaded);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8 space-y-8">
@@ -80,6 +167,7 @@ export function ImportSection({ onPgn }: Props) {
             <button
               key={key}
               onClick={() => onPgn(sample.pgn, 'paste')}
+              title={sample.sub}
               className="px-3 py-1.5 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 border border-indigo-500/30 text-xs font-mono text-cyan-300 transition-all cursor-pointer flex items-center gap-1.5"
             >
               <Sparkles className={`w-3 h-3 ${SAMPLE_ICON_COLOR[key as keyof typeof SAMPLE_PGNS]}`} /> {sample.label}
@@ -128,108 +216,38 @@ export function ImportSection({ onPgn }: Props) {
         </div>
 
         {/* Column 2: From Chess.com */}
-        <div className="glass-panel rounded-2xl p-6 border border-indigo-400/20 flex flex-col justify-between shadow-xl space-y-4">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-cyan-400 font-bold font-mono text-sm">
-              <Globe className="w-4 h-4 text-emerald-400" />
-              <span>From Chess.com</span>
-            </div>
-            <p className="text-xs text-slate-400 font-sans">
-              Enter your public Chess.com username to fetch recent games.
-            </p>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={comUser}
-                onChange={(e) => setComUser(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && comUser.trim()) loadChessCom(); }}
-                placeholder="e.g. Hikaru"
-                className="flex-1 bg-[#0b0918]/90 border border-indigo-500/20 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400/60"
-              />
-              <button
-                onClick={loadChessCom}
-                disabled={loading !== null || !comUser.trim()}
-                className="px-3 py-2 rounded-xl bg-indigo-900/60 hover:bg-cyan-500/20 border border-indigo-500/30 text-xs font-mono text-cyan-300 disabled:opacity-40 cursor-pointer"
-              >
-                {loading === 'chess.com' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Load'}
-              </button>
-            </div>
-
-            {/* Games List */}
-            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-              {comGames.map((g) => (
-                <div
-                  key={g.id}
-                  onClick={() => onPgn(g.pgn, 'chesscom')}
-                  title={g.url}
-                  className="p-2.5 rounded-xl bg-indigo-950/40 hover:bg-cyan-500/20 border border-indigo-500/15 cursor-pointer transition-all flex items-center justify-between text-xs font-mono group"
-                >
-                  <div className="truncate pr-2">
-                    <p className="text-white font-semibold truncate">
-                      {g.white} vs {g.black}
-                    </p>
-                    <p className="text-[10px] text-slate-400">
-                      #{g.id} · {g.date}
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <PlatformImportCard
+          title="From Chess.com"
+          iconAccent="text-emerald-400"
+          description="Enter your public Chess.com username to fetch recent games."
+          placeholder="e.g. Hikaru"
+          value={comUser}
+          onValueChange={setComUser}
+          onLoad={loadChessCom}
+          isLoading={loading === 'chess.com'}
+          loading={loading}
+          games={comGames}
+          loaded={comLoaded}
+          source="chesscom"
+          onPgn={onPgn}
+        />
 
         {/* Column 3: From Lichess.org */}
-        <div className="glass-panel rounded-2xl p-6 border border-indigo-400/20 flex flex-col justify-between shadow-xl space-y-4">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-cyan-400 font-bold font-mono text-sm">
-              <Globe className="w-4 h-4 text-amber-400" />
-              <span>From Lichess.org</span>
-            </div>
-            <p className="text-xs text-slate-400 font-sans">
-              Enter your public Lichess username to fetch recent games.
-            </p>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={liUser}
-                onChange={(e) => setLiUser(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && liUser.trim()) loadLichess(); }}
-                placeholder="e.g. MagnusCarlsen"
-                className="flex-1 bg-[#0b0918]/90 border border-indigo-500/20 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400/60"
-              />
-              <button
-                onClick={loadLichess}
-                disabled={loading !== null || !liUser.trim()}
-                className="px-3 py-2 rounded-xl bg-indigo-900/60 hover:bg-cyan-500/20 border border-indigo-500/30 text-xs font-mono text-cyan-300 disabled:opacity-40 cursor-pointer"
-              >
-                {loading === 'lichess' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Load'}
-              </button>
-            </div>
-
-            {/* Games List */}
-            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-              {liGames.map((g) => (
-                <div
-                  key={g.id}
-                  onClick={() => onPgn(g.pgn, 'lichess')}
-                  title={g.url}
-                  className="p-2.5 rounded-xl bg-indigo-950/40 hover:bg-cyan-500/20 border border-indigo-500/15 cursor-pointer transition-all flex items-center justify-between text-xs font-mono group"
-                >
-                  <div className="truncate pr-2">
-                    <p className="text-white font-semibold truncate">
-                      {g.white} vs {g.black}
-                    </p>
-                    <p className="text-[10px] text-slate-400">
-                      #{g.id} · {g.date}
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <PlatformImportCard
+          title="From Lichess.org"
+          iconAccent="text-amber-400"
+          description="Enter your public Lichess username to fetch recent games."
+          placeholder="e.g. MagnusCarlsen"
+          value={liUser}
+          onValueChange={setLiUser}
+          onLoad={loadLichess}
+          isLoading={loading === 'lichess'}
+          loading={loading}
+          games={liGames}
+          loaded={liLoaded}
+          source="lichess"
+          onPgn={onPgn}
+        />
       </div>
     </div>
   );
