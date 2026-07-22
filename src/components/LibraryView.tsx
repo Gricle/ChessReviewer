@@ -21,9 +21,12 @@ function pillClass(active: boolean): string {
   return `px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
     active
       ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(56,225,214,0.3)]'
-      : 'text-slate-400 hover:text-white'
+      : 'border border-transparent text-slate-400 hover:text-white'
   }`;
 }
+
+const inputClass =
+  'bg-[#0b0918] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-400';
 
 export function LibraryView({ user, onOpen }: Props) {
   const [rows, setRows] = useState<LibraryRow[] | null>(null);
@@ -65,7 +68,11 @@ export function LibraryView({ user, onOpen }: Props) {
         </div>
 
         {/* Sub-tab pill switcher */}
-        <div className="flex items-center gap-1.5 bg-indigo-950/60 p-1.5 rounded-2xl border border-indigo-500/20">
+        <div
+          role="group"
+          aria-label="Library section"
+          className="flex items-center gap-1.5 bg-indigo-950/60 p-1.5 rounded-2xl border border-indigo-500/20"
+        >
           {SUB_TABS.map(({ id, label, icon: Icon, iconClass }) => (
             <button
               key={id}
@@ -96,19 +103,19 @@ export function LibraryView({ user, onOpen }: Props) {
                 placeholder="display name"
                 value={profile.display_name ?? ''}
                 onChange={(e) => setProfile({ ...profile, display_name: e.target.value || null })}
-                className="bg-[#0b0918] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-400"
+                className={inputClass}
               />
               <input
                 placeholder="chess.com username"
                 value={profile.chesscom_username ?? ''}
                 onChange={(e) => setProfile({ ...profile, chesscom_username: e.target.value || null })}
-                className="bg-[#0b0918] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-400"
+                className={inputClass}
               />
               <input
                 placeholder="lichess username"
                 value={profile.lichess_username ?? ''}
                 onChange={(e) => setProfile({ ...profile, lichess_username: e.target.value || null })}
-                className="bg-[#0b0918] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-400"
+                className={inputClass}
               />
             </div>
             <div className="flex items-center gap-4">
