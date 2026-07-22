@@ -22,6 +22,9 @@ supabase/.branches
 # Babysitter run cache/logs
 .a5c
 
+# Claude Code local state
+.claude/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
