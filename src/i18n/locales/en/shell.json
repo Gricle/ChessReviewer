@@ -1,0 +1,21 @@
+{
+  "brand": {
+    "title": "Chess Reviewer",
+    "subtitle": "Client-side Game Analysis Engine"
+  },
+  "chip": {
+    "engine": "Stockfish · depth 14"
+  },
+  "tabs": {
+    "import": "New Import",
+    "review": "Active Review",
+    "library": "Library & Trends"
+  },
+  "auth": {
+    "guest": "Guest Mode",
+    "signIn": "Sign in"
+  },
+  "language": {
+    "label": "Change language"
+  }
+}
