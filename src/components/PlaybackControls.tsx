@@ -21,6 +21,12 @@ const SPEED_LABEL: Record<Speed, string> = {
   fast: '×2',
 };
 
+const navBtn =
+  'p-2.5 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 disabled:opacity-30 disabled:pointer-events-none text-slate-200 border border-indigo-500/20 transition-all cursor-pointer';
+
+const toggleBtn =
+  'p-2.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/40 text-slate-200 border border-indigo-500/20 transition-all cursor-pointer';
+
 interface Props {
   ply: number;
   total: number;
@@ -65,7 +71,7 @@ export function PlaybackControls({
           disabled={atStart}
           title="Jump to Start (Home)"
           aria-label="Jump to Start (Home)"
-          className="p-2.5 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 disabled:opacity-30 disabled:pointer-events-none text-slate-200 border border-indigo-500/20 transition-all cursor-pointer"
+          className={navBtn}
         >
           <SkipBack className="w-4 h-4" />
         </button>
@@ -75,7 +81,7 @@ export function PlaybackControls({
           disabled={atStart}
           title="Previous Move (←)"
           aria-label="Previous Move (←)"
-          className="p-2.5 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 disabled:opacity-30 disabled:pointer-events-none text-slate-200 border border-indigo-500/20 transition-all cursor-pointer"
+          className={navBtn}
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -100,7 +106,7 @@ export function PlaybackControls({
           disabled={atEnd}
           title="Next Move (→)"
           aria-label="Next Move (→)"
-          className="p-2.5 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 disabled:opacity-30 disabled:pointer-events-none text-slate-200 border border-indigo-500/20 transition-all cursor-pointer"
+          className={navBtn}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -110,7 +116,7 @@ export function PlaybackControls({
           disabled={atEnd}
           title="Jump to End (End)"
           aria-label="Jump to End (End)"
-          className="p-2.5 rounded-xl bg-indigo-950/60 hover:bg-cyan-500/20 disabled:opacity-30 disabled:pointer-events-none text-slate-200 border border-indigo-500/20 transition-all cursor-pointer"
+          className={navBtn}
         >
           <SkipForward className="w-4 h-4" />
         </button>
@@ -122,6 +128,7 @@ export function PlaybackControls({
           onClick={onToggleFlip}
           title="Flip Board Orientation (F)"
           aria-label="Flip Board Orientation (F)"
+          aria-pressed={flipped}
           className={`p-2.5 rounded-xl border text-slate-200 transition-all cursor-pointer ${
             flipped
               ? 'bg-amber-500/20 border-amber-400/50 text-amber-300'
@@ -135,7 +142,8 @@ export function PlaybackControls({
           onClick={onToggleSound}
           title={soundOn ? 'Mute Sound FX' : 'Unmute Sound FX'}
           aria-label={soundOn ? 'Mute Sound FX' : 'Unmute Sound FX'}
-          className="p-2.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/40 text-slate-200 border border-indigo-500/20 transition-all cursor-pointer"
+          aria-pressed={soundOn}
+          className={toggleBtn}
         >
           {soundOn ? <Volume2 className="w-4 h-4 text-cyan-300" /> : <VolumeX className="w-4 h-4 text-rose-400" />}
         </button>
@@ -157,7 +165,8 @@ export function PlaybackControls({
           onClick={onToggleVoice}
           title={voiceOn ? 'Disable Coach Voice' : 'Enable Coach Voice'}
           aria-label={voiceOn ? 'Disable Coach Voice' : 'Enable Coach Voice'}
-          className="p-2.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/40 text-slate-200 border border-indigo-500/20 transition-all cursor-pointer"
+          aria-pressed={voiceOn}
+          className={toggleBtn}
         >
           {voiceOn ? <Mic className="w-4 h-4 text-cyan-300" /> : <MicOff className="w-4 h-4 text-rose-400" />}
         </button>

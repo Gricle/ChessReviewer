@@ -9,12 +9,15 @@ export interface ShortcutHandlers {
   onFlip: () => void;
 }
 
+const IGNORE_SELECTOR = 'input, textarea, select, button, [contenteditable="true"]';
+
 export function useReviewShortcuts(enabled: boolean, h: ShortcutHandlers) {
   useEffect(() => {
     if (!enabled) return;
     const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement | null)?.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t?.closest?.(IGNORE_SELECTOR)) return;
       switch (e.key) {
         case 'ArrowLeft': e.preventDefault(); h.onPrev(); break;
         case 'ArrowRight': e.preventDefault(); h.onNext(); break;
