@@ -491,6 +491,12 @@ input::placeholder { color: var(--text-mute); }
   color: #14132a; font-variant-numeric: tabular-nums;
   font-family: var(--font-mono);
 }
+.evalbar.flipped { transform: scaleY(-1); }
+/* .num has no transform of its own (positioned via left/right:0, no
+   translateX) — counter-rotating it alone un-flips the label text while
+   leaving its position (now visually at the top, since the whole bar is
+   mirrored) intact. */
+.evalbar.flipped .num { transform: scaleY(-1); }
 
 .board {
   position: relative;

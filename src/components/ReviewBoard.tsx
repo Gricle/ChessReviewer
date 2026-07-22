@@ -13,6 +13,7 @@ interface Props {
   badge?: { square: string; cls: Classification } | null;
   arrow?: [string, string] | null;
   checkSquare?: string | null;  // king square currently in check (pulse)
+  orientation?: 'white' | 'black';
 }
 
 const BAD_CLASS = new Set<Classification>(['blunder', 'mistake', 'inaccuracy']);
@@ -74,13 +75,13 @@ function badgeSvg(cls: Classification): string {
   </g>`;
 }
 
-export function ReviewBoard({ fen, lastMove, badge, arrow, checkSquare }: Props) {
+export function ReviewBoard({ fen, lastMove, badge, arrow, checkSquare, orientation = 'white' }: Props) {
   const el = useRef<HTMLDivElement>(null);
   const api = useRef<Api | null>(null);
 
   useEffect(() => {
     if (!el.current) return;
-    api.current = Chessground(el.current, { fen, viewOnly: true, coordinates: true });
+    api.current = Chessground(el.current, { fen, viewOnly: true, coordinates: true, orientation });
     return () => api.current?.destroy();
   }, []);
 
@@ -108,8 +109,9 @@ export function ReviewBoard({ fen, lastMove, badge, arrow, checkSquare }: Props)
       lastMove: lastMove ? (lastMove as Key[]) : undefined,
       highlight: { custom },
       drawable: { autoShapes: shapes },
+      orientation,
     });
-  }, [fen, lastMove, badge, arrow, checkSquare]);
+  }, [fen, lastMove, badge, arrow, checkSquare, orientation]);
 
   return <div ref={el} style={{ width: '100%', height: '100%' }} />;
 }
