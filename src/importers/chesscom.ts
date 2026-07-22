@@ -42,12 +42,19 @@ export async function fetchArchives(username: string): Promise<string[]> {
   return data.archives;
 }
 
+// chess.com sometimes lists a trailing archive month with zero finished games
+// (e.g. only in-progress daily games), so look back a few months for the most
+// recent one that actually has games.
+const MAX_ARCHIVE_LOOKBACK = 6;
+
 // Fetch the most recent month's games for a user, newest first.
 export async function fetchRecentGames(username: string): Promise<GameSummary[]> {
   const archives = await fetchArchives(username);
-  if (archives.length === 0) return [];
-  const r = await fetch(archives[archives.length - 1]);
-  if (!r.ok) throw new Error(`chess.com: could not load games (${r.status})`);
-  const data = (await r.json()) as { games: ChessComGame[] };
-  return summarizeGames(data.games).reverse();
+  for (const url of archives.slice(-MAX_ARCHIVE_LOOKBACK).reverse()) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`chess.com: could not load games (${r.status})`);
+    const data = (await r.json()) as { games: ChessComGame[] };
+    if (data.games.length > 0) return summarizeGames(data.games).reverse();
+  }
+  return [];
 }
