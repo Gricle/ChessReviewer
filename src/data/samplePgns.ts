@@ -45,20 +45,17 @@ export const SAMPLE_PGNS: Record<'immortal' | 'opera' | 'blunderfest', SamplePgn
   },
   blunderfest: {
     label: 'Tactics & Blunders',
-    sub: 'Hung pieces galore — great for spotting mistakes',
-    pgn: `[Event "Casual Game"]
-[Site "Internet Chess Club"]
-[Date "2024.03.15"]
-[Round "-"]
-[White "Tactics Demo"]
-[Black "Blunder Bot"]
+    sub: "Réti's queen-sac trap — a blunder punished by mate",
+    pgn: `[Event "Vienna"]
+[Site "Vienna AUT"]
+[Date "1910.??.??"]
+[Round "?"]
+[White "Richard Reti"]
+[Black "Savielly Tartakower"]
 [Result "1-0"]
 
-1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d3 d6 6. O-O O-O 7. Bg5 h6 8. Bh4
-g5 9. Bg3 Nxe4 10. dxe4 Bxf2+ 11. Rxf2 Qe7 12. Nbd2 Be6 13. Bxe6 fxe6 14. Qc2
-a6 15. Rd1 b5 16. Nxg5 Qd8 17. Nxe6 Qd7 18. Nxf8 Rxf8 19. Qb3+ Kh8 20. Nc4 Rf6
-21. Nxd6 Qxd6 22. Rxd6 Kg7 23. Rd7+ Kg6 24. Rxc7 Rf7 25. Rcxf7 Kg5 26. h4+ Kh5
-27. Qd1+ Kg6 1-0
+1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Nf6 5. Qd3 e5 6. dxe5 Qa5+ 7. Bd2 Qxe5
+8. O-O-O Nxe4 9. Qd8+ Kxd8 10. Bg5+ Kc7 11. Bd8# 1-0
 `,
   },
 };
