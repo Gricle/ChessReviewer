@@ -146,6 +146,14 @@ export default function App() {
     }
   }
 
+  // Recent-games sidebar → fresh analysis. Leave the library first so the
+  // AnalysisProgress screen is visible while the engine runs (the library
+  // branch would otherwise cover it); run() lands on the review tab when done.
+  function analyzeFromLibrary(pgn: string, source: GameSource) {
+    setTab('import');
+    void run(pgn, source);
+  }
+
   async function openSaved(gameId: string) {
     if (!supabase) return;
     const row = await fetchSavedGame(supabase, gameId);
@@ -484,7 +492,7 @@ export default function App() {
 
         {tab === 'library' ? (
           auth.user ? (
-            <LibraryView user={auth.user} onOpen={openSaved} />
+            <LibraryView user={auth.user} onOpen={openSaved} onAnalyze={analyzeFromLibrary} />
           ) : (
             <div className="max-w-md mx-auto my-16 glass-panel rounded-3xl p-8 border border-cyan-400/30 text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-300">

@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { Library, AlertTriangle, TrendingUp } from 'lucide-react';
 import { supabase } from '../supabase/client';
-import { fetchLibrary, fetchProfile, saveProfile, type LibraryRow, type Profile } from '../supabase/library';
+import { fetchLibrary, fetchLibraryPgnHashes, fetchProfile, saveProfile, type LibraryRow, type Profile } from '../supabase/library';
 import { ReportsView } from './ReportsView';
 import { TrendsView } from './TrendsView';
+import { RecentGamesSidebar, type RecentSource } from './RecentGamesSidebar';
 
 interface Props {
   user: User;
   onOpen: (gameId: string) => void;
+  onAnalyze: (pgn: string, source: RecentSource) => void;
 }
 
 const SUB_TABS = [
@@ -28,25 +30,37 @@ function pillClass(active: boolean): string {
 const inputClass =
   'bg-[#0b0918] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-400';
 
-export function LibraryView({ user, onOpen }: Props) {
+export function LibraryView({ user, onOpen, onAnalyze }: Props) {
   const [rows, setRows] = useState<LibraryRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile>({ display_name: null, chesscom_username: null, lichess_username: null });
   const [saved, setSaved] = useState(false);
   const [tab, setTab] = useState<'games' | 'reports' | 'trends'>('games');
+  // The sidebar keys off the last SAVED usernames, not the live form state —
+  // otherwise every keystroke in the profile form would refire the fetch.
+  const [linked, setLinked] = useState<Pick<Profile, 'chesscom_username' | 'lichess_username'>>({ chesscom_username: null, lichess_username: null });
+  const [hashes, setHashes] = useState<Array<{ id: string; pgn_hash: string }>>([]);
 
   useEffect(() => {
     if (!supabase) return;
     fetchLibrary(supabase).then(setRows).catch((e: Error) => setError(e.message));
-    void fetchProfile(supabase, user.id).then((p) => { if (p) setProfile(p); });
+    fetchLibraryPgnHashes(supabase).then(setHashes).catch(() => { /* sidebar dedupe is best-effort */ });
+    void fetchProfile(supabase, user.id).then((p) => {
+      if (p) { setProfile(p); setLinked(p); }
+    });
   }, [user.id]);
+
+  const reviewedIdByHash = useMemo(
+    () => new Map(hashes.map((h) => [h.pgn_hash, h.id] as const)),
+    [hashes],
+  );
 
   async function submitProfile(e: React.FormEvent) {
     e.preventDefault();
     if (!supabase) return;
     setSaved(false);
     const err = await saveProfile(supabase, user.id, profile);
-    if (err) setError(err); else setSaved(true);
+    if (err) { setError(err); } else { setSaved(true); setLinked(profile); }
   }
 
   return (
@@ -93,6 +107,16 @@ export function LibraryView({ user, onOpen }: Props) {
         </div>
       )}
 
+      <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)] gap-8 items-start">
+        <RecentGamesSidebar
+          chesscomUsername={linked.chesscom_username}
+          lichessUsername={linked.lichess_username}
+          reviewedIdByHash={reviewedIdByHash}
+          onAnalyze={onAnalyze}
+          onOpenSaved={onOpen}
+        />
+
+        <div className="space-y-8 min-w-0">
       {tab === 'games' && (
         <>
           {/* Profile form */}
@@ -182,6 +206,8 @@ export function LibraryView({ user, onOpen }: Props) {
 
       {tab === 'reports' && <div><ReportsView user={user} /></div>}
       {tab === 'trends' && <div><TrendsView user={user} /></div>}
+        </div>
+      </div>
     </div>
   );
 }
