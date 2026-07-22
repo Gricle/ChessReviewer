@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "عبقرية",
+    "great": "رائعة",
+    "best": "الأفضل",
+    "excellent": "ممتازة",
+    "good": "جيدة",
+    "book": "نظرية",
+    "inaccuracy": "عدم دقة",
+    "mistake": "خطأ",
+    "blunder": "خطأ فادح"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "دقة {{value}}%"
+  },
+  "playback": {
+    "jumpStart": "الانتقال إلى البداية (Home)",
+    "prevMove": "النقلة السابقة (←)",
+    "cycleSpeed": "تبديل سرعة التشغيل التلقائي (مسطرة المسافة)",
+    "nextMove": "النقلة التالية (→)",
+    "jumpEnd": "الانتقال إلى النهاية (End)",
+    "flipBoard": "قلب اتجاه الرقعة (F)",
+    "muteSound": "كتم المؤثرات الصوتية",
+    "unmuteSound": "إلغاء كتم المؤثرات الصوتية",
+    "volume": "مستوى الصوت",
+    "disableVoice": "إيقاف صوت المدرّب",
+    "enableVoice": "تفعيل صوت المدرّب",
+    "speed": {
+      "autoplay": "تشغيل تلقائي"
+    }
+  },
+  "coachCard": {
+    "title": "مدرّب المحرك",
+    "readAloud": "قراءة بصوت عالٍ",
+    "readAloudAria": "قراءة تعليق المدرّب بصوت عالٍ",
+    "youPlayed": "لعبت <bold>{{san}}</bold>",
+    "bestMove": "أفضل نقلة <bold>{{bestSan}}</bold>",
+    "foundBest": "وجدت أفضل نقلة: <bold>{{san}}</bold>",
+    "empty": "تنقّل عبر المباراة لترى مراجعة كل نقلة."
+  },
+  "moveList": {
+    "title": "قائمة نقلات المباراة",
+    "cellAriaLabel": "{{san}}، {{label}}"
+  },
+  "summary": {
+    "result": "النتيجة",
+    "breakdownTitle": "توزيع تصنيفات النقلات",
+    "classificationHeader": "التصنيف"
+  },
+  "evalGraph": {
+    "title": "سجل التقييم",
+    "subtitle": "أفضلية الأبيض (+10) / أفضلية الأسود (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "نتائج مراجعة المباراة",
+    "title": "مراجعة المباراة",
+    "vs": "ضد",
+    "startReview": "بدء المراجعة"
+  }
+}

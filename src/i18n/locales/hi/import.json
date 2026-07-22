@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · गहराई 14 · ब्राउज़र में",
+    "title": "अपना गेम वैसे देखें जैसे <0>इंजन</0> देखता है।",
+    "description": "कोई PGN पेस्ट करें या Chess.com या Lichess से अपने ताज़ा गेम इम्पोर्ट करें। हर चाल को <0>शानदार</0> से <1>घोर भूल</1> तक स्कोर किया जाता है — सटीकता, बेस्ट-लाइन तीरों, ओपनिंग थ्योरी की पहचान और आम भाषा में समझाने वाले कोच के साथ।",
+    "quickDemos": "क्विक डेमो:"
+  },
+  "paste": {
+    "title": "PGN पेस्ट करें",
+    "description": "हेडर या चालों के इतिहास सहित कोई भी कच्चा PGN टेक्स्ट पेस्ट करें।",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "इस PGN की समीक्षा करें"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "Chess.com से",
+      "description": "हाल के गेम लाने के लिए अपना सार्वजनिक Chess.com यूज़रनेम डालें।",
+      "placeholder": "जैसे Hikaru"
+    },
+    "lichess": {
+      "title": "Lichess.org से",
+      "description": "हाल के गेम लाने के लिए अपना सार्वजनिक Lichess यूज़रनेम डालें।",
+      "placeholder": "जैसे MagnusCarlsen"
+    },
+    "load": "लोड करें",
+    "noGames": "कोई हालिया गेम नहीं मिला।",
+    "loadFailed": "गेम लोड नहीं हो सके"
+  },
+  "samples": {
+    "immortal": {
+      "label": "इम्मॉर्टल गेम (1851)",
+      "sub": "एंडरसन की बलिदानों से भरी उत्कृष्ट कृति"
+    },
+    "opera": {
+      "label": "ओपेरा गेम (मॉर्फ़ी)",
+      "sub": "तेज़ विकास का एक सबक"
+    },
+    "blunderfest": {
+      "label": "टैक्टिक्स और भूलें",
+      "sub": "रेती का वज़ीर-बलिदान जाल — एक भूल जिसे मात से सज़ा मिली"
+    }
+  },
+  "progress": {
+    "heading": "स्थितियों का मूल्यांकन हो रहा है",
+    "subtitle": "Stockfish गहराई 14 · ब्राउज़र में",
+    "footer": "चालों का वर्गीकरण और कोच की टिप्पणियाँ तैयार हो रही हैं..."
+  },
+  "auth": {
+    "close": "बंद करें",
+    "titleAccount": "खाता प्रोफ़ाइल",
+    "titleSignIn": "साइन इन / खाता सिंक",
+    "subtitleCloud": "क्लाउड स्टोरेज सक्रिय",
+    "subtitleGuest": "अतिथि मोड सक्रिय",
+    "signedInAs": "साइन इन:",
+    "signOut": "साइन आउट",
+    "emailLabel": "ईमेल पता",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "साइन इन करें और सिंक चालू करें",
+    "submitSignUp": "खाता बनाएँ",
+    "google": "Google से जारी रखें",
+    "toggleToSignUp": "खाता नहीं है? बनाएँ",
+    "toggleToSignIn": "खाता है? साइन इन करें",
+    "confirmEmailNotice": "खाते की पुष्टि के लिए अपना ईमेल देखें।"
+  }
+}

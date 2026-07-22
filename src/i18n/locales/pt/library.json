@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "Partidas ({{count}})",
+    "reports": "Relatórios de fraquezas",
+    "trends": "Tendências"
+  },
+  "subTabs": {
+    "ariaLabel": "Seção da biblioteca"
+  },
+  "profile": {
+    "savedCount": "{{count}} revisões de partidas salvas",
+    "loading": "Carregando sua biblioteca…"
+  },
+  "profileForm": {
+    "heading": "Perfil",
+    "displayNamePlaceholder": "nome de exibição",
+    "chesscomPlaceholder": "usuário do chess.com",
+    "lichessPlaceholder": "usuário do lichess",
+    "save": "Salvar",
+    "saved": "Perfil salvo."
+  },
+  "history": {
+    "heading": "Histórico de análises salvas",
+    "empty": "Nenhuma partida salva ainda — analise uma partida e ela aparece aqui automaticamente.",
+    "matchup": "{{white}} vs {{black}}",
+    "accuracyLabel": "Precisão",
+    "accuracyValue": "B: {{white}}% | P: {{black}}%",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "Partidas recentes",
+    "ariaLabel": "Partidas recentes",
+    "refreshAriaLabel": "Atualizar partidas recentes",
+    "setupPrompt": "Adicione seu usuário do chess.com ou do lichess no formulário de perfil para ver suas últimas partidas aqui automaticamente.",
+    "empty": "Nenhuma partida recente encontrada.",
+    "matchup": "{{white}} vs {{black}}",
+    "saved": "Salva",
+    "analyze": "Analisar"
+  },
+  "reports": {
+    "empty": "Analise algumas partidas para desbloquear seus relatórios de fraquezas.",
+    "worstOpenings": {
+      "heading": "Piores aberturas",
+      "empty": "Jogue a mesma abertura algumas vezes para ver isto.",
+      "gamesCount": "{{count}} partidas"
+    },
+    "motifs": {
+      "heading": "Padrões perdidos",
+      "empty": "Nenhum erro tático recorrente encontrado — mandou bem.",
+      "labels": {
+        "missedMate": "mates perdidos",
+        "walkedIntoMate": "mates sofridos",
+        "hungPiece": "peças deixadas sem defesa",
+        "missedFork": "garfos perdidos"
+      }
+    },
+    "phases": {
+      "heading": "Análise por fase",
+      "empty": "Ainda não há lances analisados suficientes.",
+      "avgWinDrop": "queda média de vitória",
+      "badMoves": "lances ruins",
+      "labels": {
+        "opening": "Abertura",
+        "middlegame": "Meio-jogo",
+        "endgame": "Final"
+      }
+    }
+  },
+  "trends": {
+    "empty": "Analise algumas partidas para desbloquear suas tendências."
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "درخشان",
+    "great": "فوق‌العاده",
+    "best": "بهترین",
+    "excellent": "عالی",
+    "good": "خوب",
+    "book": "تئوری",
+    "inaccuracy": "بی‌دقتی",
+    "mistake": "اشتباه",
+    "blunder": "اشتباه فاحش"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "دقت {{value}}%"
+  },
+  "playback": {
+    "jumpStart": "پرش به ابتدا (Home)",
+    "prevMove": "حرکت قبلی (←)",
+    "cycleSpeed": "تغییر سرعت پخش خودکار (Space)",
+    "nextMove": "حرکت بعدی (→)",
+    "jumpEnd": "پرش به انتها (End)",
+    "flipBoard": "چرخاندن صفحه (F)",
+    "muteSound": "بی‌صدا کردن جلوه‌های صوتی",
+    "unmuteSound": "باصدا کردن جلوه‌های صوتی",
+    "volume": "بلندی صدا",
+    "disableVoice": "خاموش کردن صدای مربی",
+    "enableVoice": "روشن کردن صدای مربی",
+    "speed": {
+      "autoplay": "پخش خودکار"
+    }
+  },
+  "coachCard": {
+    "title": "مربی موتور",
+    "readAloud": "خواندن با صدای بلند",
+    "readAloudAria": "خواندن توضیح مربی با صدای بلند",
+    "youPlayed": "شما <bold>{{san}}</bold> بازی کردید",
+    "bestMove": "بهترین حرکت <bold>{{bestSan}}</bold>",
+    "foundBest": "بهترین حرکت را پیدا کردید: <bold>{{san}}</bold>",
+    "empty": "برای دیدن بازبینی هر حرکت، بازی را قدم‌به‌قدم مرور کنید."
+  },
+  "moveList": {
+    "title": "فهرست حرکت‌های بازی",
+    "cellAriaLabel": "{{san}}، {{label}}"
+  },
+  "summary": {
+    "result": "نتیجه",
+    "breakdownTitle": "تفکیک رده‌بندی حرکت‌ها",
+    "classificationHeader": "رده‌بندی"
+  },
+  "evalGraph": {
+    "title": "تاریخچهٔ ارزیابی",
+    "subtitle": "برتری سفید (+10) / برتری سیاه (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "نتایج بازبینی بازی",
+    "title": "بازبینی بازی",
+    "vs": "در برابر",
+    "startReview": "شروع بازبینی"
+  }
+}

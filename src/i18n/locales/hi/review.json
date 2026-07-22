@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "शानदार",
+    "great": "बेहतरीन",
+    "best": "सर्वश्रेष्ठ",
+    "excellent": "उत्कृष्ट",
+    "good": "अच्छी",
+    "book": "किताबी",
+    "inaccuracy": "अशुद्धि",
+    "mistake": "गलती",
+    "blunder": "घोर भूल"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "{{value}}% सटीक"
+  },
+  "playback": {
+    "jumpStart": "शुरुआत पर जाएँ (Home)",
+    "prevMove": "पिछली चाल (←)",
+    "cycleSpeed": "ऑटोप्ले गति बदलें (Space)",
+    "nextMove": "अगली चाल (→)",
+    "jumpEnd": "अंत पर जाएँ (End)",
+    "flipBoard": "बोर्ड की दिशा पलटें (F)",
+    "muteSound": "साउंड इफ़ेक्ट म्यूट करें",
+    "unmuteSound": "साउंड इफ़ेक्ट अनम्यूट करें",
+    "volume": "वॉल्यूम",
+    "disableVoice": "कोच की आवाज़ बंद करें",
+    "enableVoice": "कोच की आवाज़ चालू करें",
+    "speed": {
+      "autoplay": "ऑटोप्ले"
+    }
+  },
+  "coachCard": {
+    "title": "इंजन कोच",
+    "readAloud": "पढ़कर सुनाएँ",
+    "readAloudAria": "कोच की टिप्पणी पढ़कर सुनाएँ",
+    "youPlayed": "आपने <bold>{{san}}</bold> खेला",
+    "bestMove": "सर्वश्रेष्ठ चाल <bold>{{bestSan}}</bold>",
+    "foundBest": "आपने सर्वश्रेष्ठ चाल खोज ली: <bold>{{san}}</bold>",
+    "empty": "हर चाल की समीक्षा देखने के लिए गेम में एक-एक चाल आगे बढ़ें।"
+  },
+  "moveList": {
+    "title": "गेम की चाल सूची",
+    "cellAriaLabel": "{{san}}, {{label}}"
+  },
+  "summary": {
+    "result": "परिणाम",
+    "breakdownTitle": "चाल वर्गीकरण का विवरण",
+    "classificationHeader": "वर्गीकरण"
+  },
+  "evalGraph": {
+    "title": "मूल्यांकन इतिहास",
+    "subtitle": "सफ़ेद की बढ़त (+10) / काले की बढ़त (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "गेम समीक्षा के परिणाम",
+    "title": "गेम समीक्षा",
+    "vs": "बनाम",
+    "startReview": "समीक्षा शुरू करें"
+  }
+}

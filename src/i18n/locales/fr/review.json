@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "Brillant",
+    "great": "Superbe",
+    "best": "Meilleur",
+    "excellent": "Excellent",
+    "good": "Bon",
+    "book": "Théorie",
+    "inaccuracy": "Imprécision",
+    "mistake": "Erreur",
+    "blunder": "Gaffe"
+  },
+  "playerCard": {
+    "elo": "Elo : {{elo}}",
+    "accuracy": "{{value}} % préc."
+  },
+  "playback": {
+    "jumpStart": "Aller au début (Début)",
+    "prevMove": "Coup précédent (←)",
+    "cycleSpeed": "Changer la vitesse de lecture (Espace)",
+    "nextMove": "Coup suivant (→)",
+    "jumpEnd": "Aller à la fin (Fin)",
+    "flipBoard": "Retourner l'échiquier (F)",
+    "muteSound": "Couper les effets sonores",
+    "unmuteSound": "Réactiver les effets sonores",
+    "volume": "Volume",
+    "disableVoice": "Désactiver la voix du coach",
+    "enableVoice": "Activer la voix du coach",
+    "speed": {
+      "autoplay": "Lecture auto"
+    }
+  },
+  "coachCard": {
+    "title": "Coach moteur",
+    "readAloud": "Lire à voix haute",
+    "readAloudAria": "Lire le commentaire du coach à voix haute",
+    "youPlayed": "Vous avez joué <bold>{{san}}</bold>",
+    "bestMove": "Meilleur coup <bold>{{bestSan}}</bold>",
+    "foundBest": "Vous avez trouvé le meilleur coup : <bold>{{san}}</bold>",
+    "empty": "Parcourez la partie pour voir chaque coup analysé."
+  },
+  "moveList": {
+    "title": "Liste des coups",
+    "cellAriaLabel": "{{san}}, {{label}}"
+  },
+  "summary": {
+    "result": "Résultat",
+    "breakdownTitle": "Répartition des coups par classification",
+    "classificationHeader": "Classification"
+  },
+  "evalGraph": {
+    "title": "Historique d'évaluation",
+    "subtitle": "Avantage blanc (+10) / Avantage noir (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "Résultats de l'analyse de la partie",
+    "title": "Analyse de la partie",
+    "vs": "vs",
+    "startReview": "Commencer l'analyse"
+  }
+}

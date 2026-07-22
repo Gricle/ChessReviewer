@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} حرکتی تئوریک است — هنوز در تئوری هستیم.",
+  "betterWas": "{{bestSan}} بهتر بود.",
+  "walksIntoMate": "این حرکت مستقیم به مات اجباری می‌رود.",
+  "hadForcedMateSlip": "مات اجباری داشتید و از دستش دادید.",
+  "leavesHanging": "این حرکت {{piece}} شما را در {{square}} بی‌دفاع می‌گذارد.",
+  "threatNow": "تهدید حالا {{nextBestSan}} است.",
+  "losesSignificantGround": "این حرکت امتیاز زیادی از دست می‌دهد.",
+  "couldHaveBeenPunished": "این حرکت می‌توانست مجازات شود.",
+  "brilliantFork": "قربانی‌ای خیره‌کننده! {{san}} مهره می‌دهد و چنگال می‌سازد.",
+  "brilliant": "قربانی‌ای خیره‌کننده! {{san}} مهره می‌دهد.",
+  "onlyGoodMove": "{{san}} تنها حرکت خوب اینجاست.",
+  "keepsForcedMate": "{{san}} مات اجباری را در مسیر نگه می‌دارد.",
+  "forksPieces": "{{san}} به {{count}} مهره چنگال می‌زند.",
+  "strongestMove": "{{san}} قوی‌ترین حرکت است.",
+  "strongOnlyBetter": "{{san}} قوی است — فقط {{bestSan}} بهتر بود.",
+  "keepsBalance": "{{san}} تعادل را حفظ می‌کند، اما {{bestSan}} دقیق‌تر بود.",
+  "piece": {
+    "pawn": "پیاده",
+    "knight": "اسب",
+    "bishop": "فیل",
+    "rook": "رخ",
+    "queen": "وزیر"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} est un coup théorique — la théorie continue.",
+  "betterWas": "{{bestSan}} était meilleur.",
+  "walksIntoMate": "Ce coup tombe dans un mat forcé.",
+  "hadForcedMateSlip": "Vous aviez un mat forcé et vous l'avez laissé filer.",
+  "leavesHanging": "Ce coup laisse votre {{piece}} en prise en {{square}}.",
+  "threatNow": "La menace est maintenant {{nextBestSan}}.",
+  "losesSignificantGround": "Ce coup perd beaucoup de terrain.",
+  "couldHaveBeenPunished": "Ce coup aurait pu être puni.",
+  "brilliantFork": "Un sacrifice éblouissant ! {{san}} donne du matériel et prépare une fourchette.",
+  "brilliant": "Un sacrifice éblouissant ! {{san}} donne du matériel.",
+  "onlyGoodMove": "{{san}} est le seul bon coup ici.",
+  "keepsForcedMate": "{{san}} garde le mat forcé en bonne voie.",
+  "forksPieces": "{{san}} fait une fourchette sur {{count}} pièces.",
+  "strongestMove": "{{san}} est le coup le plus fort.",
+  "strongOnlyBetter": "{{san}} est fort — seul {{bestSan}} était meilleur.",
+  "keepsBalance": "{{san}} maintient l'équilibre, mais {{bestSan}} était plus précis.",
+  "piece": {
+    "pawn": "pion",
+    "knight": "cavalier",
+    "bishop": "fou",
+    "rook": "tour",
+    "queen": "dame"
+  }
+}

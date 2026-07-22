@@ -1,0 +1,37 @@
+{
+  "brand": {
+    "title": "Chess Reviewer",
+    "subtitle": "Motor de análise de partidas no navegador"
+  },
+  "chip": {
+    "engine": "Stockfish · profundidade 14"
+  },
+  "tabs": {
+    "import": "Nova importação",
+    "review": "Revisão ativa",
+    "library": "Biblioteca e tendências"
+  },
+  "auth": {
+    "guest": "Modo convidado",
+    "signIn": "Entrar"
+  },
+  "language": {
+    "label": "Mudar idioma"
+  },
+  "errors": {
+    "pgnParse": "Não foi possível ler esse PGN: {{detail}}. Confira os lances e tente de novo.",
+    "engineFailure": "O motor não conseguiu analisar esta partida ({{detail}}). Tente recarregar a página.",
+    "savedReviewLoadFailed": "Não foi possível carregar essa revisão salva."
+  },
+  "progress": {
+    "analyzing": "Analisando com o Stockfish…",
+    "analyzingPosition": "Analisando posição {{done}} / {{total}}",
+    "autoScore": "Avaliando suas partidas recentes… {{done}} / {{total}}"
+  },
+  "librarySignedOut": {
+    "title": "Entre para montar sua biblioteca",
+    "syncDescription": "As partidas analisadas sincronizam com sua biblioteca na nuvem, com relatórios de fraquezas e tendências.",
+    "syncUnavailable": "A sincronização na nuvem não está configurada nesta implantação.",
+    "cta": "Entrar e ativar a sincronização"
+  }
+}

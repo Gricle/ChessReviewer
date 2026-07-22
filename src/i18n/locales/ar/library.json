@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "المباريات ({{count}})",
+    "reports": "تقارير نقاط الضعف",
+    "trends": "الاتجاهات"
+  },
+  "subTabs": {
+    "ariaLabel": "قسم المكتبة"
+  },
+  "profile": {
+    "savedCount": "{{count}} مراجعة محفوظة",
+    "loading": "جارٍ تحميل مكتبتك…"
+  },
+  "profileForm": {
+    "heading": "الملف الشخصي",
+    "displayNamePlaceholder": "الاسم المعروض",
+    "chesscomPlaceholder": "اسم المستخدم على chess.com",
+    "lichessPlaceholder": "اسم المستخدم على lichess",
+    "save": "حفظ",
+    "saved": "تم حفظ الملف الشخصي."
+  },
+  "history": {
+    "heading": "سجل التحليلات المحفوظة",
+    "empty": "لا توجد مباريات محفوظة بعد — حلّل مباراة وستظهر هنا تلقائيًا.",
+    "matchup": "{{white}} ضد {{black}}",
+    "accuracyLabel": "الدقة",
+    "accuracyValue": "الأبيض: {{white}}% | الأسود: {{black}}%",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "المباريات الأخيرة",
+    "ariaLabel": "المباريات الأخيرة",
+    "refreshAriaLabel": "تحديث المباريات الأخيرة",
+    "setupPrompt": "أضف اسم مستخدمك على chess.com أو lichess في نموذج الملف الشخصي لتظهر أحدث مبارياتك هنا تلقائيًا.",
+    "empty": "لم يُعثر على مباريات حديثة.",
+    "matchup": "{{white}} ضد {{black}}",
+    "saved": "محفوظة",
+    "analyze": "تحليل"
+  },
+  "reports": {
+    "empty": "حلّل بضع مباريات لفتح تقارير نقاط ضعفك.",
+    "worstOpenings": {
+      "heading": "أسوأ الافتتاحيات",
+      "empty": "العب الافتتاح نفسه مرتين أو أكثر لترى هذا.",
+      "gamesCount": "{{count}} مباريات"
+    },
+    "motifs": {
+      "heading": "أفكار تكتيكية مفوَّتة",
+      "empty": "لا توجد أخطاء تكتيكية متكررة — أحسنت.",
+      "labels": {
+        "missedMate": "ماتات مفوَّتة",
+        "walkedIntoMate": "الوقوع في مات",
+        "hungPiece": "قطع متروكة بلا حماية",
+        "missedFork": "شوكات مفوَّتة"
+      }
+    },
+    "phases": {
+      "heading": "توزيع أطوار المباراة",
+      "empty": "لا توجد نقلات محلَّلة كافية بعد.",
+      "avgWinDrop": "متوسط هبوط فرص الفوز",
+      "badMoves": "نقلات سيئة",
+      "labels": {
+        "opening": "الافتتاح",
+        "middlegame": "وسط اللعب",
+        "endgame": "نهاية اللعب"
+      }
+    }
+  },
+  "trends": {
+    "empty": "حلّل بضع مباريات لفتح اتجاهاتك."
+  }
+}

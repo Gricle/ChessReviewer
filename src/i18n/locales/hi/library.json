@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "गेम ({{count}})",
+    "reports": "कमज़ोरी रिपोर्ट",
+    "trends": "ट्रेंड्स"
+  },
+  "subTabs": {
+    "ariaLabel": "लाइब्रेरी अनुभाग"
+  },
+  "profile": {
+    "savedCount": "{{count}} सहेजी गई गेम समीक्षाएँ",
+    "loading": "आपकी लाइब्रेरी लोड हो रही है…"
+  },
+  "profileForm": {
+    "heading": "प्रोफ़ाइल",
+    "displayNamePlaceholder": "प्रदर्शित नाम",
+    "chesscomPlaceholder": "chess.com यूज़रनेम",
+    "lichessPlaceholder": "lichess यूज़रनेम",
+    "save": "सहेजें",
+    "saved": "प्रोफ़ाइल सहेजी गई।"
+  },
+  "history": {
+    "heading": "सहेजा गया विश्लेषण इतिहास",
+    "empty": "अभी कोई सहेजा गया गेम नहीं — किसी गेम का विश्लेषण करें, वह अपने आप यहाँ आ जाएगा।",
+    "matchup": "{{white}} बनाम {{black}}",
+    "accuracyLabel": "सटीकता",
+    "accuracyValue": "सफ़ेद: {{white}}% | काला: {{black}}%",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "हाल के गेम",
+    "ariaLabel": "हाल के गेम",
+    "refreshAriaLabel": "हाल के गेम रीफ़्रेश करें",
+    "setupPrompt": "अपने ताज़ा गेम यहाँ अपने आप देखने के लिए प्रोफ़ाइल फ़ॉर्म में अपना chess.com या lichess यूज़रनेम जोड़ें।",
+    "empty": "कोई हालिया गेम नहीं मिला।",
+    "matchup": "{{white}} बनाम {{black}}",
+    "saved": "सहेजा गया",
+    "analyze": "विश्लेषण करें"
+  },
+  "reports": {
+    "empty": "अपनी कमज़ोरी रिपोर्ट खोलने के लिए कुछ गेम का विश्लेषण करें।",
+    "worstOpenings": {
+      "heading": "सबसे कमज़ोर ओपनिंग",
+      "empty": "एक ही ओपनिंग कुछ बार खेलें, तब यह दिखेगा।",
+      "gamesCount": "{{count}} गेम"
+    },
+    "motifs": {
+      "heading": "चूके हुए मौके",
+      "empty": "कोई दोहराई जाने वाली सामरिक चूक नहीं मिली — बढ़िया।",
+      "labels": {
+        "missedMate": "चूकी हुई मातें",
+        "walkedIntoMate": "मात में फँसे",
+        "hungPiece": "असुरक्षित छोड़े मोहरे",
+        "missedFork": "चूके हुए दोहरे हमले"
+      }
+    },
+    "phases": {
+      "heading": "चरणों का विवरण",
+      "empty": "अभी पर्याप्त विश्लेषित चालें नहीं हैं।",
+      "avgWinDrop": "औसत जीत-गिरावट",
+      "badMoves": "खराब चालें",
+      "labels": {
+        "opening": "ओपनिंग",
+        "middlegame": "मध्य खेल",
+        "endgame": "अंत खेल"
+      }
+    }
+  },
+  "trends": {
+    "empty": "अपने ट्रेंड्स खोलने के लिए कुछ गेम का विश्लेषण करें।"
+  }
+}

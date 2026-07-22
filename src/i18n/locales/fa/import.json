@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · عمق 14 · در مرورگر",
+    "title": "بازی‌تان را همان‌طور ببینید که <0>موتور</0> می‌بیند.",
+    "description": "یک PGN بچسبانید یا آخرین بازی‌هایتان را از Chess.com یا Lichess وارد کنید. هر حرکت از <0>درخشان</0> تا <1>اشتباه فاحش</1> امتیاز می‌گیرد؛ همراه با میزان دقت، پیکان‌های بهترین ادامه، تشخیص تئوری گشایش و مربی‌ای که به زبان ساده توضیح می‌دهد.",
+    "quickDemos": "نمونه‌های سریع:"
+  },
+  "paste": {
+    "title": "چسباندن PGN",
+    "description": "هر متن PGN خام را با سربرگ‌ها یا فقط فهرست حرکت‌ها بچسبانید.",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "بازبینی این PGN"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "از Chess.com",
+      "description": "نام کاربری عمومی Chess.com خود را وارد کنید تا بازی‌های اخیرتان دریافت شود.",
+      "placeholder": "مثلاً Hikaru"
+    },
+    "lichess": {
+      "title": "از Lichess.org",
+      "description": "نام کاربری عمومی Lichess خود را وارد کنید تا بازی‌های اخیرتان دریافت شود.",
+      "placeholder": "مثلاً MagnusCarlsen"
+    },
+    "load": "بارگیری",
+    "noGames": "بازی اخیری پیدا نشد.",
+    "loadFailed": "بارگیری بازی‌ها ناموفق بود"
+  },
+  "samples": {
+    "immortal": {
+      "label": "بازی جاودانه (1851)",
+      "sub": "شاهکار قربانی‌های آندرسن"
+    },
+    "opera": {
+      "label": "بازی اپرا (مورفی)",
+      "sub": "درسی در گسترش سریع مهره‌ها"
+    },
+    "blunderfest": {
+      "label": "تاکتیک‌ها و اشتباهات",
+      "sub": "تلهٔ قربانی وزیرِ رتی — اشتباهی فاحش که با مات مجازات شد"
+    }
+  },
+  "progress": {
+    "heading": "در حال ارزیابی وضعیت‌ها",
+    "subtitle": "Stockfish عمق 14 · در مرورگر",
+    "footer": "در حال محاسبهٔ رده‌بندی حرکت‌ها و نکته‌های مربی..."
+  },
+  "auth": {
+    "close": "بستن",
+    "titleAccount": "نمایهٔ حساب",
+    "titleSignIn": "ورود / همگام‌سازی حساب",
+    "subtitleCloud": "ذخیره‌سازی ابری فعال است",
+    "subtitleGuest": "حالت مهمان فعال است",
+    "signedInAs": "واردشده با:",
+    "signOut": "خروج",
+    "emailLabel": "نشانی ایمیل",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "گذرواژه",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "ورود و فعال‌سازی همگام‌سازی",
+    "submitSignUp": "ساخت حساب",
+    "google": "ادامه با Google",
+    "toggleToSignUp": "حساب ندارید؟ بسازید",
+    "toggleToSignIn": "حساب دارید؟ وارد شوید",
+    "confirmEmailNotice": "برای تأیید حساب، ایمیل خود را بررسی کنید."
+  }
+}

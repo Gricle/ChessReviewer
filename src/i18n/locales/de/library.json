@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "Partien ({{count}})",
+    "reports": "Schwächenberichte",
+    "trends": "Trends"
+  },
+  "subTabs": {
+    "ariaLabel": "Bibliotheksbereich"
+  },
+  "profile": {
+    "savedCount": "{{count}} gespeicherte Partieanalysen",
+    "loading": "Deine Bibliothek wird geladen…"
+  },
+  "profileForm": {
+    "heading": "Profil",
+    "displayNamePlaceholder": "Anzeigename",
+    "chesscomPlaceholder": "chess.com-Benutzername",
+    "lichessPlaceholder": "lichess-Benutzername",
+    "save": "Speichern",
+    "saved": "Profil gespeichert."
+  },
+  "history": {
+    "heading": "Gespeicherte Analysen",
+    "empty": "Noch keine gespeicherten Partien – analysiere eine Partie, und sie landet automatisch hier.",
+    "matchup": "{{white}} gegen {{black}}",
+    "accuracyLabel": "Genauigkeit",
+    "accuracyValue": "W: {{white}} % | S: {{black}} %",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "Letzte Partien",
+    "ariaLabel": "Letzte Partien",
+    "refreshAriaLabel": "Letzte Partien aktualisieren",
+    "setupPrompt": "Trage deinen chess.com- oder lichess-Benutzernamen im Profilformular ein, um hier automatisch deine neuesten Partien zu sehen.",
+    "empty": "Keine aktuellen Partien gefunden.",
+    "matchup": "{{white}} gegen {{black}}",
+    "saved": "Gespeichert",
+    "analyze": "Analysieren"
+  },
+  "reports": {
+    "empty": "Analysiere ein paar Partien, um deine Schwächenberichte freizuschalten.",
+    "worstOpenings": {
+      "heading": "Schwächste Eröffnungen",
+      "empty": "Spiele dieselbe Eröffnung ein paar Mal, um das hier zu sehen.",
+      "gamesCount": "{{count}} Partien"
+    },
+    "motifs": {
+      "heading": "Verpasste Motive",
+      "empty": "Keine wiederkehrenden taktischen Aussetzer gefunden – stark.",
+      "labels": {
+        "missedMate": "verpasste Matts",
+        "walkedIntoMate": "in Matt gelaufen",
+        "hungPiece": "eingestellte Figuren",
+        "missedFork": "verpasste Gabeln"
+      }
+    },
+    "phases": {
+      "heading": "Phasen-Aufschlüsselung",
+      "empty": "Noch nicht genug analysierte Züge.",
+      "avgWinDrop": "Ø Gewinnchancen-Verlust",
+      "badMoves": "schlechte Züge",
+      "labels": {
+        "opening": "Eröffnung",
+        "middlegame": "Mittelspiel",
+        "endgame": "Endspiel"
+      }
+    }
+  },
+  "trends": {
+    "empty": "Analysiere ein paar Partien, um deine Trends freizuschalten."
+  }
+}

@@ -9,7 +9,10 @@ backend, no accounts, no token cost.
 The UI ("Nocturne") is a tabbed shell — Import / Review / Library — with
 one-click sample demos, keyboard shortcuts (←/→ move, Home/End jump,
 Space autoplay, F flip board), and an optional cloud library of saved
-reviews, weakness reports, and accuracy trends.
+reviews, weakness reports, and accuracy trends. The UI ships in ten
+languages (English, 中文, हिन्दी, Español, Français, العربية, Русский,
+Português, Deutsch, فارسی) with full RTL support — switch via the globe
+menu in the header.
 
 ## Develop
 

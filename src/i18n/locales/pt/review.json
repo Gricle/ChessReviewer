@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "Brilhante",
+    "great": "Ótimo",
+    "best": "Melhor",
+    "excellent": "Excelente",
+    "good": "Bom",
+    "book": "Teoria",
+    "inaccuracy": "Imprecisão",
+    "mistake": "Erro",
+    "blunder": "Erro grave"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "{{value}}% prec."
+  },
+  "playback": {
+    "jumpStart": "Ir para o início (Home)",
+    "prevMove": "Lance anterior (←)",
+    "cycleSpeed": "Alternar velocidade de reprodução (Espaço)",
+    "nextMove": "Próximo lance (→)",
+    "jumpEnd": "Ir para o fim (End)",
+    "flipBoard": "Girar o tabuleiro (F)",
+    "muteSound": "Silenciar efeitos sonoros",
+    "unmuteSound": "Reativar efeitos sonoros",
+    "volume": "Volume",
+    "disableVoice": "Desativar a voz do treinador",
+    "enableVoice": "Ativar a voz do treinador",
+    "speed": {
+      "autoplay": "Reprodução automática"
+    }
+  },
+  "coachCard": {
+    "title": "Treinador do motor",
+    "readAloud": "Ler em voz alta",
+    "readAloudAria": "Ler em voz alta o comentário do treinador",
+    "youPlayed": "Você jogou <bold>{{san}}</bold>",
+    "bestMove": "Melhor lance <bold>{{bestSan}}</bold>",
+    "foundBest": "Você encontrou o melhor lance: <bold>{{san}}</bold>",
+    "empty": "Percorra a partida para ver a análise de cada lance."
+  },
+  "moveList": {
+    "title": "Lista de lances da partida",
+    "cellAriaLabel": "{{san}}, {{label}}"
+  },
+  "summary": {
+    "result": "Resultado",
+    "breakdownTitle": "Distribuição das classificações de lances",
+    "classificationHeader": "Classificação"
+  },
+  "evalGraph": {
+    "title": "Histórico de avaliação",
+    "subtitle": "Vantagem das brancas (+10) / vantagem das pretas (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "Resultados da revisão da partida",
+    "title": "Revisão da partida",
+    "vs": "vs",
+    "startReview": "Começar revisão"
+  }
+}

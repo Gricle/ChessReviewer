@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "Brillante",
+    "great": "Magnífica",
+    "best": "Mejor",
+    "excellent": "Excelente",
+    "good": "Buena",
+    "book": "Teórica",
+    "inaccuracy": "Imprecisión",
+    "mistake": "Error",
+    "blunder": "Error grave"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "{{value}}% prec."
+  },
+  "playback": {
+    "jumpStart": "Ir al inicio (Inicio)",
+    "prevMove": "Jugada anterior (←)",
+    "cycleSpeed": "Cambiar velocidad de reproducción (Espacio)",
+    "nextMove": "Jugada siguiente (→)",
+    "jumpEnd": "Ir al final (Fin)",
+    "flipBoard": "Girar el tablero (F)",
+    "muteSound": "Silenciar efectos de sonido",
+    "unmuteSound": "Activar efectos de sonido",
+    "volume": "Volumen",
+    "disableVoice": "Desactivar la voz del entrenador",
+    "enableVoice": "Activar la voz del entrenador",
+    "speed": {
+      "autoplay": "Automático"
+    }
+  },
+  "coachCard": {
+    "title": "Entrenador del motor",
+    "readAloud": "Leer en voz alta",
+    "readAloudAria": "Leer en voz alta el comentario del entrenador",
+    "youPlayed": "Jugaste <bold>{{san}}</bold>",
+    "bestMove": "Mejor jugada <bold>{{bestSan}}</bold>",
+    "foundBest": "Encontraste la mejor jugada: <bold>{{san}}</bold>",
+    "empty": "Avanza por la partida para ver el análisis de cada jugada."
+  },
+  "moveList": {
+    "title": "Lista de jugadas",
+    "cellAriaLabel": "{{san}}, {{label}}"
+  },
+  "summary": {
+    "result": "Resultado",
+    "breakdownTitle": "Desglose de clasificación de jugadas",
+    "classificationHeader": "Clasificación"
+  },
+  "evalGraph": {
+    "title": "Historial de evaluación",
+    "subtitle": "Ventaja blanca (+10) / Ventaja negra (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "Resultados de la revisión de la partida",
+    "title": "Revisión de la partida",
+    "vs": "vs",
+    "startReview": "Empezar revisión"
+  }
+}

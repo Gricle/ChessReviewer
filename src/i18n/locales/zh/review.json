@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "妙手",
+    "great": "精彩",
+    "best": "最佳",
+    "excellent": "优秀",
+    "good": "良好",
+    "book": "定式",
+    "inaccuracy": "不准确",
+    "mistake": "失误",
+    "blunder": "严重失误"
+  },
+  "playerCard": {
+    "elo": "Elo：{{elo}}",
+    "accuracy": "准确度 {{value}}%"
+  },
+  "playback": {
+    "jumpStart": "跳到开始（Home）",
+    "prevMove": "上一步（←）",
+    "cycleSpeed": "切换自动播放速度（空格）",
+    "nextMove": "下一步（→）",
+    "jumpEnd": "跳到结尾（End）",
+    "flipBoard": "翻转棋盘方向（F）",
+    "muteSound": "关闭音效",
+    "unmuteSound": "开启音效",
+    "volume": "音量",
+    "disableVoice": "关闭教练语音",
+    "enableVoice": "开启教练语音",
+    "speed": {
+      "autoplay": "自动播放"
+    }
+  },
+  "coachCard": {
+    "title": "引擎教练",
+    "readAloud": "朗读",
+    "readAloudAria": "朗读教练点评",
+    "youPlayed": "你走了 <bold>{{san}}</bold>",
+    "bestMove": "最佳着法 <bold>{{bestSan}}</bold>",
+    "foundBest": "你找到了最佳着法：<bold>{{san}}</bold>",
+    "empty": "逐步浏览对局，查看每一步的点评。"
+  },
+  "moveList": {
+    "title": "对局着法列表",
+    "cellAriaLabel": "{{san}}，{{label}}"
+  },
+  "summary": {
+    "result": "结果",
+    "breakdownTitle": "着法评级统计",
+    "classificationHeader": "评级"
+  },
+  "evalGraph": {
+    "title": "评估曲线",
+    "subtitle": "白方优势（+10）/ 黑方优势（-10）"
+  },
+  "reveal": {
+    "ariaLabel": "对局复盘结果",
+    "title": "对局复盘",
+    "vs": "对阵",
+    "startReview": "开始复盘"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} é um lance de teoria — a teoria continua.",
+  "betterWas": "Melhor era {{bestSan}}.",
+  "walksIntoMate": "Este lance entra em um mate forçado.",
+  "hadForcedMateSlip": "Você tinha um mate forçado e deixou escapar.",
+  "leavesHanging": "Este lance deixa {{piece}} em {{square}} sem defesa.",
+  "threatNow": "A ameaça agora é {{nextBestSan}}.",
+  "losesSignificantGround": "Este lance perde muito terreno.",
+  "couldHaveBeenPunished": "Este lance poderia ter sido punido.",
+  "brilliantFork": "Um sacrifício incrível! {{san}} entrega material e arma um garfo.",
+  "brilliant": "Um sacrifício incrível! {{san}} entrega material.",
+  "onlyGoodMove": "{{san}} é o único lance bom aqui.",
+  "keepsForcedMate": "{{san}} mantém o mate forçado nos trilhos.",
+  "forksPieces": "{{san}} dá um garfo em {{count}} peças.",
+  "strongestMove": "{{san}} é o lance mais forte.",
+  "strongOnlyBetter": "{{san}} é forte — só {{bestSan}} era melhor.",
+  "keepsBalance": "{{san}} mantém o equilíbrio, mas {{bestSan}} era mais preciso.",
+  "piece": {
+    "pawn": "seu peão",
+    "knight": "seu cavalo",
+    "bishop": "seu bispo",
+    "rook": "sua torre",
+    "queen": "sua dama"
+  }
+}

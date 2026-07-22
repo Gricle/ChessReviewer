@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "Partidas ({{count}})",
+    "reports": "Informes de debilidades",
+    "trends": "Tendencias"
+  },
+  "subTabs": {
+    "ariaLabel": "Sección de la biblioteca"
+  },
+  "profile": {
+    "savedCount": "{{count}} revisiones de partidas guardadas",
+    "loading": "Cargando tu biblioteca…"
+  },
+  "profileForm": {
+    "heading": "Perfil",
+    "displayNamePlaceholder": "nombre visible",
+    "chesscomPlaceholder": "usuario de chess.com",
+    "lichessPlaceholder": "usuario de lichess",
+    "save": "Guardar",
+    "saved": "Perfil guardado."
+  },
+  "history": {
+    "heading": "Historial de análisis guardados",
+    "empty": "Aún no hay partidas guardadas: analiza una y aparecerá aquí automáticamente.",
+    "matchup": "{{white}} vs {{black}}",
+    "accuracyLabel": "Precisión",
+    "accuracyValue": "B: {{white}}% | N: {{black}}%",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "Partidas recientes",
+    "ariaLabel": "Partidas recientes",
+    "refreshAriaLabel": "Actualizar partidas recientes",
+    "setupPrompt": "Añade tu usuario de chess.com o lichess en el formulario de perfil para ver aquí tus últimas partidas automáticamente.",
+    "empty": "No se encontraron partidas recientes.",
+    "matchup": "{{white}} vs {{black}}",
+    "saved": "Guardada",
+    "analyze": "Analizar"
+  },
+  "reports": {
+    "empty": "Analiza unas cuantas partidas para desbloquear tus informes de debilidades.",
+    "worstOpenings": {
+      "heading": "Peores aperturas",
+      "empty": "Juega la misma apertura un par de veces para ver esto.",
+      "gamesCount": "{{count}} partidas"
+    },
+    "motifs": {
+      "heading": "Motivos no vistos",
+      "empty": "No se encontraron fallos tácticos recurrentes. ¡Bien!",
+      "labels": {
+        "missedMate": "mates no vistos",
+        "walkedIntoMate": "mates encajados",
+        "hungPiece": "piezas dejadas sin defensa",
+        "missedFork": "dobles ataques no vistos"
+      }
+    },
+    "phases": {
+      "heading": "Desglose por fases",
+      "empty": "Aún no hay suficientes jugadas analizadas.",
+      "avgWinDrop": "pérdida media de victoria",
+      "badMoves": "malas jugadas",
+      "labels": {
+        "opening": "Apertura",
+        "middlegame": "Medio juego",
+        "endgame": "Final"
+      }
+    }
+  },
+  "trends": {
+    "empty": "Analiza unas cuantas partidas para desbloquear tus tendencias."
+  }
+}

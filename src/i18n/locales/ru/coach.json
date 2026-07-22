@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} — теоретический ход, теория продолжается.",
+  "betterWas": "Лучше было {{bestSan}}.",
+  "walksIntoMate": "Этот ход ведёт под форсированный мат.",
+  "hadForcedMateSlip": "У вас был форсированный мат, но вы его упустили.",
+  "leavesHanging": "После этого хода {{piece}} на {{square}} остаётся под боем.",
+  "threatNow": "Теперь грозит {{nextBestSan}}.",
+  "losesSignificantGround": "Этот ход серьёзно ухудшает позицию.",
+  "couldHaveBeenPunished": "Этот ход мог быть наказан.",
+  "brilliantFork": "Потрясающая жертва! {{san}} отдаёт материал и создаёт вилку.",
+  "brilliant": "Потрясающая жертва! {{san}} отдаёт материал.",
+  "onlyGoodMove": "{{san}} — единственный хороший ход здесь.",
+  "keepsForcedMate": "{{san}} сохраняет форсированный мат.",
+  "forksPieces": "{{san}} ставит вилку сразу на {{count}} фигуры.",
+  "strongestMove": "{{san}} — сильнейший ход.",
+  "strongOnlyBetter": "{{san}} — сильный ход, лучше был только {{bestSan}}.",
+  "keepsBalance": "{{san}} сохраняет равновесие, но {{bestSan}} был точнее.",
+  "piece": {
+    "pawn": "пешка",
+    "knight": "конь",
+    "bishop": "слон",
+    "rook": "ладья",
+    "queen": "ферзь"
+  }
+}

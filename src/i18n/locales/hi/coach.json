@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} एक किताबी चाल है — थ्योरी अभी जारी है।",
+  "betterWas": "{{bestSan}} बेहतर था।",
+  "walksIntoMate": "यह चाल सीधे पक्की मात में जा फँसती है।",
+  "hadForcedMateSlip": "आपके पास पक्की मात थी, पर वह हाथ से निकल गई।",
+  "leavesHanging": "इससे {{square}} पर आपका {{piece}} बिना सुरक्षा रह जाता है।",
+  "threatNow": "अब खतरा है {{nextBestSan}}।",
+  "losesSignificantGround": "इससे काफ़ी ज़मीन खिसक जाती है।",
+  "couldHaveBeenPunished": "इसकी सज़ा मिल सकती थी।",
+  "brilliantFork": "कमाल का बलिदान! {{san}} मोहरा देकर दोहरा हमला रचता है।",
+  "brilliant": "कमाल का बलिदान! {{san}} मोहरा दे देता है।",
+  "onlyGoodMove": "यहाँ {{san}} ही एकमात्र अच्छी चाल है।",
+  "keepsForcedMate": "{{san}} पक्की मात को पटरी पर रखता है।",
+  "forksPieces": "{{san}} से {{count}} मोहरों पर दोहरा हमला होता है।",
+  "strongestMove": "{{san}} सबसे मज़बूत चाल है।",
+  "strongOnlyBetter": "{{san}} मज़बूत है — केवल {{bestSan}} इससे बेहतर था।",
+  "keepsBalance": "{{san}} संतुलन बनाए रखता है, पर {{bestSan}} ज़्यादा सटीक था।",
+  "piece": {
+    "pawn": "प्यादा",
+    "knight": "घोड़ा",
+    "bishop": "ऊँट",
+    "rook": "हाथी",
+    "queen": "वज़ीर"
+  }
+}

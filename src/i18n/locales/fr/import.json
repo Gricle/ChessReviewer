@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · Profondeur 14 · Dans le navigateur",
+    "title": "Voyez votre partie comme le <0>moteur</0> la voit.",
+    "description": "Collez un PGN ou importez vos dernières parties depuis Chess.com ou Lichess. Chaque coup est noté de <0>Brillant</0> à <1>Gaffe</1>, avec précision, flèches de la meilleure ligne, détection de la théorie d'ouverture et un coach en langage naturel.",
+    "quickDemos": "Démos rapides :"
+  },
+  "paste": {
+    "title": "Coller un PGN",
+    "description": "Collez n'importe quel texte PGN brut, avec en-têtes ou simple liste de coups.",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "Analyser ce PGN"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "Depuis Chess.com",
+      "description": "Saisissez votre pseudo public Chess.com pour récupérer vos parties récentes.",
+      "placeholder": "ex. Hikaru"
+    },
+    "lichess": {
+      "title": "Depuis Lichess.org",
+      "description": "Saisissez votre pseudo public Lichess pour récupérer vos parties récentes.",
+      "placeholder": "ex. MagnusCarlsen"
+    },
+    "load": "Charger",
+    "noGames": "Aucune partie récente trouvée.",
+    "loadFailed": "Échec du chargement des parties"
+  },
+  "samples": {
+    "immortal": {
+      "label": "La Partie immortelle (1851)",
+      "sub": "Le chef-d'œuvre sacrificiel d'Anderssen"
+    },
+    "opera": {
+      "label": "La Partie de l'Opéra (Morphy)",
+      "sub": "Une leçon de développement rapide"
+    },
+    "blunderfest": {
+      "label": "Tactique et gaffes",
+      "sub": "Le piège du sacrifice de dame de Réti — une gaffe punie par le mat"
+    }
+  },
+  "progress": {
+    "heading": "Évaluation des positions",
+    "subtitle": "Stockfish profondeur 14 · Dans le navigateur",
+    "footer": "Calcul des classifications de coups et des conseils du coach..."
+  },
+  "auth": {
+    "close": "Fermer",
+    "titleAccount": "Profil du compte",
+    "titleSignIn": "Connexion / Synchronisation du compte",
+    "subtitleCloud": "Stockage cloud actif",
+    "subtitleGuest": "Mode invité actif",
+    "signedInAs": "Connecté en tant que :",
+    "signOut": "Se déconnecter",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "vous@exemple.com",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "Se connecter et activer la synchro",
+    "submitSignUp": "Créer un compte",
+    "google": "Continuer avec Google",
+    "toggleToSignUp": "Pas de compte ? Créez-en un",
+    "toggleToSignIn": "Déjà un compte ? Connectez-vous",
+    "confirmEmailNotice": "Consultez vos e-mails pour confirmer votre compte."
+  }
+}

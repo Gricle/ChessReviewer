@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "بازی‌ها ({{count}})",
+    "reports": "گزارش نقاط ضعف",
+    "trends": "روندها"
+  },
+  "subTabs": {
+    "ariaLabel": "بخش کتابخانه"
+  },
+  "profile": {
+    "savedCount": "{{count}} بازبینی ذخیره‌شده",
+    "loading": "در حال بارگیری کتابخانهٔ شما…"
+  },
+  "profileForm": {
+    "heading": "نمایه",
+    "displayNamePlaceholder": "نام نمایشی",
+    "chesscomPlaceholder": "نام کاربری chess.com",
+    "lichessPlaceholder": "نام کاربری lichess",
+    "save": "ذخیره",
+    "saved": "نمایه ذخیره شد."
+  },
+  "history": {
+    "heading": "تاریخچهٔ تحلیل‌های ذخیره‌شده",
+    "empty": "هنوز بازی ذخیره‌شده‌ای نیست — بازی‌ای را تحلیل کنید تا خودکار اینجا بیاید.",
+    "matchup": "{{white}} در برابر {{black}}",
+    "accuracyLabel": "دقت",
+    "accuracyValue": "سفید: {{white}}% | سیاه: {{black}}%",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "بازی‌های اخیر",
+    "ariaLabel": "بازی‌های اخیر",
+    "refreshAriaLabel": "نوسازی بازی‌های اخیر",
+    "setupPrompt": "نام کاربری chess.com یا lichess خود را در فرم نمایه بیفزایید تا آخرین بازی‌هایتان خودکار اینجا نمایش داده شود.",
+    "empty": "بازی اخیری پیدا نشد.",
+    "matchup": "{{white}} در برابر {{black}}",
+    "saved": "ذخیره شد",
+    "analyze": "تحلیل"
+  },
+  "reports": {
+    "empty": "چند بازی تحلیل کنید تا گزارش نقاط ضعفتان باز شود.",
+    "worstOpenings": {
+      "heading": "بدترین گشایش‌ها",
+      "empty": "یک گشایش را چند بار بازی کنید تا این بخش نمایان شود.",
+      "gamesCount": "{{count}} بازی"
+    },
+    "motifs": {
+      "heading": "الگوهای ازدست‌رفته",
+      "empty": "خطای تاکتیکی تکرارشونده‌ای پیدا نشد — آفرین.",
+      "labels": {
+        "missedMate": "مات‌های ازدست‌رفته",
+        "walkedIntoMate": "گرفتار شدن در مات",
+        "hungPiece": "مهره‌های بی‌دفاع",
+        "missedFork": "چنگال‌های ازدست‌رفته"
+      }
+    },
+    "phases": {
+      "heading": "تفکیک مراحل بازی",
+      "empty": "هنوز حرکت تحلیل‌شدهٔ کافی وجود ندارد.",
+      "avgWinDrop": "میانگین افت شانس برد",
+      "badMoves": "حرکت‌های بد",
+      "labels": {
+        "opening": "گشایش",
+        "middlegame": "وسط بازی",
+        "endgame": "آخر بازی"
+      }
+    }
+  },
+  "trends": {
+    "empty": "چند بازی تحلیل کنید تا روندهایتان باز شود."
+  }
+}

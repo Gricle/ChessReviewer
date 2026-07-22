@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · Profundidad 14 · En el navegador",
+    "title": "Mira tu partida como la ve el <0>motor</0>.",
+    "description": "Pega un PGN o importa tus últimas partidas de Chess.com o Lichess. Cada jugada se puntúa de <0>Brillante</0> a <1>Error grave</1>, con lecturas de precisión, flechas de la mejor línea, detección de teoría de aperturas y un entrenador en lenguaje natural.",
+    "quickDemos": "Demos rápidas:"
+  },
+  "paste": {
+    "title": "Pegar PGN",
+    "description": "Pega cualquier texto PGN en bruto, con cabeceras o solo el historial de jugadas.",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "Revisar este PGN"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "Desde Chess.com",
+      "description": "Introduce tu nombre de usuario público de Chess.com para traer tus partidas recientes.",
+      "placeholder": "p. ej. Hikaru"
+    },
+    "lichess": {
+      "title": "Desde Lichess.org",
+      "description": "Introduce tu nombre de usuario público de Lichess para traer tus partidas recientes.",
+      "placeholder": "p. ej. MagnusCarlsen"
+    },
+    "load": "Cargar",
+    "noGames": "No se encontraron partidas recientes.",
+    "loadFailed": "No se pudieron cargar las partidas"
+  },
+  "samples": {
+    "immortal": {
+      "label": "La Inmortal (1851)",
+      "sub": "La obra maestra de sacrificios de Anderssen"
+    },
+    "opera": {
+      "label": "Partida de la Ópera (Morphy)",
+      "sub": "Una lección de desarrollo rápido"
+    },
+    "blunderfest": {
+      "label": "Táctica y errores",
+      "sub": "La trampa del sacrificio de dama de Réti: un error grave castigado con mate"
+    }
+  },
+  "progress": {
+    "heading": "Evaluando posiciones",
+    "subtitle": "Stockfish profundidad 14 · En el navegador",
+    "footer": "Calculando clasificaciones de jugadas y comentarios del entrenador..."
+  },
+  "auth": {
+    "close": "Cerrar",
+    "titleAccount": "Perfil de la cuenta",
+    "titleSignIn": "Iniciar sesión / Sincronizar cuenta",
+    "subtitleCloud": "Almacenamiento en la nube activo",
+    "subtitleGuest": "Modo invitado activo",
+    "signedInAs": "Sesión iniciada como:",
+    "signOut": "Cerrar sesión",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "Iniciar sesión y activar la sincronización",
+    "submitSignUp": "Crear cuenta",
+    "google": "Continuar con Google",
+    "toggleToSignUp": "¿No tienes cuenta? Crea una",
+    "toggleToSignIn": "¿Ya tienes cuenta? Inicia sesión",
+    "confirmEmailNotice": "Revisa tu correo para confirmar tu cuenta."
+  }
+}

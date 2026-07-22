@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "Parties ({{count}})",
+    "reports": "Rapports de faiblesses",
+    "trends": "Tendances"
+  },
+  "subTabs": {
+    "ariaLabel": "Section de la bibliothèque"
+  },
+  "profile": {
+    "savedCount": "{{count}} analyses de parties enregistrées",
+    "loading": "Chargement de votre bibliothèque…"
+  },
+  "profileForm": {
+    "heading": "Profil",
+    "displayNamePlaceholder": "nom affiché",
+    "chesscomPlaceholder": "pseudo chess.com",
+    "lichessPlaceholder": "pseudo lichess",
+    "save": "Enregistrer",
+    "saved": "Profil enregistré."
+  },
+  "history": {
+    "heading": "Historique des analyses enregistrées",
+    "empty": "Aucune partie enregistrée pour l'instant — analysez une partie et elle arrivera ici automatiquement.",
+    "matchup": "{{white}} vs {{black}}",
+    "accuracyLabel": "Précision",
+    "accuracyValue": "B : {{white}} % | N : {{black}} %",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "Parties récentes",
+    "ariaLabel": "Parties récentes",
+    "refreshAriaLabel": "Actualiser les parties récentes",
+    "setupPrompt": "Ajoutez votre pseudo chess.com ou lichess dans le formulaire de profil pour voir vos dernières parties ici automatiquement.",
+    "empty": "Aucune partie récente trouvée.",
+    "matchup": "{{white}} vs {{black}}",
+    "saved": "Enregistrée",
+    "analyze": "Analyser"
+  },
+  "reports": {
+    "empty": "Analysez quelques parties pour débloquer vos rapports de faiblesses.",
+    "worstOpenings": {
+      "heading": "Pires ouvertures",
+      "empty": "Jouez la même ouverture plusieurs fois pour voir ceci.",
+      "gamesCount": "{{count}} parties"
+    },
+    "motifs": {
+      "heading": "Motifs manqués",
+      "empty": "Aucune erreur tactique récurrente trouvée — bravo.",
+      "labels": {
+        "missedMate": "mats manqués",
+        "walkedIntoMate": "mats subis",
+        "hungPiece": "pièces laissées en prise",
+        "missedFork": "fourchettes manquées"
+      }
+    },
+    "phases": {
+      "heading": "Répartition par phase",
+      "empty": "Pas encore assez de coups analysés.",
+      "avgWinDrop": "perte moy. de victoire",
+      "badMoves": "mauvais coups",
+      "labels": {
+        "opening": "Ouverture",
+        "middlegame": "Milieu de jeu",
+        "endgame": "Finale"
+      }
+    }
+  },
+  "trends": {
+    "empty": "Analysez quelques parties pour débloquer vos tendances."
+  }
+}

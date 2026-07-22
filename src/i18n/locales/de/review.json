@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "Brillant",
+    "great": "Großartig",
+    "best": "Bester Zug",
+    "excellent": "Exzellent",
+    "good": "Gut",
+    "book": "Theorie",
+    "inaccuracy": "Ungenauigkeit",
+    "mistake": "Fehler",
+    "blunder": "Patzer"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "{{value}} % genau"
+  },
+  "playback": {
+    "jumpStart": "Zum Anfang springen (Pos1)",
+    "prevMove": "Vorheriger Zug (←)",
+    "cycleSpeed": "Autoplay-Geschwindigkeit wechseln (Leertaste)",
+    "nextMove": "Nächster Zug (→)",
+    "jumpEnd": "Zum Ende springen (Ende)",
+    "flipBoard": "Brett drehen (F)",
+    "muteSound": "Soundeffekte stummschalten",
+    "unmuteSound": "Soundeffekte aktivieren",
+    "volume": "Lautstärke",
+    "disableVoice": "Coach-Stimme deaktivieren",
+    "enableVoice": "Coach-Stimme aktivieren",
+    "speed": {
+      "autoplay": "Autoplay"
+    }
+  },
+  "coachCard": {
+    "title": "Engine-Coach",
+    "readAloud": "Vorlesen",
+    "readAloudAria": "Coach-Kommentar vorlesen",
+    "youPlayed": "Du hast <bold>{{san}}</bold> gespielt",
+    "bestMove": "Bester Zug <bold>{{bestSan}}</bold>",
+    "foundBest": "Du hast den besten Zug gefunden: <bold>{{san}}</bold>",
+    "empty": "Gehe durch die Partie, um jeden Zug bewertet zu sehen."
+  },
+  "moveList": {
+    "title": "Zugliste der Partie",
+    "cellAriaLabel": "{{san}}, {{label}}"
+  },
+  "summary": {
+    "result": "Ergebnis",
+    "breakdownTitle": "Aufschlüsselung der Zugbewertungen",
+    "classificationHeader": "Bewertung"
+  },
+  "evalGraph": {
+    "title": "Bewertungsverlauf",
+    "subtitle": "Weiß im Vorteil (+10) / Schwarz im Vorteil (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "Ergebnisse der Partieanalyse",
+    "title": "Partieanalyse",
+    "vs": "gegen",
+    "startReview": "Analyse starten"
+  }
+}

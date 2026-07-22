@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · Tiefe 14 · Im Browser",
+    "title": "Sieh deine Partie so, wie die <0>Engine</0> sie sieht.",
+    "description": "Füge ein PGN ein oder importiere deine letzten Partien von Chess.com oder Lichess. Jeder Zug wird von <0>Brillant</0> bis <1>Patzer</1> bewertet – mit Genauigkeitswerten, Pfeilen für die beste Fortsetzung, Erkennung von Eröffnungstheorie und einem Coach in natürlicher Sprache.",
+    "quickDemos": "Schnelle Demos:"
+  },
+  "paste": {
+    "title": "PGN einfügen",
+    "description": "Füge beliebigen PGN-Text ein, mit Kopfzeilen oder nur der Zugfolge.",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "Dieses PGN analysieren"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "Von Chess.com",
+      "description": "Gib deinen öffentlichen Chess.com-Benutzernamen ein, um deine letzten Partien zu laden.",
+      "placeholder": "z. B. Hikaru"
+    },
+    "lichess": {
+      "title": "Von Lichess.org",
+      "description": "Gib deinen öffentlichen Lichess-Benutzernamen ein, um deine letzten Partien zu laden.",
+      "placeholder": "z. B. MagnusCarlsen"
+    },
+    "load": "Laden",
+    "noGames": "Keine aktuellen Partien gefunden.",
+    "loadFailed": "Partien konnten nicht geladen werden"
+  },
+  "samples": {
+    "immortal": {
+      "label": "Die Unsterbliche (1851)",
+      "sub": "Anderssens Opfer-Meisterwerk"
+    },
+    "opera": {
+      "label": "Die Opernpartie (Morphy)",
+      "sub": "Eine Lektion in schneller Entwicklung"
+    },
+    "blunderfest": {
+      "label": "Taktik & Patzer",
+      "sub": "Rétis Damenopfer-Falle – ein Patzer, bestraft durch Matt"
+    }
+  },
+  "progress": {
+    "heading": "Stellungen werden bewertet",
+    "subtitle": "Stockfish Tiefe 14 · Im Browser",
+    "footer": "Zugbewertungen und Coach-Hinweise werden berechnet..."
+  },
+  "auth": {
+    "close": "Schließen",
+    "titleAccount": "Kontoprofil",
+    "titleSignIn": "Anmelden / Konto-Sync",
+    "subtitleCloud": "Cloud-Speicher aktiv",
+    "subtitleGuest": "Gastmodus aktiv",
+    "signedInAs": "Angemeldet als:",
+    "signOut": "Abmelden",
+    "emailLabel": "E-Mail-Adresse",
+    "emailPlaceholder": "du@beispiel.de",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "Anmelden & Sync aktivieren",
+    "submitSignUp": "Konto erstellen",
+    "google": "Mit Google fortfahren",
+    "toggleToSignUp": "Kein Konto? Erstelle eins",
+    "toggleToSignIn": "Schon ein Konto? Anmelden",
+    "confirmEmailNotice": "Prüfe deine E-Mails, um dein Konto zu bestätigen."
+  }
+}

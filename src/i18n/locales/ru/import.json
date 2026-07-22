@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · Глубина 14 · В браузере",
+    "title": "Посмотрите на свою партию глазами <0>движка</0>.",
+    "description": "Вставьте PGN или импортируйте последние партии с Chess.com или Lichess. Каждый ход получает оценку от <0>Блестяще</0> до <1>Зевок</1> — с показателями точности, стрелками лучших линий, распознаванием дебютной теории и тренером, который объясняет по-человечески.",
+    "quickDemos": "Быстрые демо:"
+  },
+  "paste": {
+    "title": "Вставить PGN",
+    "description": "Вставьте любой PGN-текст с заголовками или просто записью ходов.",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "Разобрать этот PGN"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "С Chess.com",
+      "description": "Введите свой публичный ник на Chess.com, чтобы загрузить недавние партии.",
+      "placeholder": "напр. Hikaru"
+    },
+    "lichess": {
+      "title": "С Lichess.org",
+      "description": "Введите свой публичный ник на Lichess, чтобы загрузить недавние партии.",
+      "placeholder": "напр. MagnusCarlsen"
+    },
+    "load": "Загрузить",
+    "noGames": "Недавних партий не найдено.",
+    "loadFailed": "Не удалось загрузить партии"
+  },
+  "samples": {
+    "immortal": {
+      "label": "Бессмертная партия (1851)",
+      "sub": "Жертвенный шедевр Андерсена"
+    },
+    "opera": {
+      "label": "Партия в опере (Морфи)",
+      "sub": "Урок быстрого развития"
+    },
+    "blunderfest": {
+      "label": "Тактика и зевки",
+      "sub": "Ловушка Рети с жертвой ферзя — зевок, наказанный матом"
+    }
+  },
+  "progress": {
+    "heading": "Оцениваем позиции",
+    "subtitle": "Stockfish, глубина 14 · В браузере",
+    "footer": "Вычисляем классификацию ходов и подсказки тренера..."
+  },
+  "auth": {
+    "close": "Закрыть",
+    "titleAccount": "Профиль аккаунта",
+    "titleSignIn": "Вход / Синхронизация аккаунта",
+    "subtitleCloud": "Облачное хранилище активно",
+    "subtitleGuest": "Гостевой режим активен",
+    "signedInAs": "Вы вошли как:",
+    "signOut": "Выйти",
+    "emailLabel": "Электронная почта",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "Войти и включить синхронизацию",
+    "submitSignUp": "Создать аккаунт",
+    "google": "Продолжить с Google",
+    "toggleToSignUp": "Нет аккаунта? Создайте",
+    "toggleToSignIn": "Уже есть аккаунт? Войдите",
+    "confirmEmailNotice": "Проверьте почту, чтобы подтвердить аккаунт."
+  }
+}

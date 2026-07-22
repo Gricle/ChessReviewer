@@ -1,0 +1,37 @@
+{
+  "brand": {
+    "title": "Chess Reviewer",
+    "subtitle": "本地对局分析引擎"
+  },
+  "chip": {
+    "engine": "Stockfish · 深度 14"
+  },
+  "tabs": {
+    "import": "新建导入",
+    "review": "当前复盘",
+    "library": "棋库与趋势"
+  },
+  "auth": {
+    "guest": "访客模式",
+    "signIn": "登录"
+  },
+  "language": {
+    "label": "切换语言"
+  },
+  "errors": {
+    "pgnParse": "无法读取该 PGN：{{detail}}。请检查着法后重试。",
+    "engineFailure": "引擎无法分析本局（{{detail}}）。请尝试刷新页面。",
+    "savedReviewLoadFailed": "无法加载该已保存的复盘。"
+  },
+  "progress": {
+    "analyzing": "正在用 Stockfish 分析…",
+    "analyzingPosition": "正在分析局面 {{done}} / {{total}}",
+    "autoScore": "正在为你的近期对局评分… {{done}} / {{total}}"
+  },
+  "librarySignedOut": {
+    "title": "登录以建立你的棋库",
+    "syncDescription": "分析过的对局会同步到你的云端棋库，附带弱点报告和趋势。",
+    "syncUnavailable": "此部署未配置云同步。",
+    "cta": "登录并启用同步"
+  }
+}

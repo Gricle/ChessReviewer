@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · عمق 14 · داخل المتصفح",
+    "title": "شاهد مباراتك كما يراها <0>المحرك</0>.",
+    "description": "الصق ملف PGN أو استورد أحدث مبارياتك من Chess.com أو Lichess. تُقيَّم كل نقلة من <0>عبقرية</0> إلى <1>خطأ فادح</1> مع قراءات الدقة، وأسهم أفضل الخطوط، والتعرّف على نظرية الافتتاح، ومدرّب يشرح باللغة الطبيعية.",
+    "quickDemos": "عروض سريعة:"
+  },
+  "paste": {
+    "title": "لصق PGN",
+    "description": "الصق أي نص PGN خام مع الترويسات أو سجل النقلات.",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "راجع ملف PGN هذا"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "من Chess.com",
+      "description": "أدخل اسم مستخدمك العلني على Chess.com لجلب مبارياتك الأخيرة.",
+      "placeholder": "مثال: Hikaru"
+    },
+    "lichess": {
+      "title": "من Lichess.org",
+      "description": "أدخل اسم مستخدمك العلني على Lichess لجلب مبارياتك الأخيرة.",
+      "placeholder": "مثال: MagnusCarlsen"
+    },
+    "load": "تحميل",
+    "noGames": "لم يُعثر على مباريات حديثة.",
+    "loadFailed": "فشل تحميل المباريات"
+  },
+  "samples": {
+    "immortal": {
+      "label": "المباراة الخالدة (1851)",
+      "sub": "تحفة أندرسن في التضحيات"
+    },
+    "opera": {
+      "label": "مباراة الأوبرا (مورفي)",
+      "sub": "درس في التطوير السريع"
+    },
+    "blunderfest": {
+      "label": "تكتيكات وأخطاء فادحة",
+      "sub": "فخ تضحية الوزير لريتي — خطأ فادح عوقب بالمات"
+    }
+  },
+  "progress": {
+    "heading": "جارٍ تقييم الوضعيات",
+    "subtitle": "Stockfish عمق 14 · داخل المتصفح",
+    "footer": "جارٍ حساب تصنيفات النقلات وملاحظات المدرّب..."
+  },
+  "auth": {
+    "close": "إغلاق",
+    "titleAccount": "ملف الحساب",
+    "titleSignIn": "تسجيل الدخول / مزامنة الحساب",
+    "subtitleCloud": "التخزين السحابي مفعّل",
+    "subtitleGuest": "وضع الضيف مفعّل",
+    "signedInAs": "مسجّل الدخول باسم:",
+    "signOut": "تسجيل الخروج",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "تسجيل الدخول وتفعيل المزامنة",
+    "submitSignUp": "إنشاء حساب",
+    "google": "المتابعة عبر Google",
+    "toggleToSignUp": "ليس لديك حساب؟ أنشئ واحدًا",
+    "toggleToSignIn": "لديك حساب؟ سجّل الدخول",
+    "confirmEmailNotice": "تفقّد بريدك الإلكتروني لتأكيد حسابك."
+  }
+}

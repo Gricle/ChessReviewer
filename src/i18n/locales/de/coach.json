@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} ist ein Theoriezug – die Theorie geht weiter.",
+  "betterWas": "Besser war {{bestSan}}.",
+  "walksIntoMate": "Dieser Zug läuft in ein erzwungenes Matt.",
+  "hadForcedMateSlip": "Du hattest ein erzwungenes Matt und hast es entwischen lassen.",
+  "leavesHanging": "Damit hängt {{piece}} auf {{square}}.",
+  "threatNow": "Die Drohung ist jetzt {{nextBestSan}}.",
+  "losesSignificantGround": "Dieser Zug verliert deutlich an Boden.",
+  "couldHaveBeenPunished": "Das hätte bestraft werden können.",
+  "brilliantFork": "Ein spektakuläres Opfer! {{san}} gibt Material und stellt eine Gabel auf.",
+  "brilliant": "Ein spektakuläres Opfer! {{san}} gibt Material.",
+  "onlyGoodMove": "{{san}} ist hier der einzig gute Zug.",
+  "keepsForcedMate": "{{san}} hält das erzwungene Matt auf Kurs.",
+  "forksPieces": "{{san}} gabelt {{count}} Figuren.",
+  "strongestMove": "{{san}} ist der stärkste Zug.",
+  "strongOnlyBetter": "{{san}} ist stark – nur {{bestSan}} war besser.",
+  "keepsBalance": "{{san}} hält das Gleichgewicht, aber {{bestSan}} war genauer.",
+  "piece": {
+    "pawn": "dein Bauer",
+    "knight": "dein Springer",
+    "bishop": "dein Läufer",
+    "rook": "dein Turm",
+    "queen": "deine Dame"
+  }
+}

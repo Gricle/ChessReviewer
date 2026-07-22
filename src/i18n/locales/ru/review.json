@@ -1,0 +1,61 @@
+{
+  "cls": {
+    "brilliant": "Блестяще",
+    "great": "Великолепно",
+    "best": "Лучший",
+    "excellent": "Отлично",
+    "good": "Хорошо",
+    "book": "Теория",
+    "inaccuracy": "Неточность",
+    "mistake": "Ошибка",
+    "blunder": "Зевок"
+  },
+  "playerCard": {
+    "elo": "Elo: {{elo}}",
+    "accuracy": "Точность {{value}}%"
+  },
+  "playback": {
+    "jumpStart": "К началу (Home)",
+    "prevMove": "Предыдущий ход (←)",
+    "cycleSpeed": "Скорость автопросмотра (Пробел)",
+    "nextMove": "Следующий ход (→)",
+    "jumpEnd": "К концу (End)",
+    "flipBoard": "Перевернуть доску (F)",
+    "muteSound": "Выключить звуковые эффекты",
+    "unmuteSound": "Включить звуковые эффекты",
+    "volume": "Громкость",
+    "disableVoice": "Выключить голос тренера",
+    "enableVoice": "Включить голос тренера",
+    "speed": {
+      "autoplay": "Автопросмотр"
+    }
+  },
+  "coachCard": {
+    "title": "Тренер-движок",
+    "readAloud": "Озвучить",
+    "readAloudAria": "Озвучить комментарий тренера",
+    "youPlayed": "Вы сыграли <bold>{{san}}</bold>",
+    "bestMove": "Лучший ход <bold>{{bestSan}}</bold>",
+    "foundBest": "Вы нашли лучший ход: <bold>{{san}}</bold>",
+    "empty": "Листайте партию, чтобы увидеть разбор каждого хода."
+  },
+  "moveList": {
+    "title": "Список ходов партии",
+    "cellAriaLabel": "{{san}}, {{label}}"
+  },
+  "summary": {
+    "result": "Результат",
+    "breakdownTitle": "Распределение ходов по оценкам",
+    "classificationHeader": "Оценка"
+  },
+  "evalGraph": {
+    "title": "График оценки",
+    "subtitle": "Перевес белых (+10) / перевес чёрных (-10)"
+  },
+  "reveal": {
+    "ariaLabel": "Результаты разбора партии",
+    "title": "Разбор партии",
+    "vs": "против",
+    "startReview": "Начать разбор"
+  }
+}

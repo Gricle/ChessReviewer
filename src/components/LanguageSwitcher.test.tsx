@@ -55,7 +55,8 @@ describe('LanguageSwitcher', () => {
     expect(document.documentElement.lang).toBe('fa');
     await waitFor(() => expect(screen.getByText('FA')).toBeTruthy());
 
-    fireEvent.click(trigger());
+    // Now in Persian: the trigger's accessible name is localized too.
+    fireEvent.click(screen.getByRole('button', { name: 'تغییر زبان' }));
     fireEvent.click(screen.getByText('English'));
     await waitFor(() => expect(document.documentElement.dir).toBe('ltr'));
     expect(document.documentElement.lang).toBe('en');

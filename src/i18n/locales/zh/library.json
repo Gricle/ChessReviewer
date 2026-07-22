@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "games": "对局（{{count}}）",
+    "reports": "弱点报告",
+    "trends": "趋势"
+  },
+  "subTabs": {
+    "ariaLabel": "棋库分区"
+  },
+  "profile": {
+    "savedCount": "已保存 {{count}} 局复盘",
+    "loading": "正在加载你的棋库…"
+  },
+  "profileForm": {
+    "heading": "个人资料",
+    "displayNamePlaceholder": "显示名称",
+    "chesscomPlaceholder": "chess.com 用户名",
+    "lichessPlaceholder": "lichess 用户名",
+    "save": "保存",
+    "saved": "资料已保存。"
+  },
+  "history": {
+    "heading": "已保存的分析记录",
+    "empty": "还没有保存的对局——分析一局后会自动出现在这里。",
+    "matchup": "{{white}} 对阵 {{black}}",
+    "accuracyLabel": "准确度",
+    "accuracyValue": "白 {{white}}% | 黑 {{black}}%",
+    "accuracyPending": "…"
+  },
+  "recent": {
+    "heading": "最近对局",
+    "ariaLabel": "最近对局",
+    "refreshAriaLabel": "刷新最近对局",
+    "setupPrompt": "在个人资料中填写你的 chess.com 或 lichess 用户名，这里会自动显示你的最新对局。",
+    "empty": "未找到最近的对局。",
+    "matchup": "{{white}} 对阵 {{black}}",
+    "saved": "已保存",
+    "analyze": "分析"
+  },
+  "reports": {
+    "empty": "分析几局棋即可解锁你的弱点报告。",
+    "worstOpenings": {
+      "heading": "最差开局",
+      "empty": "同一开局下过几次后才会显示。",
+      "gamesCount": "{{count}} 局"
+    },
+    "motifs": {
+      "heading": "错过的战术",
+      "empty": "没有发现反复出现的战术失误——不错。",
+      "labels": {
+        "missedMate": "错过的将杀",
+        "walkedIntoMate": "走进将杀",
+        "hungPiece": "白丢的棋子",
+        "missedFork": "错过的捉双"
+      }
+    },
+    "phases": {
+      "heading": "阶段分析",
+      "empty": "分析过的着法还不够。",
+      "avgWinDrop": "平均胜率损失",
+      "badMoves": "劣着",
+      "labels": {
+        "opening": "开局",
+        "middlegame": "中局",
+        "endgame": "残局"
+      }
+    }
+  },
+  "trends": {
+    "empty": "分析几局棋即可解锁你的趋势。"
+  }
+}

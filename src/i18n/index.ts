@@ -1,6 +1,15 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { en } from './locales/en/index.ts';
+import { zh } from './locales/zh/index.ts';
+import { hi } from './locales/hi/index.ts';
+import { es } from './locales/es/index.ts';
+import { fr } from './locales/fr/index.ts';
+import { ar } from './locales/ar/index.ts';
+import { ru } from './locales/ru/index.ts';
+import { pt } from './locales/pt/index.ts';
+import { de } from './locales/de/index.ts';
+import { fa } from './locales/fa/index.ts';
 
 export interface Language {
   code: string;
@@ -32,7 +41,7 @@ const STORAGE_KEY = 'chessreviewer.lang';
  * e.g. `const RESOURCES = { en, fa } as const;` — nothing else in this file
  * needs to change.
  */
-const RESOURCES = { en } as const;
+const RESOURCES = { en, zh, hi, es, fr, ar, ru, pt, de, fa } as const;
 
 // Storage access never crashes the app (mirrors safeStorageGet in src/App.tsx).
 function safeStorageGet(key: string): string | null {

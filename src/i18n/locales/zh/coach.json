@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} 是定式着法——仍在理论之中。",
+  "betterWas": "更好的是 {{bestSan}}。",
+  "walksIntoMate": "这步棋走进了强制将杀。",
+  "hadForcedMateSlip": "你本有强制将杀的机会，却让它溜走了。",
+  "leavesHanging": "这步棋让你在 {{square}} 的{{piece}}失去保护。",
+  "threatNow": "现在的威胁是 {{nextBestSan}}。",
+  "losesSignificantGround": "这步棋损失了大量优势。",
+  "couldHaveBeenPunished": "这步棋本可能受到惩罚。",
+  "brilliantFork": "惊艳的弃子！{{san}} 舍弃子力，布下捉双。",
+  "brilliant": "惊艳的弃子！{{san}} 舍弃了子力。",
+  "onlyGoodMove": "{{san}} 是这里唯一的好棋。",
+  "keepsForcedMate": "{{san}} 让强制将杀继续推进。",
+  "forksPieces": "{{san}} 同时攻击 {{count}} 个棋子。",
+  "strongestMove": "{{san}} 是最强的一着。",
+  "strongOnlyBetter": "{{san}} 很强——只有 {{bestSan}} 更好。",
+  "keepsBalance": "{{san}} 保持了均势，但 {{bestSan}} 更精确。",
+  "piece": {
+    "pawn": "兵",
+    "knight": "马",
+    "bishop": "象",
+    "rook": "车",
+    "queen": "后"
+  }
+}

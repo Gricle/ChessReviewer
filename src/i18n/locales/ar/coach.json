@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} نقلة نظرية — ما زلنا ضمن النظرية.",
+  "betterWas": "الأفضل كان {{bestSan}}.",
+  "walksIntoMate": "هذه النقلة تقع في مات إجباري.",
+  "hadForcedMateSlip": "كان لديك مات إجباري وأفلتّه.",
+  "leavesHanging": "هذه النقلة تترك {{piece}}ك في {{square}} بلا حماية.",
+  "threatNow": "التهديد الآن هو {{nextBestSan}}.",
+  "losesSignificantGround": "تفقد هذه النقلة قدرًا كبيرًا من الأفضلية.",
+  "couldHaveBeenPunished": "كان يمكن معاقبة هذه النقلة.",
+  "brilliantFork": "تضحية مذهلة! النقلة {{san}} تضحّي بالمادة وتجهّز شوكة.",
+  "brilliant": "تضحية مذهلة! النقلة {{san}} تضحّي بالمادة.",
+  "onlyGoodMove": "{{san}} هي النقلة الجيدة الوحيدة هنا.",
+  "keepsForcedMate": "{{san}} تُبقي المات الإجباري على مساره.",
+  "forksPieces": "تشكّل {{san}} شوكة على {{count}} قطع.",
+  "strongestMove": "{{san}} هي أقوى نقلة.",
+  "strongOnlyBetter": "{{san}} نقلة قوية — فقط {{bestSan}} كانت أفضل.",
+  "keepsBalance": "{{san}} تحافظ على التوازن، لكن {{bestSan}} كانت أدق.",
+  "piece": {
+    "pawn": "بيدق",
+    "knight": "حصان",
+    "bishop": "فيل",
+    "rook": "رخ",
+    "queen": "وزير"
+  }
+}

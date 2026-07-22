@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "badge": "Stockfish · 深度 14 · 本地运行",
+    "title": "用<0>引擎</0>的视角看你的对局。",
+    "description": "粘贴 PGN，或从 Chess.com、Lichess 导入你最近的对局。每一步棋都会得到从<0>妙手</0>到<1>严重失误</1>的评级，并附带准确度读数、最佳路线箭头、开局理论识别和自然语言教练讲解。",
+    "quickDemos": "快速示例："
+  },
+  "paste": {
+    "title": "粘贴 PGN",
+    "description": "粘贴任意 PGN 原文，可包含对局信息头或着法记录。",
+    "placeholder": "[Event \"Casual Game\"]\n[White \"Player1\"]\n[Black \"Player2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 ...",
+    "submit": "复盘这个 PGN"
+  },
+  "platform": {
+    "chesscom": {
+      "title": "从 Chess.com 导入",
+      "description": "输入你的 Chess.com 公开用户名以获取最近对局。",
+      "placeholder": "例如 Hikaru"
+    },
+    "lichess": {
+      "title": "从 Lichess.org 导入",
+      "description": "输入你的 Lichess 公开用户名以获取最近对局。",
+      "placeholder": "例如 MagnusCarlsen"
+    },
+    "load": "加载",
+    "noGames": "未找到最近的对局。",
+    "loadFailed": "加载对局失败"
+  },
+  "samples": {
+    "immortal": {
+      "label": "不朽之局（1851）",
+      "sub": "安德森的弃子杰作"
+    },
+    "opera": {
+      "label": "歌剧院之局（摩菲）",
+      "sub": "快速出子的经典一课"
+    },
+    "blunderfest": {
+      "label": "战术与失误",
+      "sub": "列蒂的弃后陷阱——一步漏着被将杀惩罚"
+    }
+  },
+  "progress": {
+    "heading": "正在评估局面",
+    "subtitle": "Stockfish 深度 14 · 本地运行",
+    "footer": "正在计算着法评级和教练点评..."
+  },
+  "auth": {
+    "close": "关闭",
+    "titleAccount": "账户资料",
+    "titleSignIn": "登录 / 账户同步",
+    "subtitleCloud": "云存储已启用",
+    "subtitleGuest": "访客模式已启用",
+    "signedInAs": "当前登录：",
+    "signOut": "退出登录",
+    "emailLabel": "电子邮箱",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "••••••••",
+    "submitBusy": "…",
+    "submitSignIn": "登录并启用同步",
+    "submitSignUp": "创建账户",
+    "google": "使用 Google 继续",
+    "toggleToSignUp": "没有账户？创建一个",
+    "toggleToSignIn": "已有账户？登录",
+    "confirmEmailNotice": "请查收邮件以确认你的账户。"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "bookMove": "{{san}} es una jugada de libro: la teoría continúa.",
+  "betterWas": "Era mejor {{bestSan}}.",
+  "walksIntoMate": "Esta jugada se mete en un mate forzado.",
+  "hadForcedMateSlip": "Tenías un mate forzado y lo dejaste escapar.",
+  "leavesHanging": "Esto deja sin defensa tu {{piece}} en {{square}}.",
+  "threatNow": "La amenaza ahora es {{nextBestSan}}.",
+  "losesSignificantGround": "Esto pierde mucho terreno.",
+  "couldHaveBeenPunished": "Esto podría haber sido castigado.",
+  "brilliantFork": "¡Un sacrificio espectacular! {{san}} entrega material y prepara un doble ataque.",
+  "brilliant": "¡Un sacrificio espectacular! {{san}} entrega material.",
+  "onlyGoodMove": "{{san}} es la única jugada buena aquí.",
+  "keepsForcedMate": "{{san}} mantiene el mate forzado en marcha.",
+  "forksPieces": "{{san}} ataca {{count}} piezas a la vez.",
+  "strongestMove": "{{san}} es la jugada más fuerte.",
+  "strongOnlyBetter": "{{san}} es fuerte: solo {{bestSan}} era mejor.",
+  "keepsBalance": "{{san}} mantiene el equilibrio, pero {{bestSan}} era más precisa.",
+  "piece": {
+    "pawn": "peón",
+    "knight": "caballo",
+    "bishop": "alfil",
+    "rook": "torre",
+    "queen": "dama"
+  }
+}

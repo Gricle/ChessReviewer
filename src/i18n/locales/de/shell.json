@@ -1,0 +1,37 @@
+{
+  "brand": {
+    "title": "Chess Reviewer",
+    "subtitle": "Partieanalyse-Engine direkt im Browser"
+  },
+  "chip": {
+    "engine": "Stockfish · Tiefe 14"
+  },
+  "tabs": {
+    "import": "Neuer Import",
+    "review": "Aktive Analyse",
+    "library": "Bibliothek & Trends"
+  },
+  "auth": {
+    "guest": "Gastmodus",
+    "signIn": "Anmelden"
+  },
+  "language": {
+    "label": "Sprache ändern"
+  },
+  "errors": {
+    "pgnParse": "Dieses PGN konnte nicht gelesen werden: {{detail}}. Prüfe die Züge und versuche es erneut.",
+    "engineFailure": "Die Engine konnte diese Partie nicht analysieren ({{detail}}). Lade die Seite neu.",
+    "savedReviewLoadFailed": "Diese gespeicherte Analyse konnte nicht geladen werden."
+  },
+  "progress": {
+    "analyzing": "Analyse mit Stockfish…",
+    "analyzingPosition": "Analysiere Stellung {{done}} / {{total}}",
+    "autoScore": "Bewerte deine letzten Partien… {{done}} / {{total}}"
+  },
+  "librarySignedOut": {
+    "title": "Melde dich an, um deine Bibliothek aufzubauen",
+    "syncDescription": "Analysierte Partien werden mit Schwächenberichten und Trends in deine Cloud-Bibliothek synchronisiert.",
+    "syncUnavailable": "Cloud-Sync ist für diese Bereitstellung nicht konfiguriert.",
+    "cta": "Anmelden & Sync aktivieren"
+  }
+}
