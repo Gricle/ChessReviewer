@@ -57,10 +57,12 @@ export function AuthModal({ auth, onClose }: Props) {
         className="relative w-full max-w-md glass-panel rounded-3xl p-6 border border-cyan-400/30 shadow-2xl space-y-5"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="auth-modal-title"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
+          aria-label="Close"
           className="absolute top-4 right-4 p-2 rounded-full bg-indigo-950/60 hover:bg-indigo-900/60 text-slate-400 hover:text-white transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
@@ -71,7 +73,7 @@ export function AuthModal({ auth, onClose }: Props) {
             <UserCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-extrabold text-white font-display">
+            <h3 id="auth-modal-title" className="text-lg font-extrabold text-white font-display">
               {auth.user ? 'Account Profile' : 'Sign In / Account Sync'}
             </h3>
             <p className="text-xs font-mono text-slate-400">
@@ -133,7 +135,10 @@ export function AuthModal({ auth, onClose }: Props) {
             </form>
 
             <button
-              onClick={() => void auth.signInWithGoogle()}
+              onClick={async () => {
+                setNotice(null);
+                setError(await auth.signInWithGoogle());
+              }}
               className="w-full py-2.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/30 text-slate-200 font-mono text-xs font-bold transition-all cursor-pointer"
             >
               Continue with Google

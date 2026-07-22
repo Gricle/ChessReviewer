@@ -1,12 +1,34 @@
-import { Cpu, Library, UserCheck } from 'lucide-react';
+import { Cpu, Library, UserCheck, type LucideIcon } from 'lucide-react';
+
+type Tab = 'import' | 'review' | 'library';
 
 interface Props {
-  activeTab: 'import' | 'review' | 'library';
-  onSelectTab: (tab: 'import' | 'review' | 'library') => void;
+  activeTab: Tab;
+  onSelectTab: (tab: Tab) => void;
   hasActiveReview: boolean;
   authEnabled: boolean;
   userEmail: string | null;
   onOpenAuth: () => void;
+}
+
+interface TabDef {
+  id: Tab;
+  label: string;
+  icon?: LucideIcon;
+}
+
+const TABS: TabDef[] = [
+  { id: 'review', label: 'Active Review' },
+  { id: 'import', label: 'New Import' },
+  { id: 'library', label: 'Library & Trends', icon: Library },
+];
+
+function pill(active: boolean): string {
+  return `px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+    active
+      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(56,225,214,0.2)]'
+      : 'bg-indigo-950/40 text-slate-300 border border-indigo-500/20 hover:bg-indigo-900/40'
+  }`;
 }
 
 export function Header({
@@ -17,13 +39,16 @@ export function Header({
   userEmail,
   onOpenAuth,
 }: Props) {
+  const tabs = TABS.filter((tab) => tab.id !== 'review' || hasActiveReview);
+
   return (
-    <header className="w-full glass-panel sticky top-0 z-40 border-b border-indigo-400/20 backdrop-blur-xl">
+    <header className="w-full sticky top-0 z-40 bg-[rgba(24,22,50,0.65)] backdrop-blur-xl border-b border-indigo-400/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         {/* Brand Logo */}
-        <div
+        <button
+          type="button"
           onClick={() => onSelectTab(hasActiveReview ? 'review' : 'import')}
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-3 cursor-pointer group text-left"
         >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-600 flex items-center justify-center text-2xl font-bold text-[#05040c] shadow-[0_0_15px_rgba(56,225,214,0.4)] group-hover:scale-105 transition-transform">
             ♞
@@ -41,50 +66,31 @@ export function Header({
               Client-side Game Analysis Engine
             </p>
           </div>
-        </div>
+        </button>
 
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2">
-          {hasActiveReview && (
-            <button
-              onClick={() => onSelectTab('review')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                activeTab === 'review'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(56,225,214,0.2)]'
-                  : 'bg-indigo-950/40 text-slate-300 border border-indigo-500/20 hover:bg-indigo-900/40'
-              }`}
-            >
-              Active Review
-            </button>
-          )}
-
-          <button
-            onClick={() => onSelectTab('import')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-              activeTab === 'import'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(56,225,214,0.2)]'
-                : 'bg-indigo-950/40 text-slate-300 border border-indigo-500/20 hover:bg-indigo-900/40'
-            }`}
-          >
-            New Import
-          </button>
-
-          <button
-            onClick={() => onSelectTab('library')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-              activeTab === 'library'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(56,225,214,0.2)]'
-                : 'bg-indigo-950/40 text-slate-300 border border-indigo-500/20 hover:bg-indigo-900/40'
-            }`}
-          >
-            <Library className="w-3.5 h-3.5" />
-            <span>Library & Trends</span>
-          </button>
+          {tabs.map((tab) => {
+            const active = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => onSelectTab(tab.id)}
+                aria-current={active ? 'page' : undefined}
+                className={`${pill(active)}${Icon ? ' flex items-center gap-1.5' : ''}`}
+              >
+                {Icon && <Icon className="w-3.5 h-3.5" />}
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
 
           {/* Auth Button */}
           {authEnabled && (
             <button
               onClick={onOpenAuth}
+              aria-label={userEmail ?? 'Sign in'}
               className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/30 text-slate-200 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <UserCheck className="w-3.5 h-3.5 text-cyan-400" />
