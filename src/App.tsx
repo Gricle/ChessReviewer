@@ -1,25 +1,31 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AlertCircle, Library } from 'lucide-react';
 import { parsePgn } from './chess/pgnParser';
 import { uciToSan } from './chess/san';
 import { playSound, sanToSound, classToStinger, setVolume, getVolume } from './sound';
 import { analyzeGame } from './analysis/analyzeGame';
 import { assembleReview, type Review } from './analysis/assemble';
 import { OPENINGS } from './data/openings';
-import { ImportPanel } from './components/ImportPanel';
+import { Header } from './components/Header';
+import { ImportSection } from './components/ImportSection';
+import { AnalysisProgress } from './components/AnalysisProgress';
+import { PlayerCard } from './components/PlayerCard';
+import { PlaybackControls, type Speed } from './components/PlaybackControls';
 import { ReviewBoard } from './components/ReviewBoard';
 import { EvalBar } from './components/EvalBar';
 import { CoachCard, type CurrentMove } from './components/CoachCard';
 import { explainMove } from './coach/explain';
 import { MoveList } from './components/MoveList';
-import { EvalGraph } from './components/EvalGraph';
+import { EvalGraphCard } from './components/EvalGraphCard';
 import { SummaryPanel } from './components/SummaryPanel';
 import { RevealOverlay } from './components/RevealOverlay';
+import { useReviewShortcuts, IGNORE_SELECTOR } from './hooks/useReviewShortcuts';
 import { playerRatings } from './chess/ratings';
 import { kingSquare } from './chess/kingSquare';
 import type { ParsedGame } from './chess/types';
 import { supabase } from './supabase/client';
 import { useAuth } from './supabase/useAuth';
-import { AuthBar } from './components/AuthBar';
+import { AuthModal } from './components/AuthModal';
 import { LibraryView } from './components/LibraryView';
 import { mapReview, type GameSource } from './supabase/mapReview';
 import { uploadReview } from './supabase/uploadReview';
@@ -43,10 +49,10 @@ function safeStorageSet(key: string, value: string): void {
 
 const DEPTH = 14;
 const LATEST_N = 10; // how many recent games to pull + score on login
-type Speed = 'off' | 'slow' | 'medium' | 'fast';
 const SPEED_CYCLE: Speed[] = ['off', 'slow', 'medium', 'fast'];
 const SPEED_MS: Record<Speed, number> = { off: 0, slow: 1200, medium: 600, fast: 250 };
-const SPEED_LABEL: Record<Speed, string> = { off: '', slow: '×½', medium: '×1', fast: '×2' };
+
+type Tab = 'import' | 'review' | 'library';
 
 export default function App() {
   const [game, setGame] = useState<ParsedGame | null>(null);
@@ -55,13 +61,14 @@ export default function App() {
   const [progress, setProgress] = useState<string | null>(null);
   const [progressPct, setProgressPct] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [showImport, setShowImport] = useState(true);
+  const [tab, setTab] = useState<Tab>('import');
+  const [flipped, setFlipped] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
   const [showReveal, setShowReveal] = useState(false);
   const [soundOn, setSoundOn] = useState(() => safeStorageGet('chessreviewer.soundOn') !== '0');
   const [voiceOn, setVoiceOn] = useState(() => safeStorageGet('chessreviewer.voiceOn') !== '0');
   const [volume, setVolumeState] = useState(getVolume);
   const [autoplaySpeed, setAutoplaySpeed] = useState<Speed>('off');
-  const [view, setView] = useState<'game' | 'library'>('game');
   const auth = useAuth();
   const [lastImport, setLastImport] = useState<{ pgn: string; source: GameSource } | null>(null);
   const [autoScore, setAutoScore] = useState<{ done: number; total: number } | null>(null);
@@ -73,6 +80,7 @@ export default function App() {
 
   const total = game?.plies.length ?? 0;
   const onTouchStart = useCallback((e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest?.(IGNORE_SELECTOR)) { touchStart.current = null; return; }
     const t = e.touches[0];
     touchStart.current = { x: t.clientX, y: t.clientY };
   }, []);
@@ -99,6 +107,7 @@ export default function App() {
     setError(null);
     setReview(null);
     setAutoplaySpeed('off');
+    setFlipped(false);
     let parsed: ParsedGame;
     try {
       parsed = parsePgn(pgnText);
@@ -125,7 +134,7 @@ export default function App() {
       setReview(assembleReview(parsed, analyses, OPENINGS));
       setShowReveal(true);
       setProgress(null);
-      setShowImport(false);
+      setTab('review');
     } catch (e) {
       if (seq !== runSeq.current) return;
       // Engine failures (WASM blocked by a proxy/CSP, worker load error, UCI
@@ -141,7 +150,7 @@ export default function App() {
     if (!supabase) return;
     const row = await fetchSavedGame(supabase, gameId);
     const rebuilt = row ? rowToReview(row.pgn, row.analysis) : null;
-    if (!rebuilt) { setError('That saved review could not be loaded.'); setView('game'); return; }
+    if (!rebuilt) { setError('That saved review could not be loaded.'); setTab('import'); return; }
     runSeq.current++;      // invalidate any in-flight analysis so it can't clobber this saved review
     setProgress(null);
     setError(null);
@@ -149,9 +158,8 @@ export default function App() {
     setGame(rebuilt.game);
     setReview(rebuilt.review);
     setPly(0);
-    setShowImport(false);
     setLastImport(null);   // prevents the sync effect from re-uploading (guard requires lastImport)
-    setView('game');
+    setTab('review');
   }
 
   // Analyze + queue one game WITHOUT touching the board — reuses the exact same
@@ -277,6 +285,8 @@ export default function App() {
         ? uploadReview(client, userId, p)
         : Promise.reject(new Error('queued by another user')),
     ).catch(() => { /* fire-and-forget */ });
+    // Enqueue exactly once per finished review — other values are read, not triggers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [review]);
 
   // Retry anything pending whenever a user (re)appears.
@@ -289,15 +299,14 @@ export default function App() {
         ? uploadReview(client, userId, p)
         : Promise.reject(new Error('queued by another user')),
     ).catch(() => { /* fire-and-forget */ });
+    // Retry once per (re)appearing user id — client identity is stable per id.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.user?.id]);
 
   useEffect(() => { safeStorageSet('chessreviewer.soundOn', soundOn ? '1' : '0'); }, [soundOn]);
   useEffect(() => { safeStorageSet('chessreviewer.voiceOn', voiceOn ? '1' : '0'); }, [voiceOn]);
 
-  // Signing out while viewing the library shouldn't leave the user stranded on it.
-  useEffect(() => { if (!auth.user) setView('game'); }, [auth.user]);
-
-  const handleAutoplay = useCallback(() => {
+  const cycleAutoplaySpeed = useCallback(() => {
     setAutoplaySpeed((s) => {
       const idx = SPEED_CYCLE.indexOf(s);
       return SPEED_CYCLE[(idx + 1) % SPEED_CYCLE.length];
@@ -412,163 +421,193 @@ export default function App() {
     setVolumeState(v);   // UI
   };
 
+  // ── playback + shortcut handlers (useCallback-stable for useReviewShortcuts) ──
+  const goPrev = useCallback(() => setPly((p) => Math.max(0, p - 1)), []);
+  const goNext = useCallback(() => setPly((p) => Math.min(total, p + 1)), [total]);
+  const goStart = useCallback(() => setPly(0), []);
+  const goEnd = useCallback(() => setPly(total), [total]);
+  const handleFlip = useCallback(() => setFlipped((f) => !f), []);
+  const handleSelectPly = useCallback(
+    (p: number) => setPly(Math.max(0, Math.min(total, p))),
+    [total],
+  );
+  useReviewShortcuts(tab === 'review' && !!review, {
+    onPrev: goPrev,
+    onNext: goNext,
+    onStart: goStart,
+    onEnd: goEnd,
+    onToggleAutoplay: cycleAutoplaySpeed,
+    onFlip: handleFlip,
+  });
+
   return (
-    <div className="app">
-      <header className="topbar">
-        <div className="brand"><span className="pc">♞</span> Chess Reviewer</div>
-        <div className="tagline">Paste a PGN or import from chess.com / lichess.org — Stockfish analyzes every move in-browser</div>
-        {auth.user && <button className="lib-btn" onClick={() => setView('library')}>Library</button>}
-        <AuthBar auth={auth} />
-      </header>
+    <div className="min-h-screen flex flex-col relative">
+      <Header
+        activeTab={tab}
+        onSelectTab={setTab}
+        hasActiveReview={!!review && !!game}
+        authEnabled={auth.enabled}
+        userEmail={auth.user?.email ?? null}
+        onOpenAuth={() => setShowAuth(true)}
+      />
 
-      {view === 'library' && auth.user ? (
-        <LibraryView user={auth.user} onOpen={openSaved} onClose={() => setView('game')} />
-      ) : (
-        <>
-          {showImport ? (
-            <>
-              <section className="hero">
-                <span className="eyebrow">Stockfish · depth 14 · in your browser</span>
-                <h1>See your game the way the <span className="grad">engine</span> sees it.</h1>
-                <p>
-                  Paste a PGN or pull your latest games from chess.com and lichess. Every move is
-                  scored — brilliant to blunder — with the best line, an accuracy read, and a coach
-                  who tells you why. Nothing leaves your browser.
-                </p>
-              </section>
-              <ImportPanel onPgn={run} />
-            </>
+      <main className="flex-1 w-full pb-16">
+        {autoScore && autoScore.total > 0 && (() => {
+          const pct = Math.round((autoScore.done / autoScore.total) * 100);
+          return (
+            <div className="max-w-3xl mx-auto mt-4 px-4">
+              <div className="glass-panel rounded-xl p-3 text-xs font-mono text-slate-300 space-y-2">
+                <p>Scoring your recent games… {autoScore.done} / {autoScore.total}</p>
+                <div
+                  role="progressbar"
+                  aria-valuenow={pct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  className="w-full h-1 bg-indigo-950 rounded-full overflow-hidden"
+                >
+                  <div
+                    className="h-full bg-cyan-400 rounded-full transition-all duration-300"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+        {error && tab !== 'library' && (
+          <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-200 text-xs font-mono flex items-center gap-3 max-w-3xl mx-auto mt-4">
+            <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {tab === 'library' ? (
+          auth.user ? (
+            <LibraryView user={auth.user} onOpen={openSaved} />
           ) : (
-            <div className="gamebar">
-              <button onClick={() => setShowImport(true)}>↺ New game</button>
-              {game && review && (
-                <span className="gamebar-title">
-                  {game.white}{ratings.white !== null && <span className="elo"> ({ratings.white})</span>}
-                  <span className="vs">vs</span>
-                  {game.black}{ratings.black !== null && <span className="elo"> ({ratings.black})</span>}
-                  {result && <span className="result">{result}</span>}
-                  {review.summary.opening && <span className="muted"> · {review.summary.opening.name}</span>}
-                </span>
+            <div className="max-w-md mx-auto my-16 glass-panel rounded-3xl p-8 border border-cyan-400/30 text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-300">
+                <Library className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-extrabold text-white font-display">
+                Sign in to build your library
+              </h3>
+              <p className="text-xs font-mono text-slate-400">
+                {auth.enabled
+                  ? 'Analyzed games sync to your cloud library with weakness reports and trends.'
+                  : 'Cloud sync is not configured for this deployment.'}
+              </p>
+              {auth.enabled && (
+                <button
+                  onClick={() => setShowAuth(true)}
+                  className="w-full py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-[#05040c] font-sans font-bold text-sm shadow-[0_0_15px_rgba(56,225,214,0.3)] transition-all cursor-pointer"
+                >
+                  Sign In & Enable Sync
+                </button>
               )}
             </div>
-          )}
+          )
+        ) : progress && !review ? (
+          <AnalysisProgress label={progress} pct={progressPct} />
+        ) : tab === 'review' && game && fen && review ? (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Left column: player cards, eval bar + board, playback */}
+              <div
+                className="lg:col-span-6 flex flex-col gap-4"
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
+              >
+                <PlayerCard
+                  name={flipped ? game.white : game.black}
+                  elo={flipped ? ratings.white : ratings.black}
+                  accuracy={flipped ? review.summary.whiteAccuracy : review.summary.blackAccuracy}
+                  color={flipped ? 'white' : 'black'}
+                />
 
-          {progress && (
-            <div className="status">
-              <div className="status-bar" style={{ width: `${progressPct}%` }} />
-              <span className="status-text">
-                <span className="dot" /> {progress}
-                {progressPct > 0 && <span className="pct">{progressPct}%</span>}
-              </span>
-            </div>
-          )}
-          {autoScore && autoScore.total > 0 && (
-            <div className="status">
-              <div className="status-bar" style={{ width: `${Math.round((autoScore.done / autoScore.total) * 100)}%` }} />
-              <span className="status-text">
-                <span className="dot" /> Scoring your recent games…
-                <span className="pct">{autoScore.done} / {autoScore.total}</span>
-              </span>
-            </div>
-          )}
-          {error && <div className="err" style={{ marginBottom: 14 }}>{error}</div>}
-
-          {game && fen && (
-            <div className="review-grid">
-              <section className="board-col" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-                <div className="player black-name">
-                  {game.black}{ratings.black !== null && <span className="player-elo"> ({ratings.black})</span>}
-                </div>
-                <div className="board-area">
-                  <EvalBar cp={currentWhiteCp} />
-                  <div className="board" ref={boardRef}>
-                    <ReviewBoard fen={fen} lastMove={lastMove} badge={badge} arrow={arrow} checkSquare={checkSq} />
-                  </div>
-                </div>
-                <div className="player white-name">
-                  {game.white}{ratings.white !== null && <span className="player-elo"> ({ratings.white})</span>}
-                </div>
-              </section>
-
-              {!review && progress && (
-                <aside className="panel">
-                  <div className="card skel" style={{ height: 120 }} />
-                  <div className="card skel" style={{ height: 260 }} />
-                  <div className="card skel" style={{ height: 140 }} />
-                </aside>
-              )}
-
-              {review && (
-                <aside className="panel panel-enter" key={game?.plies[0]?.fenBefore ?? 'panel'}>
-                  <CoachCard opening={review.summary.opening} evalCp={currentWhiteCp} move={currentMove} voiceOn={voiceOn} />
-
-                  <SummaryPanel summary={review.summary} white={game.white} black={game.black} ratings={ratings} result={result}>
-                    <MoveList plies={review.plies} current={ply} onSelect={setPly} />
-                  </SummaryPanel>
-
-                  <div className="card graph-card">
-                    <EvalGraph
-                      evalsCp={whiteEvals}
-                      classifications={classifications}
-                      current={Math.max(0, ply - 1)}
-                      onSelect={(i) => setPly(i + 1)}
-                    />
-                    <div className="playback">
-                      <button onClick={() => setPly(0)} title="Start" aria-label="Start">⏮</button>
-                      <button onClick={() => setPly((p) => Math.max(0, p - 1))} title="Previous" aria-label="Previous move">◀</button>
-                      <button
-                        onClick={handleAutoplay}
-                        className={`auto-btn ${autoplaySpeed}`}
-                        title={autoplaySpeed === 'off' ? 'Autoplay' : `Playing ${autoplaySpeed}`}
-                        aria-label="Autoplay"
-                      >
-                        {autoplaySpeed === 'off' ? '▶▶' : '⏹'}
-                      </button>
-                      {autoplaySpeed !== 'off' && <span className="speed-label">{SPEED_LABEL[autoplaySpeed]}</span>}
-                      <button onClick={() => setPly((p) => Math.min(total, p + 1))} title="Next" aria-label="Next move">▶</button>
-                      <button onClick={() => setPly(total)} title="End" aria-label="End">⏭</button>
-                      <button
-                        onClick={() => setSoundOn((s) => !s)}
-                        className={`icon-btn${soundOn ? '' : ' muted'}`}
-                        title={soundOn ? 'Mute sounds' : 'Unmute sounds'}
-                        aria-label={soundOn ? 'Mute sounds' : 'Unmute sounds'}
-                      >
-                        {soundOn
-                          ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 010 14.14" /><path d="M15.54 8.46a5 5 0 010 7.07" /></svg>
-                          : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>
-                        }
-                      </button>
-                      <input
-                        type="range"
-                        className="vol-slider"
-                        min={0}
-                        max={1}
-                        step={0.05}
-                        value={volume}
-                        onChange={(e) => handleVolume(Number(e.target.value))}
-                        title="Volume"
-                        aria-label="Sound volume"
+                <div className="flex items-stretch justify-center gap-3 w-full">
+                  <EvalBar cp={currentWhiteCp} flipped={flipped} />
+                  {/* The .board sizing/fx CSS keys off --bs; with the legacy
+                      .review-grid gone, derive it from this frame's width via a
+                      container query so the checkerboard + fx keep working.
+                      The EvalBar needs no such bridge — it sits outside this
+                      container-query frame and is sized by the flex
+                      items-stretch row instead. */}
+                  <div
+                    className="flex-1 rounded-2xl overflow-hidden border border-indigo-400/20 shadow-2xl"
+                    style={{ containerType: 'inline-size' }}
+                  >
+                    <div className="board" ref={boardRef} style={{ '--bs': '100cqw' } as React.CSSProperties}>
+                      <ReviewBoard
+                        fen={fen}
+                        lastMove={lastMove}
+                        badge={badge}
+                        arrow={arrow}
+                        checkSquare={checkSq}
+                        orientation={flipped ? 'black' : 'white'}
                       />
-                      <button
-                        onClick={() => setVoiceOn((v) => !v)}
-                        className={`icon-btn${voiceOn ? '' : ' muted'}`}
-                        title={voiceOn ? 'Mute voice' : 'Unmute voice'}
-                        aria-label={voiceOn ? 'Disable coach voice' : 'Enable coach voice'}
-                      >
-                        {voiceOn
-                          ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" /><path d="M19 10v2a7 7 0 01-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
-                          : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" /><path d="M19 10v2a7 7 0 01-14 0v-2" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
-                        }
-                      </button>
-                      <span className="ply">{ply} / {total}</span>
                     </div>
                   </div>
-                </aside>
-              )}
+                </div>
+
+                <PlayerCard
+                  name={flipped ? game.black : game.white}
+                  elo={flipped ? ratings.black : ratings.white}
+                  accuracy={flipped ? review.summary.blackAccuracy : review.summary.whiteAccuracy}
+                  color={flipped ? 'black' : 'white'}
+                />
+
+                <PlaybackControls
+                  ply={ply}
+                  total={total}
+                  onSelectPly={handleSelectPly}
+                  speed={autoplaySpeed}
+                  onCycleSpeed={cycleAutoplaySpeed}
+                  flipped={flipped}
+                  onToggleFlip={handleFlip}
+                  soundOn={soundOn}
+                  onToggleSound={() => setSoundOn((s) => !s)}
+                  voiceOn={voiceOn}
+                  onToggleVoice={() => setVoiceOn((v) => !v)}
+                  volume={volume}
+                  onVolume={handleVolume}
+                />
+              </div>
+
+              {/* Right column: coach, move list, breakdown + eval graph */}
+              <div className="lg:col-span-6 flex flex-col gap-4 panel-enter">
+                <CoachCard
+                  opening={review.summary.opening}
+                  evalCp={currentWhiteCp}
+                  move={currentMove}
+                  voiceOn={voiceOn}
+                />
+
+                <MoveList plies={review.plies} current={ply} onSelect={handleSelectPly} />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <SummaryPanel
+                    summary={review.summary}
+                    white={game.white}
+                    black={game.black}
+                    ratings={ratings}
+                    result={result}
+                  />
+                  <EvalGraphCard
+                    evalsCp={whiteEvals}
+                    classifications={classifications}
+                    current={Math.max(0, ply - 1)}
+                    onSelect={(i) => handleSelectPly(i + 1)}
+                  />
+                </div>
+              </div>
             </div>
-          )}
-        </>
-      )}
+          </div>
+        ) : (
+          <ImportSection onPgn={run} />
+        )}
+      </main>
 
       {showReveal && game && review && (
         <RevealOverlay
@@ -579,6 +618,10 @@ export default function App() {
           soundOn={soundOn}
           onClose={() => setShowReveal(false)}
         />
+      )}
+
+      {showAuth && auth.enabled && (
+        <AuthModal auth={auth} onClose={() => setShowAuth(false)} />
       )}
     </div>
   );

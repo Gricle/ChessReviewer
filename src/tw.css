@@ -1,0 +1,21 @@
+@layer theme, base, legacy, components, utilities;
+@import "tailwindcss" source(none);
+@import "./index.css" layer(legacy);
+@source "../src";
+@source "../index.html";
+
+@theme {
+  --font-sans: 'Space Grotesk', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
+}
+
+@layer components {
+  .glass-panel {
+    background: rgba(24, 22, 50, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(150, 162, 224, 0.16);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+}
