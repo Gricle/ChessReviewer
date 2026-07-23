@@ -54,21 +54,23 @@ const BADGE_SYM: Record<string, string> = {
  *  outside the square, so the group is overflow:visible.
  *
  *  Position is baked directly onto the <circle>/<text> (cx/cy, x/y) rather
- *  than a wrapping <g transform="translate(100,0)">. The badge-pop animation
- *  (`.cg-custom-svgs g` in index.css) animates a CSS `transform: scale()`,
- *  and a CSS transform *overrides* an SVG `transform` presentation attribute.
- *  If the offset lived on a <g transform="translate(...)">, the pop would
- *  clobber that translate for the duration of the animation — the badge would
- *  render at the un-offset origin and then snap back to the corner when the
- *  (non-`forwards`) animation ended. Keeping the offset off the animated
- *  element avoids that jump entirely.
+ *  than a wrapping <g transform="translate(100,0)">, and the badge-pop
+ *  animation (index.css) is scoped to `.cg-custom-svgs g.badge-pop` — ONLY
+ *  the group authored here. A CSS animation's `transform: scale()` *overrides*
+ *  an SVG `transform` presentation attribute for its duration, and chessground
+ *  positions this whole shape via its own wrapper
+ *  `<g transform="translate(x,y)">`. When the animation selector was the bare
+ *  `.cg-custom-svgs g`, it matched that wrapper too, wiping its translate
+ *  while the pop played: the badge rendered at the layer origin (mid-board)
+ *  and snapped onto the square when the animation ended. Never let the
+ *  animation target an element that carries a transform attribute.
  */
 function badgeSvg(cls: Classification): string {
   const hex = BADGE_COLOR[cls] ?? '#888';
   const sym = BADGE_SYM[cls] ?? '?';
   const fontSize = sym.length > 1 ? 30 : 36;
   const r = sym.length > 1 ? 20 : 24;
-  return `<g style="overflow:visible">
+  return `<g class="badge-pop" style="overflow:visible">
     <circle cx="100" cy="0" r="${r}" fill="${hex}" stroke="#ffffff" stroke-width="3" />
     <text x="100" y="0" dy="0.33em" text-anchor="middle" font-family="Arial,sans-serif"
       font-weight="700" font-size="${fontSize}" fill="#ffffff">${sym}</text>
