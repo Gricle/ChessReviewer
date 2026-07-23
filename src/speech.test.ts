@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { pickBestVoice, scoreVoice } from './speech';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { pickBestVoice, scoreVoice, speak } from './speech';
+import { setVolume } from './sound';
 
 function voice(name: string, lang: string, localService = true): SpeechSynthesisVoice {
   return { name, lang, localService, default: false, voiceURI: name } as SpeechSynthesisVoice;
@@ -44,5 +45,51 @@ describe('pickBestVoice', () => {
 
   it('returns null when no voice matches the language at all', () => {
     expect(pickBestVoice([legacyDavid, edgeNeural], 'fa')).toBeNull();
+  });
+});
+
+describe('speak', () => {
+  const spoken: SpeechSynthesisUtterance[] = [];
+
+  function stubSpeechSynthesis(): void {
+    vi.stubGlobal('SpeechSynthesisUtterance', class {
+      text: string;
+      lang = '';
+      rate = 1;
+      pitch = 1;
+      volume = 1;
+      voice: SpeechSynthesisVoice | null = null;
+      constructor(text: string) { this.text = text; }
+    });
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        cancel: vi.fn(),
+        speak: (u: SpeechSynthesisUtterance) => spoken.push(u),
+        getVoices: () => [],
+        addEventListener: vi.fn(),
+      },
+    });
+  }
+
+  afterEach(() => {
+    spoken.length = 0;
+    setVolume(1);
+    vi.unstubAllGlobals();
+  });
+
+  it('scales utterance volume with the master volume bar', () => {
+    stubSpeechSynthesis();
+    setVolume(0.3);
+    speak('nice move');
+    expect(spoken).toHaveLength(1);
+    expect(spoken[0].volume).toBeCloseTo(0.3 * 0.85);
+  });
+
+  it('is silent when the volume bar is at zero', () => {
+    stubSpeechSynthesis();
+    setVolume(0);
+    speak('nice move');
+    expect(spoken[0].volume).toBe(0);
   });
 });

@@ -3,6 +3,7 @@
 // Chess.com-style: speaks the coach's evaluation aloud when landing on a move.
 
 import i18n from './i18n';
+import { getVolume } from './sound';
 
 // getVoices() is often empty until the async `voiceschanged` event fires, so
 // keep a cache that refreshes when the browser reports its voice list.
@@ -61,7 +62,9 @@ export function speak(text: string): void {
   const neural = voice ? scoreVoice(voice, i18n.language) >= 4 : false;
   u.rate = neural ? 1.0 : 0.92;
   u.pitch = 1.0;
-  u.volume = 0.85;
+  // Follow the master volume bar; 0.85 keeps the voice slightly under the
+  // sound effects' headroom at full volume.
+  u.volume = getVolume() * 0.85;
 
   window.speechSynthesis.speak(u);
 }
