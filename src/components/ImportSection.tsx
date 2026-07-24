@@ -150,7 +150,7 @@ export function ImportSection({ onPgn }: Props) {
           <Cpu className="w-3.5 h-3.5" /> {t('hero.badge')}
         </div>
 
-        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-display leading-tight">
+        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-display leading-tight">
           <Trans
             t={t}
             i18nKey="hero.title"
@@ -158,7 +158,7 @@ export function ImportSection({ onPgn }: Props) {
               <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-300 bg-clip-text text-transparent" />,
             ]}
           />
-        </h2>
+        </h1>
 
         <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-sans">
           <Trans

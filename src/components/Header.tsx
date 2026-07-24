@@ -58,9 +58,11 @@ export function Header({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-extrabold tracking-tight text-white font-display">
+              {/* Brand wordmark — a logo, not the page heading. The single
+                  keyword-rich <h1> lives in the landing hero (ImportSection). */}
+              <span className="text-lg font-extrabold tracking-tight text-white font-display">
                 {t('brand.title')}
-              </h1>
+              </span>
               <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-[10px] font-mono text-cyan-300">
                 <Cpu className="w-3 h-3" /> {t('chip.engine')}
               </span>
