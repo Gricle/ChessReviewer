@@ -9,6 +9,10 @@ import { assembleReview, type Review } from './analysis/assemble';
 import { OPENINGS } from './data/openings';
 import { Header } from './components/Header';
 import { ImportSection } from './components/ImportSection';
+import { SeoContent } from './components/SeoContent';
+import { SeoHead } from './components/SeoHead';
+import { AdsRoot, AdSlot } from './ads';
+import { Footer } from './components/Footer';
 import { AnalysisProgress } from './components/AnalysisProgress';
 import { PlayerCard } from './components/PlayerCard';
 import { PlaybackControls, type Speed } from './components/PlaybackControls';
@@ -452,6 +456,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col relative">
+      <SeoHead />
+      <AdsRoot />
       <Header
         activeTab={tab}
         onSelectTab={setTab}
@@ -615,11 +621,18 @@ export default function App() {
                 </div>
               </div>
             </div>
+            <AdSlot placement="review" />
           </div>
         ) : (
-          <ImportSection onPgn={run} />
+          <>
+            <ImportSection onPgn={run} />
+            <SeoContent />
+            <AdSlot placement="landing" className="px-4" />
+          </>
         )}
       </main>
+
+      <Footer />
 
       {showReveal && game && review && (
         <RevealOverlay

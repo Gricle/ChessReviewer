@@ -31,7 +31,7 @@ export const LANGUAGES: readonly Language[] = [
   { code: 'fa', native: 'فارسی', dir: 'rtl' },
 ];
 
-export const NAMESPACES = ['shell', 'import', 'review', 'coach', 'library'] as const;
+export const NAMESPACES = ['shell', 'import', 'review', 'coach', 'library', 'seo'] as const;
 
 const STORAGE_KEY = 'chessreviewer.lang';
 
@@ -55,7 +55,38 @@ function findLanguage(code: string): Language | undefined {
   return LANGUAGES.find((lang) => lang.code === code);
 }
 
+/** Language requested via the `?lng=` query param, if valid. Drives hreflang. */
+function queryLanguage(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const code = new URLSearchParams(window.location.search).get('lng');
+    return code && findLanguage(code) ? code : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Reflect the active language in the URL so each language has a stable,
+ * shareable, crawlable address that matches its `hreflang` alternate.
+ * English is the bare canonical URL (no `?lng`).
+ */
+function applyUrlLang(code: string): void {
+  if (typeof window === 'undefined' || !window.history?.replaceState) return;
+  try {
+    const url = new URL(window.location.href);
+    if (code === 'en') url.searchParams.delete('lng');
+    else url.searchParams.set('lng', code);
+    window.history.replaceState(null, '', url.toString());
+  } catch {
+    /* history/URL unavailable — non-fatal */
+  }
+}
+
+// Query param wins (shared/hreflang links), then stored preference, then English.
 function initialLanguage(): string {
+  const fromQuery = queryLanguage();
+  if (fromQuery) return fromQuery;
   const stored = safeStorageGet(STORAGE_KEY);
   return stored && findLanguage(stored) ? stored : 'en';
 }
@@ -80,6 +111,7 @@ if (!i18n.isInitialized) {
     returnNull: false,
   });
   applyDocumentLangDir(lng);
+  applyUrlLang(lng);
 }
 
 /**
@@ -91,6 +123,7 @@ export function setLanguage(code: string): void {
   void i18n.changeLanguage(code);
   safeStorageSet(STORAGE_KEY, code);
   applyDocumentLangDir(code);
+  applyUrlLang(code);
 }
 
 export default i18n;

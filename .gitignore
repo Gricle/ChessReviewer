@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# SEO artifacts generated at build time by scripts/genSeo.mjs (prebuild).
+# Regenerated on every build/deploy from site.config.json — do not commit.
+public/robots.txt
+public/sitemap.xml
+public/site.webmanifest
+public/ads.txt
+
 # Supabase CLI local artifacts
 supabase/.temp
 supabase/.branches

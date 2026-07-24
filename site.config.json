@@ -1,0 +1,37 @@
+{
+  "origin": "https://gricle.github.io",
+  "basePath": "/ChessReviewer/",
+  "name": "Chess Reviewer",
+  "shortName": "ChessReviewer",
+  "tagline": "Free Chess Game Analyzer",
+  "description": "Free chess game review powered by Stockfish. Paste a PGN or import from Chess.com or Lichess and get every move classified from Brilliant to Blunder, accuracy scores, best-move arrows, opening detection, and a natural-language coach — all in your browser, no sign-up.",
+  "shortDescription": "Analyze any chess game free with Stockfish: move classifications, accuracy, best moves, and an AI coach — right in your browser.",
+  "keywords": [
+    "chess game analyzer",
+    "free chess game review",
+    "analyze chess game online",
+    "chess.com game review alternative",
+    "stockfish analysis online",
+    "pgn analyzer",
+    "chess move classification",
+    "chess accuracy calculator",
+    "lichess game analysis",
+    "chess blunder checker"
+  ],
+  "twitter": "@chessreviewer",
+  "author": "Chess Reviewer",
+  "ogImage": "og.png",
+  "themeColor": "#05040c",
+  "languages": [
+    { "code": "en", "hreflang": "en", "dir": "ltr" },
+    { "code": "zh", "hreflang": "zh-Hans", "dir": "ltr" },
+    { "code": "hi", "hreflang": "hi", "dir": "ltr" },
+    { "code": "es", "hreflang": "es", "dir": "ltr" },
+    { "code": "fr", "hreflang": "fr", "dir": "ltr" },
+    { "code": "ar", "hreflang": "ar", "dir": "rtl" },
+    { "code": "ru", "hreflang": "ru", "dir": "ltr" },
+    { "code": "pt", "hreflang": "pt", "dir": "ltr" },
+    { "code": "de", "hreflang": "de", "dir": "ltr" },
+    { "code": "fa", "hreflang": "fa", "dir": "rtl" }
+  ]
+}

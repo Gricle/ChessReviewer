@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy — Chess Reviewer</title>
+    <meta
+      name="description"
+      content="How Chess Reviewer handles your data: in-browser analysis, optional cloud sync, and advertising cookies."
+    />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0;
+        background: #05040c;
+        color: #cbd5e1;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.7;
+      }
+      main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+      h1 { color: #fff; font-size: 2rem; margin-bottom: 0.25rem; }
+      h2 { color: #38e1d6; font-size: 1.15rem; margin-top: 2.25rem; }
+      a { color: #67e8f9; }
+      .updated { color: #64748b; font-size: 0.85rem; margin-bottom: 2rem; }
+      .back { display: inline-block; margin-bottom: 2rem; color: #67e8f9; text-decoration: none; font-size: 0.9rem; }
+      ul { padding-left: 1.25rem; }
+      code { background: #120a2e; padding: 0.1rem 0.35rem; border-radius: 0.3rem; font-size: 0.85em; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="./">← Back to Chess Reviewer</a>
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: July 2026</p>
+
+      <p>
+        Chess Reviewer ("we", "the app") is a free, browser-based chess game
+        analysis tool. This policy explains what data is processed when you use
+        it, and your choices. We aim to collect as little as possible — the
+        chess analysis itself runs entirely on your own device.
+      </p>
+
+      <h2>Analysis stays in your browser</h2>
+      <p>
+        When you paste a PGN or import a game, the Stockfish engine runs locally
+        in your browser using WebAssembly. Your game moves are analyzed on your
+        device and are <strong>not uploaded to any server</strong> by the
+        analysis process.
+      </p>
+
+      <h2>Optional account &amp; cloud sync</h2>
+      <p>
+        If you choose to sign in, your saved reviews are stored in a Supabase
+        database tied to your account, protected by row-level security so only
+        you can read your own data. Signing in is entirely optional; the app is
+        fully functional in guest mode with no account.
+      </p>
+
+      <h2>Importing from Chess.com and Lichess</h2>
+      <p>
+        When you enter a username to import games, your browser requests that
+        user's public games directly from the Chess.com and Lichess public APIs.
+        Those requests are subject to the respective platforms' privacy
+        policies.
+      </p>
+
+      <h2>Advertising &amp; cookies</h2>
+      <p>
+        We may display ads served by Google AdSense to keep Chess Reviewer free.
+        When ads are enabled and you consent:
+      </p>
+      <ul>
+        <li>
+          Third-party vendors, including Google, use cookies to serve ads based
+          on your prior visits to this and other websites.
+        </li>
+        <li>
+          Google's use of advertising cookies enables it and its partners to
+          serve ads to you based on your visits. You can opt out of personalized
+          advertising by visiting
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.
+        </li>
+        <li>
+          For more on how Google uses data, see
+          <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">
+            How Google uses information from sites that use its services</a>.
+        </li>
+      </ul>
+      <p>
+        We use Google Consent Mode. Ads only load after you accept via the
+        consent banner. If you reject, advertising and analytics storage remain
+        disabled. You can change your choice by clearing this site's data in
+        your browser (the consent preference is stored under
+        <code>chessreviewer.consent</code>).
+      </p>
+
+      <h2>Local storage</h2>
+      <p>
+        We use your browser's local storage for preferences such as your chosen
+        language, sound settings, and consent decision. This data never leaves
+        your device.
+      </p>
+
+      <h2>Children</h2>
+      <p>Chess Reviewer is not directed to children under 13 and does not knowingly collect their data.</p>
+
+      <h2>Changes</h2>
+      <p>We may update this policy; material changes will be reflected by the date above.</p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about this policy can be raised via the project's
+        <a href="https://github.com/Gricle/ChessReviewer" target="_blank" rel="noopener">GitHub repository</a>.
+      </p>
+    </main>
+  </body>
+</html>

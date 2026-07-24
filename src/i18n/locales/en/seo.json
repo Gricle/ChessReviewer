@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Free Chess Game Analyzer — Chess Reviewer",
+    "description": "Analyze any chess game free with Stockfish: move classifications, accuracy, best moves, and an AI coach — right in your browser. Import from Chess.com or Lichess."
+  },
+  "consent": {
+    "message": "We use cookies to show ads that keep Chess Reviewer free. Accept to allow personalized ads, or reject to see non-personalized content only.",
+    "accept": "Accept",
+    "reject": "Reject",
+    "privacy": "Privacy Policy"
+  },
+  "ads": {
+    "label": "Advertisement"
+  },
+  "footer": {
+    "tagline": "Free chess game analysis powered by Stockfish, in your browser.",
+    "privacy": "Privacy Policy",
+    "sourceCode": "Source code",
+    "builtWith": "Stockfish · React · runs entirely client-side"
+  },
+  "landing": {
+    "featuresHeading": "Everything you need to review a chess game",
+    "featuresSub": "A full Chess.com-style game review, free and private — the engine runs in your browser, not on a server.",
+    "features": {
+      "engine": {
+        "title": "Stockfish, in your browser",
+        "body": "Every position is analyzed by Stockfish compiled to WebAssembly. No uploads, no accounts, no analysis limits — your moves never leave your device."
+      },
+      "classify": {
+        "title": "Brilliant to Blunder",
+        "body": "Each move is classified the way you know from Chess.com — Brilliant, Great, Best, Good, Inaccuracy, Mistake, and Blunder — based on how much win probability it gained or lost."
+      },
+      "accuracy": {
+        "title": "Accuracy & performance",
+        "body": "Get an accuracy percentage for both players, an estimated performance rating, and a move-by-move evaluation graph to see exactly where the game turned."
+      },
+      "coach": {
+        "title": "A coach that explains why",
+        "body": "Plain-language commentary explains the idea behind the best move and what went wrong, so you actually learn instead of just seeing a number."
+      },
+      "openings": {
+        "title": "Opening detection",
+        "body": "Your opening is named automatically from the full Lichess ECO database of roughly 3,800 lines, so you know exactly which theory you were in."
+      },
+      "import": {
+        "title": "Chess.com & Lichess import",
+        "body": "Paste a PGN, or just type your Chess.com or Lichess username to pull in your latest games and review them in one click."
+      }
+    },
+    "howHeading": "How to analyze your chess game",
+    "howSub": "Three steps, about thirty seconds, no sign-up.",
+    "how": {
+      "step1": {
+        "title": "1. Import your game",
+        "body": "Paste a PGN or enter your Chess.com or Lichess username to load recent games."
+      },
+      "step2": {
+        "title": "2. Let Stockfish analyze",
+        "body": "The engine evaluates every position locally and classifies each move for both sides."
+      },
+      "step3": {
+        "title": "3. Review and learn",
+        "body": "Step through the game with best-move arrows, the evaluation graph, and coaching notes."
+      }
+    },
+    "compareHeading": "A free Chess.com Game Review alternative",
+    "compareBody": "Chess Reviewer gives you the core of a paid game review — move classifications, accuracy, best moves, and coaching — with no membership, no daily limit, and no data leaving your browser. It works with Lichess games too, and the interface is available in ten languages with full right-to-left support.",
+    "faqHeading": "Frequently asked questions",
+    "faq": {
+      "free": {
+        "q": "Is Chess Reviewer really free?",
+        "a": "Yes. Chess Reviewer is completely free with no account required. The Stockfish engine runs entirely in your browser, so there are no analysis limits and no server costs to pass on to you."
+      },
+      "how": {
+        "q": "How do I analyze my chess game?",
+        "a": "Paste a PGN, or type your Chess.com or Lichess username to import your recent games. Chess Reviewer then evaluates every position with Stockfish and classifies each move from Brilliant to Blunder with an accuracy score."
+      },
+      "alternative": {
+        "q": "Is this a free alternative to the Chess.com Game Review?",
+        "a": "Yes. Chess Reviewer reproduces the Chess.com-style Game Review experience — move classifications, accuracy percentages, best-move arrows, and coaching — without a paid membership, and it works with Lichess games too."
+      },
+      "privacy": {
+        "q": "Does my game data stay private?",
+        "a": "Analysis happens locally in your browser using WebAssembly Stockfish. Your PGNs are never uploaded unless you choose to sign in and sync your library to the cloud."
+      },
+      "engine": {
+        "q": "What engine does it use?",
+        "a": "It uses Stockfish, the strongest open-source chess engine, compiled to WebAssembly and evaluated at depth 14 with two principal variations for accurate best-move detection."
+      },
+      "languages": {
+        "q": "Which languages are supported?",
+        "a": "The interface ships in ten languages: English, Chinese, Hindi, Spanish, French, Arabic, Russian, Portuguese, German, and Persian, including full right-to-left support."
+      }
+    }
+  }
+}
