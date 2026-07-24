@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Análise de Partidas de Xadrez Grátis — Chess Reviewer",
+    "description": "Analise qualquer partida de xadrez grátis com Stockfish: classificação de lances, precisão, melhores lances e um treinador com IA — direto no navegador."
+  },
+  "consent": {
+    "message": "Usamos cookies para exibir anúncios que mantêm o Chess Reviewer gratuito. Aceite para permitir anúncios personalizados, ou rejeite para ver apenas conteúdo não personalizado.",
+    "accept": "Aceitar",
+    "reject": "Rejeitar",
+    "privacy": "Política de Privacidade"
+  },
+  "ads": {
+    "label": "Publicidade"
+  },
+  "footer": {
+    "tagline": "Análise gratuita de partidas de xadrez com Stockfish, no seu navegador.",
+    "privacy": "Política de Privacidade",
+    "sourceCode": "Código-fonte",
+    "builtWith": "Stockfish · React · roda totalmente no navegador"
+  },
+  "landing": {
+    "featuresHeading": "Tudo o que você precisa para analisar uma partida de xadrez",
+    "featuresSub": "Uma revisão completa de partida no estilo Chess.com, gratuita e privada — o motor roda no seu navegador, não em um servidor.",
+    "features": {
+      "engine": {
+        "title": "Stockfish, no seu navegador",
+        "body": "Cada posição é analisada pelo Stockfish compilado em WebAssembly. Sem uploads, sem contas, sem limite de análises — seus lances nunca saem do seu dispositivo."
+      },
+      "classify": {
+        "title": "De Brilhante a Erro Grave",
+        "body": "Cada lance é classificado como você conhece do Chess.com — Brilhante, Ótimo, Melhor, Bom, Imprecisão, Erro e Erro Grave (blunder) — com base em quanta probabilidade de vitória ele ganhou ou perdeu."
+      },
+      "accuracy": {
+        "title": "Precisão e desempenho",
+        "body": "Receba a porcentagem de precisão de ambos os jogadores, um rating de desempenho estimado e um gráfico de avaliação lance a lance para ver exatamente onde a partida virou."
+      },
+      "coach": {
+        "title": "Um treinador que explica o porquê",
+        "body": "Comentários em linguagem simples explicam a ideia por trás do melhor lance e o que deu errado, para você realmente aprender em vez de só ver um número."
+      },
+      "openings": {
+        "title": "Detecção de aberturas",
+        "body": "Sua abertura é identificada automaticamente a partir do banco de dados ECO completo do Lichess, com cerca de 3.800 linhas, para você saber exatamente em qual teoria estava."
+      },
+      "import": {
+        "title": "Importação do Chess.com e do Lichess",
+        "body": "Cole um PGN, ou apenas digite seu nome de usuário do Chess.com ou do Lichess para carregar suas partidas recentes e analisá-las com um clique."
+      }
+    },
+    "howHeading": "Como analisar sua partida de xadrez",
+    "howSub": "Três passos, cerca de trinta segundos, sem cadastro.",
+    "how": {
+      "step1": {
+        "title": "1. Importe sua partida",
+        "body": "Cole um PGN ou digite seu nome de usuário do Chess.com ou do Lichess para carregar as partidas recentes."
+      },
+      "step2": {
+        "title": "2. Deixe o Stockfish analisar",
+        "body": "O motor avalia cada posição localmente e classifica todos os lances dos dois lados."
+      },
+      "step3": {
+        "title": "3. Revise e aprenda",
+        "body": "Percorra a partida com setas do melhor lance, o gráfico de avaliação e as notas do treinador."
+      }
+    },
+    "compareHeading": "Uma alternativa gratuita à Revisão de Partida do Chess.com",
+    "compareBody": "O Chess Reviewer entrega o essencial de uma revisão de partida paga — classificação de lances, precisão, melhores lances e orientação de treinador — sem assinatura, sem limite diário e sem dados saindo do seu navegador. Também funciona com partidas do Lichess, e a interface está disponível em dez idiomas, com suporte completo à escrita da direita para a esquerda.",
+    "faqHeading": "Perguntas frequentes",
+    "faq": {
+      "free": {
+        "q": "O Chess Reviewer é mesmo gratuito?",
+        "a": "Sim. O Chess Reviewer é totalmente gratuito e não exige conta. O motor Stockfish roda inteiramente no seu navegador, então não há limite de análises nem custos de servidor repassados a você."
+      },
+      "how": {
+        "q": "Como analiso minha partida de xadrez?",
+        "a": "Cole um PGN, ou digite seu nome de usuário do Chess.com ou do Lichess para importar suas partidas recentes. O Chess Reviewer avalia cada posição com o Stockfish e classifica todos os lances, de Brilhante a Erro Grave, com uma pontuação de precisão."
+      },
+      "alternative": {
+        "q": "Isso é uma alternativa gratuita à Revisão de Partida do Chess.com?",
+        "a": "Sim. O Chess Reviewer reproduz a experiência da Revisão de Partida no estilo Chess.com — classificação de lances, porcentagens de precisão, setas do melhor lance e orientação de treinador — sem assinatura paga, e também funciona com partidas do Lichess."
+      },
+      "privacy": {
+        "q": "Meus dados de partida permanecem privados?",
+        "a": "A análise acontece localmente no seu navegador, usando o Stockfish em WebAssembly. Seus PGNs nunca são enviados, a menos que você escolha entrar na sua conta e sincronizar sua biblioteca com a nuvem."
+      },
+      "engine": {
+        "q": "Qual motor ele usa?",
+        "a": "Ele usa o Stockfish, o motor de xadrez de código aberto mais forte do mundo, compilado em WebAssembly e avaliado na profundidade 14 com duas variantes principais para detectar o melhor lance com precisão."
+      },
+      "languages": {
+        "q": "Quais idiomas são suportados?",
+        "a": "A interface está disponível em dez idiomas: inglês, chinês, hindi, espanhol, francês, árabe, russo, português, alemão e persa, com suporte completo à escrita da direita para a esquerda."
+      }
+    }
+  }
+}

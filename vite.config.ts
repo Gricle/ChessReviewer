@@ -113,7 +113,18 @@ function seoHtml(): Plugin {
     .map((l) => `<meta property="og:locale:alternate" content="${l.hreflang.replace('-', '_')}" />`)
     .join('\n    ')
 
-  const tags = `
+  const verify = [
+    site.verification?.google
+      ? `<meta name="google-site-verification" content="${site.verification.google}" />`
+      : '',
+    site.verification?.bing
+      ? `<meta name="msvalidate.01" content="${site.verification.bing}" />`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('\n    ')
+
+  const tags = `${verify ? `\n    ${verify}` : ''}
     <meta name="description" content="${site.description}" />
     <meta name="keywords" content="${site.keywords.join(', ')}" />
     <meta name="author" content="${site.author}" />

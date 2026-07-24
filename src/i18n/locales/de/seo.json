@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Kostenlose Schachpartie-Analyse — Chess Reviewer",
+    "description": "Analysiere Schachpartien kostenlos mit Stockfish: Zugbewertungen, Genauigkeit, beste Züge und KI-Coach — direkt im Browser. Import von Chess.com & Lichess."
+  },
+  "consent": {
+    "message": "Wir verwenden Cookies, um Werbung anzuzeigen, die Chess Reviewer kostenlos hält. Akzeptiere für personalisierte Werbung oder lehne ab, um nur nicht-personalisierte Inhalte zu sehen.",
+    "accept": "Akzeptieren",
+    "reject": "Ablehnen",
+    "privacy": "Datenschutzerklärung"
+  },
+  "ads": {
+    "label": "Anzeige"
+  },
+  "footer": {
+    "tagline": "Kostenlose Schachpartie-Analyse mit Stockfish, direkt in deinem Browser.",
+    "privacy": "Datenschutzerklärung",
+    "sourceCode": "Quellcode",
+    "builtWith": "Stockfish · React · läuft vollständig clientseitig"
+  },
+  "landing": {
+    "featuresHeading": "Alles, was du für die Analyse einer Schachpartie brauchst",
+    "featuresSub": "Eine vollständige Partieanalyse im Chess.com-Stil, kostenlos und privat — die Engine läuft in deinem Browser, nicht auf einem Server.",
+    "features": {
+      "engine": {
+        "title": "Stockfish, in deinem Browser",
+        "body": "Jede Stellung wird von Stockfish analysiert, kompiliert zu WebAssembly. Keine Uploads, keine Konten, keine Analyse-Limits — deine Züge verlassen niemals dein Gerät."
+      },
+      "classify": {
+        "title": "Von Brillant bis Blunder",
+        "body": "Jeder Zug wird so bewertet, wie du es von Chess.com kennst — Brillant, Großartig, Bester Zug, Gut, Ungenauigkeit, Fehler und Grober Fehler (Blunder) — je nachdem, wie viel Gewinnwahrscheinlichkeit er gewonnen oder verloren hat."
+      },
+      "accuracy": {
+        "title": "Genauigkeit & Performance",
+        "body": "Erhalte eine Genauigkeit in Prozent für beide Spieler, eine geschätzte Performance-Wertung und einen Bewertungsgraphen Zug für Zug — so siehst du genau, wo die Partie kippte."
+      },
+      "coach": {
+        "title": "Ein Coach, der das Warum erklärt",
+        "body": "Verständliche Kommentare erklären die Idee hinter dem besten Zug und was schiefgelaufen ist — damit du wirklich dazulernst, statt nur eine Zahl zu sehen."
+      },
+      "openings": {
+        "title": "Eröffnungserkennung",
+        "body": "Deine Eröffnung wird automatisch anhand der vollständigen Lichess-ECO-Datenbank mit rund 3.800 Varianten benannt — du weißt also genau, in welcher Theorie du warst."
+      },
+      "import": {
+        "title": "Import von Chess.com & Lichess",
+        "body": "Füge eine PGN ein oder gib einfach deinen Chess.com- oder Lichess-Benutzernamen ein, um deine letzten Partien zu laden und mit einem Klick zu analysieren."
+      }
+    },
+    "howHeading": "So analysierst du deine Schachpartie",
+    "howSub": "Drei Schritte, etwa dreißig Sekunden, keine Anmeldung.",
+    "how": {
+      "step1": {
+        "title": "1. Partie importieren",
+        "body": "Füge eine PGN ein oder gib deinen Chess.com- oder Lichess-Benutzernamen ein, um aktuelle Partien zu laden."
+      },
+      "step2": {
+        "title": "2. Stockfish analysieren lassen",
+        "body": "Die Engine bewertet jede Stellung lokal und klassifiziert jeden Zug für beide Seiten."
+      },
+      "step3": {
+        "title": "3. Nachspielen und lernen",
+        "body": "Gehe die Partie Zug für Zug durch — mit Pfeilen für die besten Züge, dem Bewertungsgraphen und Coaching-Hinweisen."
+      }
+    },
+    "compareHeading": "Eine kostenlose Alternative zur Chess.com-Partieanalyse",
+    "compareBody": "Chess Reviewer bietet dir den Kern einer kostenpflichtigen Partieanalyse — Zugbewertungen, Genauigkeit, beste Züge und Coaching — ohne Mitgliedschaft, ohne Tageslimit und ohne dass Daten deinen Browser verlassen. Auch Lichess-Partien werden unterstützt, und die Oberfläche ist in zehn Sprachen verfügbar, inklusive vollständiger Unterstützung für Rechts-nach-links-Schrift.",
+    "faqHeading": "Häufig gestellte Fragen",
+    "faq": {
+      "free": {
+        "q": "Ist Chess Reviewer wirklich kostenlos?",
+        "a": "Ja. Chess Reviewer ist komplett kostenlos, ganz ohne Konto. Die Stockfish-Engine läuft vollständig in deinem Browser — es gibt keine Analyse-Limits und keine Serverkosten, die an dich weitergegeben werden müssten."
+      },
+      "how": {
+        "q": "Wie analysiere ich meine Schachpartie?",
+        "a": "Füge eine PGN ein oder gib deinen Chess.com- oder Lichess-Benutzernamen ein, um deine letzten Partien zu importieren. Chess Reviewer bewertet dann jede Stellung mit Stockfish und klassifiziert jeden Zug von Brillant bis Grober Fehler (Blunder) — inklusive Genauigkeitswert."
+      },
+      "alternative": {
+        "q": "Ist das eine kostenlose Alternative zur Chess.com-Partieanalyse?",
+        "a": "Ja. Chess Reviewer bildet die Partieanalyse im Chess.com-Stil nach — Zugbewertungen, Genauigkeit in Prozent, Pfeile für die besten Züge und Coaching — ganz ohne kostenpflichtige Mitgliedschaft, und auch mit Lichess-Partien."
+      },
+      "privacy": {
+        "q": "Bleiben meine Partiedaten privat?",
+        "a": "Die Analyse läuft lokal in deinem Browser mit WebAssembly-Stockfish. Deine PGNs werden niemals hochgeladen — außer du entscheidest dich, dich anzumelden und deine Bibliothek in der Cloud zu synchronisieren."
+      },
+      "engine": {
+        "q": "Welche Engine wird verwendet?",
+        "a": "Chess Reviewer nutzt Stockfish, die stärkste Open-Source-Schachengine, kompiliert zu WebAssembly und ausgewertet mit Tiefe 14 und zwei Hauptvarianten für eine präzise Erkennung der besten Züge."
+      },
+      "languages": {
+        "q": "Welche Sprachen werden unterstützt?",
+        "a": "Die Oberfläche ist in zehn Sprachen verfügbar: Englisch, Chinesisch, Hindi, Spanisch, Französisch, Arabisch, Russisch, Portugiesisch, Deutsch und Persisch — inklusive vollständiger Unterstützung für Rechts-nach-links-Schrift."
+      }
+    }
+  }
+}

@@ -22,6 +22,10 @@
   "author": "Chess Reviewer",
   "ogImage": "og.png",
   "themeColor": "#05040c",
+  "verification": {
+    "google": "",
+    "bing": ""
+  },
   "languages": [
     { "code": "en", "hreflang": "en", "dir": "ltr" },
     { "code": "zh", "hreflang": "zh-Hans", "dir": "ltr" },

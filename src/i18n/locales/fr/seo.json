@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Analyse de partie d'échecs gratuite — Chess Reviewer",
+    "description": "Analysez vos parties d'échecs gratuitement avec Stockfish : précision, gaffes, meilleurs coups et coach IA — dans votre navigateur. Import Chess.com et Lichess."
+  },
+  "consent": {
+    "message": "Nous utilisons des cookies pour afficher des publicités qui permettent à Chess Reviewer de rester gratuit. Acceptez pour autoriser les publicités personnalisées, ou refusez pour ne voir que du contenu non personnalisé.",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "privacy": "Politique de confidentialité"
+  },
+  "ads": {
+    "label": "Publicité"
+  },
+  "footer": {
+    "tagline": "Analyse gratuite de parties d'échecs avec Stockfish, dans votre navigateur.",
+    "privacy": "Politique de confidentialité",
+    "sourceCode": "Code source",
+    "builtWith": "Stockfish · React · fonctionne entièrement côté client"
+  },
+  "landing": {
+    "featuresHeading": "Tout ce qu'il faut pour analyser une partie d'échecs",
+    "featuresSub": "Une analyse de partie complète façon Chess.com, gratuite et privée — le moteur tourne dans votre navigateur, pas sur un serveur.",
+    "features": {
+      "engine": {
+        "title": "Stockfish, dans votre navigateur",
+        "body": "Chaque position est analysée par Stockfish compilé en WebAssembly. Aucun envoi de données, aucun compte, aucune limite d'analyse — vos coups ne quittent jamais votre appareil."
+      },
+      "classify": {
+        "title": "De Brillant à Gaffe",
+        "body": "Chaque coup est classé comme sur Chess.com — Brillant, Excellent, Meilleur, Bon, Imprécision, Erreur et Gaffe — selon le pourcentage de chances de gain gagné ou perdu."
+      },
+      "accuracy": {
+        "title": "Précision et performance",
+        "body": "Obtenez un pourcentage de précision pour chaque joueur, une estimation du classement de performance et un graphique d'évaluation coup par coup pour voir exactement où la partie a basculé."
+      },
+      "coach": {
+        "title": "Un coach qui explique pourquoi",
+        "body": "Des commentaires en langage clair expliquent l'idée derrière le meilleur coup et ce qui n'a pas marché, pour vraiment apprendre au lieu de vous contenter d'un chiffre."
+      },
+      "openings": {
+        "title": "Détection des ouvertures",
+        "body": "Votre ouverture est identifiée automatiquement grâce à la base ECO complète de Lichess, riche d'environ 3 800 variantes, pour savoir exactement dans quelle théorie vous étiez."
+      },
+      "import": {
+        "title": "Import Chess.com et Lichess",
+        "body": "Collez un PGN, ou saisissez simplement votre pseudo Chess.com ou Lichess pour récupérer vos dernières parties et les analyser en un clic."
+      }
+    },
+    "howHeading": "Comment analyser votre partie d'échecs",
+    "howSub": "Trois étapes, environ trente secondes, sans inscription.",
+    "how": {
+      "step1": {
+        "title": "1. Importez votre partie",
+        "body": "Collez un PGN ou saisissez votre pseudo Chess.com ou Lichess pour charger vos parties récentes."
+      },
+      "step2": {
+        "title": "2. Laissez Stockfish analyser",
+        "body": "Le moteur évalue chaque position en local et classe chaque coup pour les deux camps."
+      },
+      "step3": {
+        "title": "3. Rejouez et progressez",
+        "body": "Parcourez la partie avec les flèches du meilleur coup, le graphique d'évaluation et les conseils du coach."
+      }
+    },
+    "compareHeading": "Une alternative gratuite au Bilan de partie Chess.com",
+    "compareBody": "Chess Reviewer vous offre l'essentiel d'une analyse de partie payante — classement des coups, précision, meilleurs coups et coaching — sans abonnement, sans limite quotidienne et sans qu'aucune donnée ne quitte votre navigateur. Il fonctionne aussi avec les parties Lichess, et l'interface est disponible en dix langues avec prise en charge complète de l'écriture de droite à gauche.",
+    "faqHeading": "Questions fréquentes",
+    "faq": {
+      "free": {
+        "q": "Chess Reviewer est-il vraiment gratuit ?",
+        "a": "Oui. Chess Reviewer est entièrement gratuit et ne demande aucun compte. Le moteur Stockfish tourne intégralement dans votre navigateur : il n'y a donc aucune limite d'analyse ni frais de serveur à vous répercuter."
+      },
+      "how": {
+        "q": "Comment analyser ma partie d'échecs ?",
+        "a": "Collez un PGN, ou saisissez votre pseudo Chess.com ou Lichess pour importer vos parties récentes. Chess Reviewer évalue ensuite chaque position avec Stockfish et classe chaque coup, de Brillant à Gaffe, avec un score de précision."
+      },
+      "alternative": {
+        "q": "Est-ce une alternative gratuite au Bilan de partie Chess.com ?",
+        "a": "Oui. Chess Reviewer reproduit l'expérience du Bilan de partie façon Chess.com — classement des coups, pourcentages de précision, flèches du meilleur coup et coaching — sans abonnement payant, et il fonctionne aussi avec les parties Lichess."
+      },
+      "privacy": {
+        "q": "Mes parties restent-elles privées ?",
+        "a": "L'analyse s'effectue en local dans votre navigateur grâce à Stockfish en WebAssembly. Vos PGN ne sont jamais envoyés sur un serveur, sauf si vous choisissez de vous connecter pour synchroniser votre bibliothèque dans le cloud."
+      },
+      "engine": {
+        "q": "Quel moteur est utilisé ?",
+        "a": "Chess Reviewer utilise Stockfish, le moteur d'échecs open source le plus fort au monde, compilé en WebAssembly et évalué à la profondeur 14 avec deux variantes principales pour détecter précisément le meilleur coup."
+      },
+      "languages": {
+        "q": "Quelles langues sont prises en charge ?",
+        "a": "L'interface est disponible en dix langues : anglais, chinois, hindi, espagnol, français, arabe, russe, portugais, allemand et persan, avec prise en charge complète de l'écriture de droite à gauche."
+      }
+    }
+  }
+}

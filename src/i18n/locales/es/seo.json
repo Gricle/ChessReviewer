@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Analizador de Partidas de Ajedrez Gratis — Chess Reviewer",
+    "description": "Analiza partidas de ajedrez gratis con Stockfish: jugadas clasificadas, precisión y coach con IA, en tu navegador. Importa de Chess.com o Lichess."
+  },
+  "consent": {
+    "message": "Usamos cookies para mostrar anuncios que mantienen Chess Reviewer gratis. Acepta para permitir anuncios personalizados, o rechaza para ver solo contenido no personalizado.",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "privacy": "Política de privacidad"
+  },
+  "ads": {
+    "label": "Publicidad"
+  },
+  "footer": {
+    "tagline": "Análisis de partidas de ajedrez gratis con Stockfish, en tu navegador.",
+    "privacy": "Política de privacidad",
+    "sourceCode": "Código fuente",
+    "builtWith": "Stockfish · React · funciona completamente en tu navegador"
+  },
+  "landing": {
+    "featuresHeading": "Todo lo que necesitas para revisar una partida de ajedrez",
+    "featuresSub": "Una revisión de partida completa al estilo Chess.com, gratis y privada: el motor funciona en tu navegador, no en un servidor.",
+    "features": {
+      "engine": {
+        "title": "Stockfish, en tu navegador",
+        "body": "Cada posición se analiza con Stockfish compilado a WebAssembly. Sin subidas, sin cuentas, sin límites de análisis: tus jugadas nunca salen de tu dispositivo."
+      },
+      "classify": {
+        "title": "De Brillante a Error grave",
+        "body": "Cada jugada se clasifica como en Chess.com — Brillante, Excelente, La mejor, Buena, Imprecisión, Error y Error grave — según cuánta probabilidad de victoria ganó o perdió."
+      },
+      "accuracy": {
+        "title": "Precisión y rendimiento",
+        "body": "Obtén un porcentaje de precisión para ambos jugadores, un rating de rendimiento estimado y un gráfico de evaluación jugada a jugada para ver exactamente dónde cambió la partida."
+      },
+      "coach": {
+        "title": "Un coach que explica el porqué",
+        "body": "Comentarios en lenguaje claro que explican la idea detrás de la mejor jugada y qué salió mal, para que aprendas de verdad en lugar de solo ver un número."
+      },
+      "openings": {
+        "title": "Detección de aperturas",
+        "body": "Tu apertura se identifica automáticamente con la base de datos ECO completa de Lichess, con unas 3.800 líneas, para que sepas exactamente en qué teoría estabas."
+      },
+      "import": {
+        "title": "Importación desde Chess.com y Lichess",
+        "body": "Pega un PGN, o simplemente escribe tu nombre de usuario de Chess.com o Lichess para cargar tus últimas partidas y revisarlas con un clic."
+      }
+    },
+    "howHeading": "Cómo analizar tu partida de ajedrez",
+    "howSub": "Tres pasos, unos treinta segundos, sin registro.",
+    "how": {
+      "step1": {
+        "title": "1. Importa tu partida",
+        "body": "Pega un PGN o introduce tu nombre de usuario de Chess.com o Lichess para cargar tus partidas recientes."
+      },
+      "step2": {
+        "title": "2. Deja que Stockfish analice",
+        "body": "El motor evalúa cada posición localmente y clasifica cada jugada de ambos bandos."
+      },
+      "step3": {
+        "title": "3. Revisa y aprende",
+        "body": "Recorre la partida con flechas de mejor jugada, el gráfico de evaluación y notas del coach."
+      }
+    },
+    "compareHeading": "Una alternativa gratis a la Revisión de partida de Chess.com",
+    "compareBody": "Chess Reviewer te da lo esencial de una revisión de partida de pago — clasificación de jugadas, precisión, mejores jugadas y coaching — sin membresía, sin límite diario y sin que tus datos salgan del navegador. También funciona con partidas de Lichess, y la interfaz está disponible en diez idiomas con soporte completo de escritura de derecha a izquierda.",
+    "faqHeading": "Preguntas frecuentes",
+    "faq": {
+      "free": {
+        "q": "¿Chess Reviewer es realmente gratis?",
+        "a": "Sí. Chess Reviewer es completamente gratis y no requiere cuenta. El motor Stockfish funciona íntegramente en tu navegador, así que no hay límites de análisis ni costes de servidor que trasladarte."
+      },
+      "how": {
+        "q": "¿Cómo analizo mi partida de ajedrez?",
+        "a": "Pega un PGN, o escribe tu nombre de usuario de Chess.com o Lichess para importar tus partidas recientes. Chess Reviewer evalúa cada posición con Stockfish y clasifica cada jugada, de Brillante a Error grave, con una puntuación de precisión."
+      },
+      "alternative": {
+        "q": "¿Es una alternativa gratis a la Revisión de partida de Chess.com?",
+        "a": "Sí. Chess Reviewer reproduce la experiencia de Revisión de partida al estilo Chess.com — clasificación de jugadas, porcentajes de precisión, flechas de mejor jugada y coaching — sin membresía de pago, y también funciona con partidas de Lichess."
+      },
+      "privacy": {
+        "q": "¿Mis partidas se mantienen privadas?",
+        "a": "El análisis se realiza localmente en tu navegador con Stockfish en WebAssembly. Tus PGN nunca se suben, a menos que decidas iniciar sesión y sincronizar tu biblioteca con la nube."
+      },
+      "engine": {
+        "q": "¿Qué motor utiliza?",
+        "a": "Utiliza Stockfish, el motor de ajedrez de código abierto más fuerte, compilado a WebAssembly y evaluado a profundidad 14 con dos variantes principales para detectar la mejor jugada con precisión."
+      },
+      "languages": {
+        "q": "¿Qué idiomas están disponibles?",
+        "a": "La interfaz está disponible en diez idiomas: inglés, chino, hindi, español, francés, árabe, ruso, portugués, alemán y persa, con soporte completo de escritura de derecha a izquierda."
+      }
+    }
+  }
+}

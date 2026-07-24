@@ -3,6 +3,7 @@ import importNs from './import.json';
 import review from './review.json';
 import coach from './coach.json';
 import library from './library.json';
+import seo from './seo.json';
 
 /**
  * German resource bundle: one entry per namespace.
@@ -14,4 +15,5 @@ export const de = {
   review,
   coach,
   library,
+  seo,
 };

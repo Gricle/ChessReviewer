@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "免费国际象棋对局分析 — Chess Reviewer",
+    "description": "用 Stockfish 免费分析任意国际象棋对局:走法评级、准确率、最佳着法和 AI 教练,全部在浏览器中完成。支持从 Chess.com 和 Lichess 导入。"
+  },
+  "consent": {
+    "message": "我们使用 Cookie 展示广告,以保持 Chess Reviewer 免费。点击“接受”允许个性化广告,或点击“拒绝”仅查看非个性化内容。",
+    "accept": "接受",
+    "reject": "拒绝",
+    "privacy": "隐私政策"
+  },
+  "ads": {
+    "label": "广告"
+  },
+  "footer": {
+    "tagline": "由 Stockfish 驱动的免费国际象棋对局分析,直接在浏览器中运行。",
+    "privacy": "隐私政策",
+    "sourceCode": "源代码",
+    "builtWith": "Stockfish · React · 完全在客户端运行"
+  },
+  "landing": {
+    "featuresHeading": "复盘一局棋所需的一切",
+    "featuresSub": "媲美 Chess.com 的完整对局复盘,免费且私密——引擎在你的浏览器中运行,而不是在服务器上。",
+    "features": {
+      "engine": {
+        "title": "浏览器里的 Stockfish",
+        "body": "每个局面都由编译为 WebAssembly 的 Stockfish 分析。无需上传,无需注册,没有分析次数限制——你的棋谱永远不会离开你的设备。"
+      },
+      "classify": {
+        "title": "从妙手到漏着",
+        "body": "每一步棋都按你在 Chess.com 熟悉的方式评级——妙手、强手、最佳、良好、失准、错误和漏着——依据是这步棋让胜率上升或下降了多少。"
+      },
+      "accuracy": {
+        "title": "准确率与表现分",
+        "body": "获取双方棋手的准确率百分比、估算的表现等级分,以及逐步的评估曲线图,让你清楚看到胜负在哪一步发生转折。"
+      },
+      "coach": {
+        "title": "会讲解原因的教练",
+        "body": "通俗易懂的讲解会告诉你最佳着法背后的思路以及问题出在哪里,让你真正学到东西,而不只是看到一个数字。"
+      },
+      "openings": {
+        "title": "开局识别",
+        "body": "你的开局会根据 Lichess 完整的 ECO 数据库(约 3800 条变例)自动命名,让你准确知道自己走进了哪套理论。"
+      },
+      "import": {
+        "title": "从 Chess.com 和 Lichess 导入",
+        "body": "粘贴 PGN,或只需输入你的 Chess.com 或 Lichess 用户名,即可拉取最近的对局并一键复盘。"
+      }
+    },
+    "howHeading": "如何分析你的国际象棋对局",
+    "howSub": "三个步骤,大约三十秒,无需注册。",
+    "how": {
+      "step1": {
+        "title": "1. 导入对局",
+        "body": "粘贴 PGN,或输入你的 Chess.com 或 Lichess 用户名加载最近的对局。"
+      },
+      "step2": {
+        "title": "2. 让 Stockfish 分析",
+        "body": "引擎在本地评估每个局面,并为双方的每一步棋评级。"
+      },
+      "step3": {
+        "title": "3. 复盘与学习",
+        "body": "借助最佳着法箭头、评估曲线图和教练讲解,一步一步回顾整盘棋。"
+      }
+    },
+    "compareHeading": "免费的 Chess.com 对局复盘替代方案",
+    "compareBody": "Chess Reviewer 为你提供付费对局复盘的核心功能——走法评级、准确率、最佳着法和教练讲解——无需会员,没有每日次数限制,数据也不会离开你的浏览器。它同样支持 Lichess 对局,界面提供十种语言,并完整支持从右到左的排版。",
+    "faqHeading": "常见问题",
+    "faq": {
+      "free": {
+        "q": "Chess Reviewer 真的免费吗?",
+        "a": "是的。Chess Reviewer 完全免费,无需注册账号。Stockfish 引擎完全在你的浏览器中运行,因此没有分析次数限制,也没有需要转嫁给你的服务器成本。"
+      },
+      "how": {
+        "q": "如何分析我的国际象棋对局?",
+        "a": "粘贴 PGN,或输入你的 Chess.com 或 Lichess 用户名导入最近的对局。Chess Reviewer 会用 Stockfish 评估每个局面,并为每一步棋给出从妙手到漏着的评级以及准确率分数。"
+      },
+      "alternative": {
+        "q": "这是 Chess.com 对局复盘的免费替代品吗?",
+        "a": "是的。Chess Reviewer 重现了 Chess.com 风格的对局复盘体验——走法评级、准确率百分比、最佳着法箭头和教练讲解——无需付费会员,而且同样支持 Lichess 对局。"
+      },
+      "privacy": {
+        "q": "我的对局数据是私密的吗?",
+        "a": "分析通过 WebAssembly 版 Stockfish 在你的浏览器本地完成。你的 PGN 永远不会被上传,除非你主动选择登录并将棋谱库同步到云端。"
+      },
+      "engine": {
+        "q": "它使用什么引擎?",
+        "a": "它使用 Stockfish——最强的开源国际象棋引擎,编译为 WebAssembly,以 14 层深度和两条主变例进行评估,从而精准识别最佳着法。"
+      },
+      "languages": {
+        "q": "支持哪些语言?",
+        "a": "界面提供十种语言:英语、中文、印地语、西班牙语、法语、阿拉伯语、俄语、葡萄牙语、德语和波斯语,并完整支持从右到左的排版。"
+      }
+    }
+  }
+}
