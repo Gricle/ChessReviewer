@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { BASE_PATH } from '../config/site';
 import { en } from './locales/en/index.ts';
 import { zh } from './locales/zh/index.ts';
 import { hi } from './locales/hi/index.ts';
@@ -55,7 +56,24 @@ function findLanguage(code: string): Language | undefined {
   return LANGUAGES.find((lang) => lang.code === code);
 }
 
-/** Language requested via the `?lng=` query param, if valid. Drives hreflang. */
+/**
+ * Language taken from the URL path, e.g. `/ChessReviewer/es/`. These are the
+ * canonical, crawlable addresses: `scripts/prerender.mjs` writes a real static
+ * page for each one, so a hard refresh and a crawler both get translated HTML.
+ */
+function pathLanguage(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const { pathname } = window.location;
+    if (!pathname.startsWith(BASE_PATH)) return null;
+    const code = pathname.slice(BASE_PATH.length).split('/')[0];
+    return code && findLanguage(code) ? code : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Legacy `?lng=` links, kept working so already-shared URLs still resolve. */
 function queryLanguage(): string | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -67,26 +85,31 @@ function queryLanguage(): string | null {
 }
 
 /**
- * Reflect the active language in the URL so each language has a stable,
- * shareable, crawlable address that matches its `hreflang` alternate.
- * English is the bare canonical URL (no `?lng`).
+ * Reflect the active language in the URL path so each language has a stable,
+ * shareable address that matches its `hreflang` alternate and its canonical.
+ * English is the bare base URL. Any legacy `?lng=` param is dropped, which
+ * migrates old links onto the canonical path form.
  */
 function applyUrlLang(code: string): void {
   if (typeof window === 'undefined' || !window.history?.replaceState) return;
   try {
     const url = new URL(window.location.href);
-    if (code === 'en') url.searchParams.delete('lng');
-    else url.searchParams.set('lng', code);
+    if (!url.pathname.startsWith(BASE_PATH)) return;
+    const rest = url.pathname.slice(BASE_PATH.length).split('/');
+    if (findLanguage(rest[0])) rest.shift();
+    const tail = rest.join('/');
+    url.pathname = code === 'en' ? `${BASE_PATH}${tail}` : `${BASE_PATH}${code}/${tail}`;
+    url.searchParams.delete('lng');
     window.history.replaceState(null, '', url.toString());
   } catch {
     /* history/URL unavailable — non-fatal */
   }
 }
 
-// Query param wins (shared/hreflang links), then stored preference, then English.
+// Path wins (canonical URLs), then legacy ?lng=, then stored preference, then English.
 function initialLanguage(): string {
-  const fromQuery = queryLanguage();
-  if (fromQuery) return fromQuery;
+  const fromUrl = pathLanguage() ?? queryLanguage();
+  if (fromUrl) return fromUrl;
   const stored = safeStorageGet(STORAGE_KEY);
   return stored && findLanguage(stored) ? stored : 'en';
 }

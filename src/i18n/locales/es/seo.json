@@ -91,6 +91,7 @@
         "q": "¿Qué idiomas están disponibles?",
         "a": "La interfaz está disponible en diez idiomas: inglés, chino, hindi, español, francés, árabe, ruso, portugués, alemán y persa, con soporte completo de escritura de derecha a izquierda."
       }
-    }
+    },
+    "noscript": "Chess Reviewer necesita JavaScript para ejecutar el motor de análisis. Actívalo para revisar tus partidas."
   }
 }

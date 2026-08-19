@@ -91,6 +91,7 @@
         "q": "Quelles langues sont prises en charge ?",
         "a": "L'interface est disponible en dix langues : anglais, chinois, hindi, espagnol, français, arabe, russe, portugais, allemand et persan, avec prise en charge complète de l'écriture de droite à gauche."
       }
-    }
+    },
+    "noscript": "Chess Reviewer a besoin de JavaScript pour lancer le moteur d'analyse. Activez-le pour analyser vos parties."
   }
 }

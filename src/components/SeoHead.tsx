@@ -18,8 +18,7 @@ export function SeoHead() {
     const title = t('meta.title');
     const description = t('meta.description');
     const canonical = canonicalForLang(lang);
-    const hreflang = SITE_LANGUAGES.find((l) => l.code === lang)?.hreflang ?? 'en';
-    const ogLocale = hreflang.replace('-', '_');
+    const ogLocale = SITE_LANGUAGES.find((l) => l.code === lang)?.ogLocale ?? 'en_US';
 
     document.title = title;
     setMeta('name', 'description', description);

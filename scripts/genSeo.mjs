@@ -9,27 +9,25 @@
 // deploy to basePath "/". Until then, submit the sitemap URL directly in Google
 // Search Console.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { site, BASE as base, SITE_URL as siteUrl, abs, canonicalForLang } from './seoShared.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const publicDir = join(root, 'public');
 mkdirSync(publicDir, { recursive: true });
 
-const site = JSON.parse(readFileSync(join(root, 'site.config.json'), 'utf8'));
-const origin = site.origin.replace(/\/$/, '');
-const base = site.basePath.endsWith('/') ? site.basePath : `${site.basePath}/`;
-const siteUrl = `${origin}${base}`;
-const abs = (p) => `${origin}${base}${p.replace(/^\//, '')}`;
-const canonicalFor = (code) => (code === 'en' ? siteUrl : `${siteUrl}?lng=${code}`);
+const canonicalFor = canonicalForLang;
 
 // A recent, stable date. Kept out of the running app (Date.now is fine in a
 // build script, but a committed constant keeps output deterministic in CI).
 const lastmod = new Date().toISOString().slice(0, 10);
 
 // ---- sitemap.xml (with hreflang alternates per language) --------------------
+// Every entry is a real prerendered file (dist/<code>/index.html) that
+// self-canonicalises, so the hreflang cluster below is valid.
 const alternates = [
   ...site.languages.map(
     (l) => `      <xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${canonicalFor(l.code)}"/>`,

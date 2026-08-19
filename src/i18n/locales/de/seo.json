@@ -91,6 +91,7 @@
         "q": "Welche Sprachen werden unterstützt?",
         "a": "Die Oberfläche ist in zehn Sprachen verfügbar: Englisch, Chinesisch, Hindi, Spanisch, Französisch, Arabisch, Russisch, Portugiesisch, Deutsch und Persisch — inklusive vollständiger Unterstützung für Rechts-nach-links-Schrift."
       }
-    }
+    },
+    "noscript": "Chess Reviewer benötigt JavaScript, um die Analyse-Engine auszuführen. Aktiviere es, um deine Partien zu analysieren."
   }
 }

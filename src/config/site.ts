@@ -15,6 +15,8 @@ export interface SiteLanguage {
   code: string;
   /** BCP-47 tag emitted in `hreflang` links (e.g. `zh-Hans`). */
   hreflang: string;
+  /** Full `language_TERRITORY` locale for `og:locale` (e.g. `zh_CN`). */
+  ogLocale: string;
   dir: 'ltr' | 'rtl';
 }
 
@@ -43,10 +45,23 @@ export const SITE_LANGUAGES = config.languages as readonly SiteLanguage[];
 /** Absolute URL to the social share image (1200×630). */
 export const OG_IMAGE_URL = absolute(config.ogImage);
 
-/** Absolute canonical URL for a given UI language. English is the bare home URL. */
+/**
+ * Absolute canonical URL for a UI language. English is the bare home URL (it
+ * holds the existing crawl equity); every other language lives in its own
+ * directory, e.g. `/ChessReviewer/es/`, which `scripts/prerender.mjs` emits as
+ * a real static file so the page can self-canonicalise.
+ *
+ * Keep in sync with `canonicalForLang` in `scripts/seoShared.mjs`, which
+ * generates the matching sitemap entries and hreflang links.
+ */
 export function canonicalForLang(code: string): string {
   if (code === 'en') return SITE_URL;
-  return `${SITE_URL}?lng=${encodeURIComponent(code)}`;
+  return `${SITE_URL}${encodeURIComponent(code)}/`;
+}
+
+/** Root-relative path for a UI language, e.g. `/ChessReviewer/es/`. */
+export function pathForLang(code: string): string {
+  return code === 'en' ? BASE_PATH : `${BASE_PATH}${encodeURIComponent(code)}/`;
 }
 
 /** Resolve a path relative to the deploy base into an absolute URL. */

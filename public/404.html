@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
     <title>Chess Reviewer</title>
     <script>
       // GitHub Pages has no server-side routing, so any path it can't map to a
@@ -10,10 +11,19 @@
       // app's index.html, preserving the query string and hash so the auth
       // tokens (?code=... / #access_token=...) survive and the Supabase client
       // can complete the session on load.
+      //
+      // The prerendered language pages (/ChessReviewer/es/ etc.) are real files
+      // and never reach here, but a deep link *under* one would — so keep a
+      // leading language segment so the visitor stays in their language.
       (function () {
         var base = '/ChessReviewer/';
-        var target = base + window.location.search + window.location.hash;
-        window.location.replace(target);
+        var langs = ['zh', 'hi', 'es', 'fr', 'ar', 'ru', 'pt', 'de', 'fa'];
+        var rest = window.location.pathname.indexOf(base) === 0
+          ? window.location.pathname.slice(base.length)
+          : '';
+        var first = rest.split('/')[0];
+        var prefix = langs.indexOf(first) !== -1 ? first + '/' : '';
+        window.location.replace(base + prefix + window.location.search + window.location.hash);
       })();
     </script>
   </head>
