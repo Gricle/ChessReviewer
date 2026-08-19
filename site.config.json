@@ -27,15 +27,65 @@
     "bing": ""
   },
   "languages": [
-    { "code": "en", "hreflang": "en", "dir": "ltr" },
-    { "code": "zh", "hreflang": "zh-Hans", "dir": "ltr" },
-    { "code": "hi", "hreflang": "hi", "dir": "ltr" },
-    { "code": "es", "hreflang": "es", "dir": "ltr" },
-    { "code": "fr", "hreflang": "fr", "dir": "ltr" },
-    { "code": "ar", "hreflang": "ar", "dir": "rtl" },
-    { "code": "ru", "hreflang": "ru", "dir": "ltr" },
-    { "code": "pt", "hreflang": "pt", "dir": "ltr" },
-    { "code": "de", "hreflang": "de", "dir": "ltr" },
-    { "code": "fa", "hreflang": "fa", "dir": "rtl" }
+    {
+      "code": "en",
+      "hreflang": "en",
+      "dir": "ltr",
+      "ogLocale": "en_US"
+    },
+    {
+      "code": "zh",
+      "hreflang": "zh-Hans",
+      "dir": "ltr",
+      "ogLocale": "zh_CN"
+    },
+    {
+      "code": "hi",
+      "hreflang": "hi",
+      "dir": "ltr",
+      "ogLocale": "hi_IN"
+    },
+    {
+      "code": "es",
+      "hreflang": "es",
+      "dir": "ltr",
+      "ogLocale": "es_ES"
+    },
+    {
+      "code": "fr",
+      "hreflang": "fr",
+      "dir": "ltr",
+      "ogLocale": "fr_FR"
+    },
+    {
+      "code": "ar",
+      "hreflang": "ar",
+      "dir": "rtl",
+      "ogLocale": "ar_AR"
+    },
+    {
+      "code": "ru",
+      "hreflang": "ru",
+      "dir": "ltr",
+      "ogLocale": "ru_RU"
+    },
+    {
+      "code": "pt",
+      "hreflang": "pt",
+      "dir": "ltr",
+      "ogLocale": "pt_BR"
+    },
+    {
+      "code": "de",
+      "hreflang": "de",
+      "dir": "ltr",
+      "ogLocale": "de_DE"
+    },
+    {
+      "code": "fa",
+      "hreflang": "fa",
+      "dir": "rtl",
+      "ogLocale": "fa_IR"
+    }
   ]
 }

@@ -91,6 +91,7 @@
         "q": "Which languages are supported?",
         "a": "The interface ships in ten languages: English, Chinese, Hindi, Spanish, French, Arabic, Russian, Portuguese, German, and Persian, including full right-to-left support."
       }
-    }
+    },
+    "noscript": "Chess Reviewer needs JavaScript to run the analysis engine. Enable it to review your games."
   }
 }

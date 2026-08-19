@@ -1,53 +1,26 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Chess Reviewer</title>
-    <!-- SEO, social, hreflang and JSON-LD are injected at build time from
-         site.config.json by the seoHtml() plugin in vite.config.ts. -->
+    <!-- The title, meta, hreflang, JSON-LD and the static body content below
+         are generated at build time by the seoHtml() plugin in vite.config.ts
+         from site.config.json + src/i18n/locales/. scripts/prerender.mjs then
+         re-runs the same generators to emit one static page per language.
+         Do not hand-edit inside the seo:* markers. -->
+    <!--seo:head-->
   </head>
   <body>
     <div id="root">
       <!-- Static first-paint shell: gives crawlers immediate, meaningful
            content and users an instant hero while the React app boots. React
            replaces this on mount. -->
-      <main style="min-height:100vh;background:#05040c;color:#e2e8f0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">
-        <h1 style="font-size:clamp(1.75rem,5vw,3rem);font-weight:800;line-height:1.15;margin:0 0 1rem;max-width:40ch">
-          Free Chess Game Analyzer &amp; Review
-        </h1>
-        <p style="color:#94a3b8;max-width:60ch;font-size:1.05rem;line-height:1.6;margin:0 0 1.5rem">
-          Analyze any chess game with Stockfish right in your browser. Paste a PGN or
-          import from Chess.com or Lichess and get every move classified from Brilliant
-          to Blunder, accuracy scores, best-move arrows, opening detection, and an
-          AI coach — completely free, no sign-up.
-        </p>
-        <p style="color:#38e1d6;font-family:monospace;font-size:.8rem;letter-spacing:.05em">Loading the analysis engine…</p>
-      </main>
+      <!--seo:shell-->
     </div>
     <noscript>
-      <div style="max-width:52rem;margin:0 auto;padding:2rem;color:#e2e8f0;background:#05040c;font-family:system-ui,sans-serif;line-height:1.6">
-        <h1>Chess Reviewer — Free Chess Game Analyzer &amp; Review</h1>
-        <p>
-          Chess Reviewer is a free, browser-based chess game analysis tool powered by
-          the Stockfish engine. Paste a PGN or import your games from Chess.com or
-          Lichess to see every move classified from Brilliant to Blunder, with accuracy
-          scores, best-move arrows, evaluation graphs, opening detection, and
-          natural-language coaching.
-        </p>
-        <p><strong>Chess Reviewer needs JavaScript enabled to run the analysis engine.</strong>
-          Please enable JavaScript in your browser to review your games.</p>
-        <h2>What you get</h2>
-        <ul>
-          <li>Move-by-move Stockfish analysis, entirely in your browser</li>
-          <li>Chess.com-style move classifications and accuracy percentages</li>
-          <li>Best-move arrows and an evaluation graph</li>
-          <li>Opening detection across the full Lichess ECO set</li>
-          <li>Import from Chess.com and Lichess, or paste any PGN</li>
-          <li>Available in 10 languages with full right-to-left support</li>
-        </ul>
-      </div>
+      <!--seo:noscript-->
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

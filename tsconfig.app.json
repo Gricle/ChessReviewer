@@ -11,6 +11,9 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
+    // Lets src/config/seo.test.ts import the build-time generator in
+    // scripts/seoShared.mjs, so the shipped SEO strings are what gets tested.
+    "allowJs": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,

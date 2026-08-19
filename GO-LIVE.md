@@ -21,6 +21,12 @@ knock them out whenever.
       (On a GitHub Pages sub-path, `robots.txt` isn't at the domain root, so
       submit the sitemap URL by hand rather than relying on auto-discovery.)
 - [ ] Use "Request indexing" on the URL to speed up first crawl.
+- [ ] The sitemap now lists ten pages (`/`, `/es/`, `/de/`, …), one per
+      language, each a real prerendered file with its own canonical. Expect
+      Search Console to report ten indexed URLs, not one.
+- [ ] If any old `?lng=` URL was already crawled, leave it alone. It serves the
+      English page, which canonicalises to `/`, and the app forwards visitors to
+      the path form.
 
 ## 3. Bing Webmaster Tools (optional, easy extra traffic)
 - [ ] https://www.bing.com/webmasters → add site → verify.
