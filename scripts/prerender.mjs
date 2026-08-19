@@ -18,7 +18,20 @@ import { LANGS, langMeta, headTags, shellHtml, noscriptHtml, titleFor, esc } fro
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
 
+const REGIONS = ['head', 'shell', 'noscript'];
+
 const template = readFileSync(join(dist, 'index.html'), 'utf8');
+
+// This script rewrites dist/index.html in place, and its output carries no
+// markers. Running it twice would therefore find nothing to replace and emit
+// pages that look translated (title, lang) but keep the English head and the
+// English canonical — the exact bug prerendering exists to fix, and one that
+// no later check would catch. Refuse a template that vite has not just built.
+for (const name of REGIONS) {
+  if (!marker(name).test(template)) {
+    throw new Error(`[prerender] no <!--seo:${name}--> region in dist/index.html — run \`vite build\` first`);
+  }
+}
 
 /**
  * Rebuilds the built index.html for one language. Vite's asset tags are left

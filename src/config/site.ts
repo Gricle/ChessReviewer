@@ -59,11 +59,6 @@ export function canonicalForLang(code: string): string {
   return `${SITE_URL}${encodeURIComponent(code)}/`;
 }
 
-/** Root-relative path for a UI language, e.g. `/ChessReviewer/es/`. */
-export function pathForLang(code: string): string {
-  return code === 'en' ? BASE_PATH : `${BASE_PATH}${encodeURIComponent(code)}/`;
-}
-
 /** Resolve a path relative to the deploy base into an absolute URL. */
 export function absolute(path: string): string {
   const clean = path.replace(/^\//, '');
