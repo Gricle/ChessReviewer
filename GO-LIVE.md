@@ -12,26 +12,21 @@ knock them out whenever.
 - [ ] Visit https://gricle.github.io/ChessReviewer/ and confirm the new landing
       content (features, FAQ, footer) shows.
 
-## 2. Google Search Console (gets you into Google)
-- [ ] Add the property at https://search.google.com/search-console
-- [x] Ownership is set up via the **HTML file** method —
-      `public/googlec93fa45ea7830187.html` is committed and live at
-      `https://gricle.github.io/ChessReviewer/googlec93fa45ea7830187.html`.
-      Just click **Verify** in Search Console. Leave that file in `public/`
-      forever — Google re-checks it and deleting it unverifies the property.
-      (Because of this, `site.config.json` → `verification.google` can stay
-      empty; the meta-tag method is only an alternative, not an extra step.)
-- [ ] Submit the sitemap URL directly:
-      `https://gricle.github.io/ChessReviewer/sitemap.xml`
-      (On a GitHub Pages sub-path, `robots.txt` isn't at the domain root, so
-      submit the sitemap URL by hand rather than relying on auto-discovery.)
-- [ ] Use "Request indexing" on the URL to speed up first crawl.
-- [ ] The sitemap now lists ten pages (`/`, `/es/`, `/de/`, …), one per
-      language, each a real prerendered file with its own canonical. Expect
-      Search Console to report ten indexed URLs, not one.
-- [ ] If any old `?lng=` URL was already crawled, leave it alone. It serves the
-      English page, which canonicalises to `/`, and the app forwards visitors to
-      the path form.
+## 2. Google Search Console — DONE (2026-08-23)
+Property verified, homepage submitted for indexing, sitemap submitted. Nothing
+left to do here.
+- [x] Property added as the URL prefix `https://gricle.github.io/ChessReviewer/`.
+- [x] Ownership verified via the **HTML file** method —
+      `public/googlec93fa45ea7830187.html`. Leave that file in `public/`
+      forever; Google re-checks it and deleting it unverifies the property.
+      (So `site.config.json` → `verification.google` stays empty by design.)
+- [x] `sitemap.xml` submitted by hand. On a Pages sub-path `robots.txt` isn't at
+      the domain root, so auto-discovery would never have found it.
+- [x] "Request indexing" run on the homepage.
+- Expect ten indexed URLs eventually (`/`, `/es/`, `/de/`, …), each a real
+  prerendered file with its own canonical — not one.
+- If an old `?lng=` URL was already crawled, leave it. It serves the English
+  page, canonicalises to `/`, and the app forwards visitors to the path form.
 
 ## 3. Bing Webmaster Tools (optional, easy extra traffic)
 - [ ] https://www.bing.com/webmasters → add site → verify.
