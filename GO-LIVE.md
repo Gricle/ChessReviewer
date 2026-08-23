@@ -14,8 +14,13 @@ knock them out whenever.
 
 ## 2. Google Search Console (gets you into Google)
 - [ ] Add the property at https://search.google.com/search-console
-- [ ] Verify ownership → copy the token → paste into
-      `site.config.json` → `verification.google` → commit & push.
+- [x] Ownership is set up via the **HTML file** method —
+      `public/googlec93fa45ea7830187.html` is committed and live at
+      `https://gricle.github.io/ChessReviewer/googlec93fa45ea7830187.html`.
+      Just click **Verify** in Search Console. Leave that file in `public/`
+      forever — Google re-checks it and deleting it unverifies the property.
+      (Because of this, `site.config.json` → `verification.google` can stay
+      empty; the meta-tag method is only an alternative, not an extra step.)
 - [ ] Submit the sitemap URL directly:
       `https://gricle.github.io/ChessReviewer/sitemap.xml`
       (On a GitHub Pages sub-path, `robots.txt` isn't at the domain root, so
